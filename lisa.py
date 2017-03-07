@@ -8,3 +8,5 @@ Created on Mon Mar  6 13:17:58 2017
 
 from core import Lisa
 import sys
+
+print(Lisa.__file__)

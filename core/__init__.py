@@ -1,2 +1,2 @@
-from .plots import SimplePlotter
+from .plots import SimplePlotter, MultiPlot
 from .file import File
