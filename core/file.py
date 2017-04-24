@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar  6 13:19:04 2017
@@ -7,6 +6,7 @@ Created on Mon Mar  6 13:19:04 2017
 """
 
 import h5py as h5
+import glob
 
 class File(object):
     def __init__(self, filename):
@@ -114,3 +114,58 @@ class File(object):
     @property
     def parameters(self):
         return self.file.get("Info/Parameters").attrs
+
+
+class MultiFile(object):
+    def __init__(self, path, pattern=None, sorter=None):
+        self.path = path
+        self.pattern = pattern
+        self.sorter = sorter
+        self._sort_changed = True
+        self._filelist = []
+        self._sorted_filelist = []
+        self._fileobjectlist = []
+        self._generate_file_list_()
+
+    @classmethod
+    def _get_current_from_cfg(cls, filename):
+        with open(filename+".cfg", 'r') as f:
+            for line in f:
+                if line.startswith("BunchCurrent"):
+                    return float(line.split("=")[1])
+
+    def _generate_file_list_(self):
+        self._filelist = glob.glob(self.path+"/"+(self.pattern if self.pattern is not None else "*"))
+        self._sorted_filelist = self._filelist  # put files in sorted_filelist even if not sorted
+
+    def _sort_file_list(self):
+        if self.sorter is not None and hasattr(self.sorter, "__call__"):
+            self._sorted_filelist = self.sorter(self._filelist)
+        else:
+            tmp_list = []
+            for file in self._filelist:
+                tmp_list.append((MultiFile._get_current_from_cfg(file), file))
+            tmp_list.sort(key=lambda f: f[0], reverse=True)  # make sure it is sorted by the first entry
+            self._sorted_filelist = [i[1] for i in tmp_list]
+
+    def set_sorter(self, sorter):
+        self.sorter = sorter
+        self._sort_changed = True
+
+
+    def strlst(self, sorted=True):
+        if sorted:
+            if self._sort_changed:
+                self._sort_file_list()
+            return self._sorted_filelist
+        else:
+            return self._filelist
+
+    def objlst(self):
+        if sorted:
+            if self._sort_changed:
+                self._sort_file_list()
+        if len(self._fileobjectlist) == 0:
+            for file in self._sorted_filelist:
+                self._fileobjectlist.append(File(file))
+        return self._fileobjectlist
