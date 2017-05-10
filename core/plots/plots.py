@@ -41,7 +41,7 @@ class SimplePlotter(object):
     Each Method takes a optional label and a optional figure (kwarg fig)
     If fig is given the data is plotted into this figure
     """
-    def __init__(self, filef):
+    def __init__(self, filef, unit_connector='in'):
         """
         Initialise a Simple Plotter instance
         :param filef: The file name of this Plotter or a Lisa.File instance
@@ -51,6 +51,7 @@ class SimplePlotter(object):
         else:
             self._file = File(filef)
         self.current = self._file.parameters["BunchCurrent"]
+        self.unit_connector = unit_connector
 
     def plot(func):
         """
@@ -141,18 +142,24 @@ class SimplePlotter(object):
             return fig
         return decorated
 
-    def _select_label(self, kwargs, key, values, labels):
+    def _select_label(self, kwargs, key, values, label, unit_for_label):
         """
         Select the correct label for the given kwargs.
         Usage example:
             label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
                                                        ['T in # Synchrotron Periods', 'T in s'])
         The first value/label is default (if key not in kwargs or value is not in values)
+        If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
         """
+        uc = kwargs.get('connector', self.unit_connector)
+        if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
+            print("Warning: '{}' is not a valid '{}' for this plot".format(kwargs[key], key))
+        if kwargs.get(key) == 'raw':
+            return ' '.join([label, '(raw)'])
         if kwargs.get(key) in values:
-            return labels[values.index(kwargs.get(key))]
+            return ' '.join([label, uc, unit_for_label[values.index(kwargs.get(key))]])
         else:
-            return labels[0]
+            return ' '.join([label, uc, unit_for_label[0]])
 
     def _select_unit(self, kwargs, key, data, values, attributes):
         """
@@ -161,29 +168,38 @@ class SimplePlotter(object):
           data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
         A attribute None is treated as "do not modify data".
         The first value/attribute is default (if key not in kwargs or value not in values)
+        If the value of key in kwargs is 'raw' the raw data is returned
         """
-        print(kwargs.get(key))
+        if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
+            print("Warning: '{}' is not a valid '{}' for this plot".format(kwargs[key], key))
+        if kwargs.get(key) == 'raw':
+            return data
         if kwargs.get(key) in values:
             attr = attributes[values.index(kwargs.get(key))]
         else:
-            attr = None
+            attr = attributes[0]
         if attr is None:
             return data
-        else:
-            return data * data.attrs[attr]
+        return data * data.attrs[attr]
 
-    def _get_unit_and_label(self, kwargs, key, values, labels, attributes, data):
+    def _get_unit_and_label(self, kwargs, key, values, label, unit_for_label, attributes, data):
         """
         Convenience wrapper around self._select_unit and self._select_label. This also reduces
         the risk of using a different order in the call of unit and label so unit and label always match
         """
         return (self._select_unit(kwargs, key, data, values, attributes),
-                self._select_label(kwargs, key, values, labels))
+                self._select_label(kwargs, key, values, label, unit_for_label))
 
     @plot
     def energy_spread(self, **kwargs):
-        return(self._file.energy_spread[0], self._file.energy_spread[1],
-               "T in # Synchrotron Periods", "Energy Spread") # TODO: Unit
+        x, y = self._file.energy_spread
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
+                                             'T', ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], x)
+
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['eV'], 'Energy Spread', ['eV'],
+                                             ['Factor4ElectronVolts'], y)
+        return (x, y, xlabel, ylabel)
 
     @meshPlot
     def bunch_profile(self, *args, **kwargs):
@@ -213,12 +229,11 @@ class SimplePlotter(object):
           * yunit: possible values: "meters", "seconds"
         """
         x, y = self._file.bunch_position
-        x = self._select_unit(kwargs, 'xunit', x, ['ts', 'seconds'], [None, 'Factor4Seconds'])
-        y = self._select_unit(kwargs, 'yunit', y, ['meters', 'seconds'], ['Factor4Meters', 'Factor4Seconds'])
-        xlabel = self._select_label(kwargs, 'xunit', ['ts','seconds'],
-                                   ['Time in # Synchrotron Periods', 'Time in s'])
-        ylabel = self._select_label(kwargs, 'yunit', ['meters','seconds'],
-                                   ['Bunch Position in m', 'Bunch Position in s'])
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
+                                             ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], x)
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['meters', 'seconds'], 'Bunch Position',
+                                             ['m', 's'], ['Factor4Meters', 'Factor4Seconds'], y)
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -229,12 +244,10 @@ class SimplePlotter(object):
           * yunit: possible values: "meters", "seconds"
         """
         x, y = self._file.bunch_population
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
-                                             ['T in # Synchrotron Periods', 'T in s'],
-                                             [None, 'Factor4Seconds'], x)
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['coulomb', 'ampere'],
-                                             ['Bunch Population in C', 'Bunch Population in A'],
-                                             ['Factor4Coulomb', 'Factor4Ampere'], y)
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
+                                             ['# Synchrotron Periods', 's'], [None, 'Factor4Seconds'], x)
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['coulomb', 'ampere'], 'Bunch Population',
+                                             ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'], y)
         return (x, y, xlabel, ylabel)
 
     @meshPlot
