@@ -111,7 +111,7 @@ class SimplePlotter(object):
             :param label: (optional) the label for this plot (legend) (if line plot)
             :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
             """
-            period, x, y, z, xlabel, ylabel = func(*args, **kwargs)
+            period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
                 if period not in y:
                     print("Interpolating for usable period (using nearest): ",end="")
@@ -119,9 +119,13 @@ class SimplePlotter(object):
                 if period not in y:
                     print(y[idx])
                 @SimplePlotter.plot
-                def dummy(*args, **kwargs):
-                    return(x, z[idx], "", "") # TODO: Labels
-                return dummy(**kwargs)
+                def dummy(x, z, xlabel, zlabel, *args, **kwargs):
+                    if hasattr(z, 'unit_function'):
+                        z = z.unit_function(idx)
+                    else:
+                        z = z[idx]
+                    return(x, z, xlabel, zlabel)
+                return dummy(x, z, xlabel, zlabel, **kwargs)
 
             if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
                 fig = kwargs["fig"]
@@ -137,6 +141,7 @@ class SimplePlotter(object):
             pm = ax.pcolormesh(x, y, z, norm=norm)
             ax.set_xlabel(xlabel)  # TODO: What?
             ax.set_ylabel(ylabel)
+            # TODO: zlabel on colorbar?
             s = Style()
             s.apply_to_fig(fig)
             return fig
@@ -192,6 +197,11 @@ class SimplePlotter(object):
 
     @plot
     def energy_spread(self, **kwargs):
+        """
+        kwargs:
+          * xunit: possible values: "ts", "seconds"
+          * yunit: possible values: "eV"
+        """
         x, y = self._file.energy_spread
         x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
                                              'T', ['# Synchrotron Periods', 's'],
@@ -206,9 +216,39 @@ class SimplePlotter(object):
         """
         Plot the bunch_profile either as line plot or as pcolormesh
         to plot as line pass either the period as first argument or a keyword argument period
+        Note: if yunit is passed period is in that unit, else in default value.
+        kwargs: (first value is default)
+          * xunit: possible values: "meters", "seconds", "raw"
+          * yunit: possible values: "ts", "seconds", "raw"
+          * zunit: possible values: "coulomb", "ampere", "raw"
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        return period, self._file.bunch_profile[0], self._file.bunch_profile[1], self._file.bunch_profile[2], "", ""  # TODO: Labels
+
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['meters', 'seconds'], 'x', ['m', 's'],
+                                             ['Factor4Meters', 'Factor4Seconds'], self._file.bunch_profile[0])
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], self._file.bunch_profile[1])
+        if period is None:  # if no period provided
+            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Popuation',
+                                                 ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'],
+                                                 self._file.bunch_profile[2])
+        else:
+            z = self._file.bunch_profile[2]
+            class helperNdArray(np.ndarray):
+                def __new__(self, z):
+                    # super(helperNdArray, self).__new__(self, shape=z.shape, buffer=z, dtype=z.dtype, offset=0, order=None)
+                    obj = super(helperNdArray, self).__new__(self, shape=z.shape, buffer=z, dtype=z.dtype)
+                    obj.attrs = None
+                    return obj
+            def get_and_apply_unit(period):
+                newz = helperNdArray(z[period])
+                newz.attrs = z.attrs
+                print(newz.attrs)
+                return self._select_unit(kwargs, 'zunit', newz,
+                                         ['coulomb', 'ampere'], ['Factor4Coulomb', 'Factor4Ampere'])
+            z.unit_function = get_and_apply_unit
+            zlabel = self._select_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population', ['C', 'A'])
+        return period, x, y, z, xlabel, ylabel, zlabel
 
 
     @plot
@@ -224,9 +264,9 @@ class SimplePlotter(object):
     @plot
     def bunch_position(self, **kwargs):
         """
-        kwargs:
-          * xunit: possible values: "ts", "seconds"
-          * yunit: possible values: "meters", "seconds"
+        kwargs: (first value is default)
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "meters", "seconds", "raw"
         """
         x, y = self._file.bunch_position
         x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
@@ -239,9 +279,9 @@ class SimplePlotter(object):
     @plot
     def bunch_population(self, **kwargs):
         """
-        kwargs:
-          * xunit: possible values: "ts", "seconds"
-          * yunit: possible values: "meters", "seconds"
+        kwargs: (first value is default)
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "meters", "seconds", "raw"
         """
         x, y = self._file.bunch_population
         x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
@@ -257,7 +297,7 @@ class SimplePlotter(object):
         to plot as line pass either the period as first argument or a keyword argument period
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        return period, self._file.csr_spectrum[1], self._file.csr_spectrum[0], self._file.csr_spectrum[2], "", ""  # TODO: Labels
+        return period, self._file.csr_spectrum[1], self._file.csr_spectrum[0], self._file.csr_spectrum[2], "", "", ""  # TODO: Labels
 
     @meshPlot
     def energy_profile(self, *args, **kwargs):
@@ -266,7 +306,7 @@ class SimplePlotter(object):
         to plot as line pass either the period as first argument or a keyword argument period
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        return period, self._file.energy_profile[0], self._file.energy_profile[1], self._file.energy_profile[2], "", ""  # TODO: Labels
+        return period, self._file.energy_profile[0], self._file.energy_profile[1], self._file.energy_profile[2], "", "", ""  # TODO: Labels
 
     def impedance(self, *args, **kwargs):
         warn("Unit of x-Axis may not be correct")
