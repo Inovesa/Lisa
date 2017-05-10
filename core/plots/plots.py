@@ -166,7 +166,7 @@ class SimplePlotter(object):
         else:
             return ' '.join([label, uc, unit_for_label[0]])
 
-    def _select_unit(self, kwargs, key, data, values, attributes):
+    def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):
         """
         Select the correct unit and apply to data.
         Usage example:
@@ -185,7 +185,8 @@ class SimplePlotter(object):
             attr = attributes[0]
         if attr is None:
             return data
-        return data * data.attrs[attr]
+        attrs = dataAttrs if dataAttrs is not None else data.attrs
+        return data * attrs[attr]
 
     def _get_unit_and_label(self, kwargs, key, values, label, unit_for_label, attributes, data):
         """
@@ -234,19 +235,9 @@ class SimplePlotter(object):
                                                  self._file.bunch_profile[2])
         else:
             z = self._file.bunch_profile[2]
-            class helperNdArray(np.ndarray):
-                def __new__(self, z):
-                    # super(helperNdArray, self).__new__(self, shape=z.shape, buffer=z, dtype=z.dtype, offset=0, order=None)
-                    obj = super(helperNdArray, self).__new__(self, shape=z.shape, buffer=z, dtype=z.dtype)
-                    obj.attrs = None
-                    return obj
-            def get_and_apply_unit(period):
-                newz = helperNdArray(z[period])
-                newz.attrs = z.attrs
-                print(newz.attrs)
-                return self._select_unit(kwargs, 'zunit', newz,
-                                         ['coulomb', 'ampere'], ['Factor4Coulomb', 'Factor4Ampere'])
-            z.unit_function = get_and_apply_unit
+            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
+                                         ['coulomb', 'ampere'], ['Factor4Coulomb', 'Factor4Ampere'],
+                                         dataAttrs=z.attrs)
             zlabel = self._select_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population', ['C', 'A'])
         return period, x, y, z, xlabel, ylabel, zlabel
 
@@ -295,18 +286,58 @@ class SimplePlotter(object):
         """
         Plot the csr_spectrum either as line plot or as pcolormesh
         to plot as line pass either the period as first argument or a keyword argument period
+        Note: if yunit is passed period is in that unit, else in default value.
+        kwargs: (first value is default)
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "hertz", "raw"
+          * zunit: possible values: "watt", "raw"
         """
+        # NOTE: This does not seem to work
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        return period, self._file.csr_spectrum[1], self._file.csr_spectrum[0], self._file.csr_spectrum[2], "", "", ""  # TODO: Labels
+
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['hertz'], 'Frequency', ['Hz'],
+                                             ['Factor4Hertz'], self._file.csr_spectrum[1])
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], self._file.csr_spectrum[0])
+        if period is None:  # if no period provided
+            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['watt'], 'Power', ['W'], ['Factor4Watts'],
+                                                 self._file.csr_spectrum[2])
+        else:
+            z = self._file.csr_spectrum[2]
+            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period], ['watt'], ['Factor4Watts'],
+                                                               dataAttrs=z.attrs)
+            zlabel = self._select_label(kwargs, 'zunit', ['watt'], 'Power', ['W'])
+        return period, x, y, z, xlabel, ylabel, zlabel
 
     @meshPlot
     def energy_profile(self, *args, **kwargs):
         """
         Plot the energy_profile either as line plot or as pcolormesh
         to plot as line pass either the period as first argument or a keyword argument period
+        kwargs: (first value is default)
+          * xunit: possible values: "eV", "raw"
+          * yunit: possible values: "ts", "seconds", "raw"
+          * zunit: possible values: "coulomb", "ampere", "raw"
         """
+
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        return period, self._file.energy_profile[0], self._file.energy_profile[1], self._file.energy_profile[2], "", "", ""  # TODO: Labels
+
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['hertz'], 'Energy', ['eV'],
+                                             ['Factor4ElectronVolts'], self._file.energy_profile[0])
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], self._file.energy_profile[1])
+        if period is None:  # if no period provided
+            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population',
+                                                 ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'],
+                                                 self._file.energy_profile[2])
+        else:
+            z = self._file.energy_profile[2]
+            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
+                                                               ['coulomb', 'ampere'],
+                                                               ['Factor4Coulomb', 'Factor4Ampere'],
+                                                               dataAttrs=z.attrs)
+            zlabel = self._select_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population', ['C', 'A'])
+        return period, x, y, z, xlabel, ylabel, zlabel
 
     def impedance(self, *args, **kwargs):
         warn("Unit of x-Axis may not be correct")
