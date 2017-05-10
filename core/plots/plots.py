@@ -61,6 +61,9 @@ class SimplePlotter(object):
             """
             :param fig: (optional) the figure to plot in
             :param label: (optional) the label for this plot (legend)
+            :param scale_factor: (optional) a scale factor Note: This does not modify the labels
+            :param useOffset: (optional) a bool if one wants an offset on yaxis or not
+            :param forceExponential: (optional) a bool if one wants to force exponential notation on yaxis or not
             """
             scale_factor = kwargs["scale_factor"] if "scale_factor" in kwargs else 1.
             if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
@@ -90,6 +93,10 @@ class SimplePlotter(object):
             ax.set_ylabel(ylabel)
             s = Style()
             s.apply_to_fig(fig)
+            if kwargs.get('useOffset', None) is not None:
+                ax.get_yaxis().get_major_formatter().set_useOffset(kwargs.get('useOffset'))
+            if kwargs.get("forceExponential", False):
+                ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             return fig
         return decorated
 
@@ -134,7 +141,44 @@ class SimplePlotter(object):
             return fig
         return decorated
 
+    def _select_label(self, kwargs, key, values, labels):
+        """
+        Select the correct label for the given kwargs.
+        Usage example:
+            label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
+                                                       ['T in # Synchrotron Periods', 'T in s'])
+        The first value/label is default (if key not in kwargs or value is not in values)
+        """
+        if kwargs.get(key) in values:
+            return labels[values.index(kwargs.get(key))]
+        else:
+            return labels[0]
 
+    def _select_unit(self, kwargs, key, data, values, attributes):
+        """
+        Select the correct unit and apply to data.
+        Usage example:
+          data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
+        A attribute None is treated as "do not modify data".
+        The first value/attribute is default (if key not in kwargs or value not in values)
+        """
+        print(kwargs.get(key))
+        if kwargs.get(key) in values:
+            attr = attributes[values.index(kwargs.get(key))]
+        else:
+            attr = None
+        if attr is None:
+            return data
+        else:
+            return data * data.attrs[attr]
+
+    def _get_unit_and_label(self, kwargs, key, values, labels, attributes, data):
+        """
+        Convenience wrapper around self._select_unit and self._select_label. This also reduces
+        the risk of using a different order in the call of unit and label so unit and label always match
+        """
+        return (self._select_unit(kwargs, key, data, values, attributes),
+                self._select_label(kwargs, key, values, labels))
 
     @plot
     def energy_spread(self, **kwargs):
@@ -161,38 +205,6 @@ class SimplePlotter(object):
         return (self._file.csr_intensity[0], self._file.csr_intensity[1],
                 "T in # Synchrotron Periods", "CSR Intensity") # TODO: Unit
 
-
-    def _select_label(self, kwargs, key, values, labels):
-        """
-        Select the correct label for the given kwargs.
-        Usage example:
-            label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
-                                                       ['T in # Synchtrotron Periods', 'T in s'])
-        The first value/label is default (if key not in kwargs or value is not in values)
-        """
-        if kwargs.get(key) in values:
-            return labels[values.index(kwargs.get(key))]
-        else:
-            return labels[0]
-
-    def _select_unit(self, kwargs, key, data, values, attributes):
-        """
-        Select the correct unit and apply to data.
-        Usage example:
-          data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
-        A attribute None is treated as "do not modify data".
-        The first value/attribute is default (if key not in kwargs or value not in values)
-        """
-        print(kwargs.get(key))
-        if kwargs.get(key) in values:
-            attr = attributes[values.index(kwargs.get(key))]
-        else:
-            attr = None
-        if attr is None:
-            return data
-        else:
-            return data * data.attrs[attr]
-
     @plot
     def bunch_position(self, **kwargs):
         """
@@ -204,15 +216,26 @@ class SimplePlotter(object):
         x = self._select_unit(kwargs, 'xunit', x, ['ts', 'seconds'], [None, 'Factor4Seconds'])
         y = self._select_unit(kwargs, 'yunit', y, ['meters', 'seconds'], ['Factor4Meters', 'Factor4Seconds'])
         xlabel = self._select_label(kwargs, 'xunit', ['ts','seconds'],
-                                   ['T in # Synchtrotron Periods', 'T in s'])
+                                   ['Time in # Synchrotron Periods', 'Time in s'])
         ylabel = self._select_label(kwargs, 'yunit', ['meters','seconds'],
                                    ['Bunch Position in m', 'Bunch Position in s'])
         return (x, y, xlabel, ylabel)
 
     @plot
     def bunch_population(self, **kwargs):
-        return (self._file.bunch_population[0], self._file.bunch_population[1],
-                "T in # Synchrotron Periods", "Bunch Population") # TODO: Unit
+        """
+        kwargs:
+          * xunit: possible values: "ts", "seconds"
+          * yunit: possible values: "meters", "seconds"
+        """
+        x, y = self._file.bunch_population
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
+                                             ['T in # Synchrotron Periods', 'T in s'],
+                                             [None, 'Factor4Seconds'], x)
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['coulomb', 'ampere'],
+                                             ['Bunch Population in C', 'Bunch Population in A'],
+                                             ['Factor4Coulomb', 'Factor4Ampere'], y)
+        return (x, y, xlabel, ylabel)
 
     @meshPlot
     def csr_spectrum(self, *args, **kwargs):
