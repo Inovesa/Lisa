@@ -41,14 +41,17 @@ class SimplePlotter(object):
     Each Method takes a optional label and a optional figure (kwarg fig)
     If fig is given the data is plotted into this figure
     """
-    def __init__(self, filename):
+    def __init__(self, filef):
         """
         Initialise a Simple Plotter instance
-        :param filename: The file name of this Plotter
+        :param filef: The file name of this Plotter or a Lisa.File instance
         """
-        self._file = File(filename)
+        if isinstance(filef, File):
+            self._file = filef
+        else:
+            self._file = File(filef)
         self.current = self._file.parameters["BunchCurrent"]
-        
+
     def plot(func):
         """
         Decorator to reuse plotting methods for different data
@@ -64,11 +67,11 @@ class SimplePlotter(object):
                 fig = kwargs["fig"]
                 ax = fig.add_subplot(111)
             else:
-                fig = plt.figure()
+                fig = plt.figure(tight_layout=True)
                 ax = fig.add_subplot(111)
                 kwargs["axes"] = ax
             x, y, xlabel, ylabel = func(*args, **kwargs) # arguments contain self object
-            if(hasattr(fig, "num_of_plots")):   
+            if(hasattr(fig, "num_of_plots")):
                 nop = fig.num_of_plots
                 fig.num_of_plots += 1
             else:
@@ -132,10 +135,10 @@ class SimplePlotter(object):
         return decorated
 
 
-        
+
     @plot
     def energy_spread(self, **kwargs):
-        return(self._file.energy_spread[0], self._file.energy_spread[1], 
+        return(self._file.energy_spread[0], self._file.energy_spread[1],
                "T in # Synchrotron Periods", "Energy Spread") # TODO: Unit
 
     @meshPlot
@@ -146,22 +149,66 @@ class SimplePlotter(object):
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
         return period, self._file.bunch_profile[0], self._file.bunch_profile[1], self._file.bunch_profile[2], "", ""  # TODO: Labels
-    
-               
+
+
     @plot
     def bunch_length(self, **kwargs):
         return (self._file.bunch_length[0], self._file.bunch_length[1],
                 "T in # Synchrotron Periods", "Bunch Length") # TODO: Unit
-                
+
     @plot
     def csr_intensity(self, **kwargs):
         return (self._file.csr_intensity[0], self._file.csr_intensity[1],
                 "T in # Synchrotron Periods", "CSR Intensity") # TODO: Unit
-                
+
+
+    def _select_label(self, kwargs, key, values, labels):
+        """
+        Select the correct label for the given kwargs.
+        Usage example:
+            label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
+                                                       ['T in # Synchtrotron Periods', 'T in s'])
+        The first value/label is default (if key not in kwargs or value is not in values)
+        """
+        if kwargs.get(key) in values:
+            return labels[values.index(kwargs.get(key))]
+        else:
+            return labels[0]
+
+    def _select_unit(self, kwargs, key, data, values, attributes):
+        """
+        Select the correct unit and apply to data.
+        Usage example:
+          data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
+        A attribute None is treated as "do not modify data".
+        The first value/attribute is default (if key not in kwargs or value not in values)
+        """
+        print(kwargs.get(key))
+        if kwargs.get(key) in values:
+            attr = attributes[values.index(kwargs.get(key))]
+        else:
+            attr = None
+        if attr is None:
+            return data
+        else:
+            return data * data.attrs[attr]
+
     @plot
     def bunch_position(self, **kwargs):
-        return (self._file.bunch_position[0], self._file.bunch_position[1],
-                "T in # Synchrotron Periods", "Bunch Position") # TODO: Unit
+        """
+        kwargs:
+          * xunit: possible values: "ts", "seconds"
+          * yunit: possible values: "meters", "seconds"
+        """
+        x, y = self._file.bunch_position
+        x = self._select_unit(kwargs, 'xunit', x, ['ts', 'seconds'], [None, 'Factor4Seconds'])
+        y = self._select_unit(kwargs, 'yunit', y, ['meters', 'seconds'], ['Factor4Meters', 'Factor4Seconds'])
+        xlabel = self._select_label(kwargs, 'xunit', ['ts','seconds'],
+                                   ['T in # Synchtrotron Periods', 'T in s'])
+        ylabel = self._select_label(kwargs, 'yunit', ['meters','seconds'],
+                                   ['Bunch Position in m', 'Bunch Position in s'])
+        return (x, y, xlabel, ylabel)
+
     @plot
     def bunch_population(self, **kwargs):
         return (self._file.bunch_population[0], self._file.bunch_population[1],
@@ -196,8 +243,8 @@ class SimplePlotter(object):
             return self._file.impedance[0], self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$"
         return imag(fig=fig, label="Imag", **kwargs)
 
-    
-                
+
+
 class MultiPlot(object):
     """
     Combine multiple files into one plot
@@ -209,7 +256,7 @@ class MultiPlot(object):
         """
         self._simple_plotters = []
         self._figure = plt.figure()
-        
+
     def clone(self):
         """Return a copy of this instance"""
         mp = MultiPlot()
@@ -228,7 +275,7 @@ class MultiPlot(object):
         """Reset this instance"""
         self._simple_plotters = []
         self._figure.clear()
-        
+
     def possible_plots(self):
         """List all possible plots"""
         return _simple_plotter_plot_methods
@@ -247,10 +294,10 @@ class MultiPlot(object):
                         kwargs["label"] = sp[1]
                     getattr(sp[0], attr)(*args, **kwargs)
                 return self._figure
-            return inner        
+            return inner
         else:
             raise Exception("MultiPlot does not have attribute " + attr)
-    
+
 class PhaseSpace(object):
     """
     Plot PhaseSpaces of a single Inovesa result file
@@ -267,7 +314,7 @@ class PhaseSpace(object):
         else:
             self._file = File(file)
         #self._figure = plt.figure()
-    
+
     def clone(self):
         """
         Return a copy of this instance
@@ -281,8 +328,8 @@ class PhaseSpace(object):
         im = ax.imshow(data)
         im.set_cmap('inferno')
         return fig, ax, im
-    
-    def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off', 
+
+    def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off',
                  fr_idx=-1, to_idx=-1, autorescale=False, percentile=None):
         """
         Create a movie from the phasespace information
@@ -304,15 +351,15 @@ class PhaseSpace(object):
         fig = plt.figure(frameon=False)
         fig.set_size_inches(5,5)
         fig.subplots_adjust(left=0, bottom=0, right=1,top=1, wspace=None, hspace=None)
-        
+
         lb = 0 if fr_idx == -1 else fr_idx
         ub = len(self._file.phase_space[2]) if to_idx == -1 else to_idx
-        
+
         #index = [0 if fr_idx==-1 else fr_idx]
         im = [plt.imshow(self._file.phase_space[2][lb], animated=True, aspect='auto')]
         im[0].set_cmap('inferno')
         plt.axis(axis)
-        
+
 #        im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.max(self._file.phase_space[2]))
         if not autorescale and percentile is not None:
             im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.percentile(self._file.phase_space[2], percentile))
@@ -320,13 +367,13 @@ class PhaseSpace(object):
         def gen_data(i):
             idx = i + lb
             return self._file.phase_space[2][idx]
-            
+
         def gen_image(i):
             im[0].set_data(gen_data(i))
             if autorescale:
                 im[0].autoscale()
             return im
-        
+
         #ani = anim.FuncAnimation(fig, gen_image, gen_data, init, interval=interval, blit=True, repeat=False)
         ani = anim.FuncAnimation(fig, gen_image, frames=ub-lb, interval=interval, blit=True, repeat=False)
         if path is not None:
@@ -340,7 +387,7 @@ class MultiPhaseSpaceMovie(object):
     """
     def __init__(self, path):
         self._path = path
-        
+
     def _get_current_from_cfg(self, filename):
         with open(filename+".cfg", 'r') as f:
             for line in f:
@@ -350,7 +397,7 @@ class MultiPhaseSpaceMovie(object):
     def create_movie(self, filename, dpi=200, size_inches=(5.5, 5.5), fps=30, autorescale=False):
         """
         Create a Movie of phasespaces
-        :param filename: The filename to use for the produces video file 
+        :param filename: The filename to use for the produces video file
                          (if None, a moviepy video object will be returned)
         :param dpi(=200): the dpi of the produces video
         :param size_inches(=5.5, 5.5): tuple used for size in inces of the video
@@ -361,7 +408,7 @@ class MultiPhaseSpaceMovie(object):
         plt.ioff()
         clips = []
         # NOTE: The use of this function in conjunction with a lambda with default
-        # argument in DataVideoClip is necessary to use a "new" function for every 
+        # argument in DataVideoClip is necessary to use a "new" function for every
         # file. Otherwise the last file will override the first functions
         def dtv(dat, ps, clim):
             f = ps.plot_ps(dat)
@@ -390,4 +437,3 @@ class MultiPhaseSpaceMovie(object):
             else:
                 raise Exception("Wrong Filename")
         return True
-            
