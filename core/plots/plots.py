@@ -381,7 +381,7 @@ class SimplePlotter(object):
         f4h = self._file.impedance[0].attrs["Factor4Hertz"]
         if f4h == 0:
             warn("Factor4Hertz is zero in datafile using 1.0")
-            f4h = 1.0
+            f4h = np.float64(1.0)
         @SimplePlotter.plot
         def real(*args, **kwargs):
             return (self._file.impedance[0]*f4h,
