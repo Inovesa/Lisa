@@ -22,6 +22,8 @@ from moviepy.video.io.bindings import mplfig_to_npimage
 from moviepy.video.VideoClip import DataVideoClip
 from moviepy.editor import concatenate_videoclips
 
+import textwrap
+
 from ..file import File
 from .config import Style
 
@@ -63,6 +65,7 @@ class SimplePlotter(object):
         _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
             """
+            General Options (always use as keywords):
             :param fig: (optional) the figure to plot in
             :param label: (optional) the label for this plot (legend)
             :param scale_factor: (optional) a scale factor Note: This does not modify the labels
@@ -117,6 +120,9 @@ class SimplePlotter(object):
             if kwargs.get("force_exponential_y", False):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             return fig
+        decorated.__name__ = func.__name__
+        decorated.__doc__ = textwrap.dedent(decorated.__doc__)+"\nSpecial Options for this plot:"+\
+                            textwrap.dedent(func.__doc__)
         return decorated
 
     def meshPlot(func):
@@ -125,6 +131,7 @@ class SimplePlotter(object):
         """
         def decorated(*args, **kwargs):
             """
+            General Options (always use as keywords):
             :param fig: (optional) the figure to plot in
             :param label: (optional) the label for this plot (legend) (if line plot)
             :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
@@ -133,6 +140,7 @@ class SimplePlotter(object):
             :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
             :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
             :param plt_args: (optional) dictionary with arguments to the displaying function
+            :param period: (optional) the period to use. If not given will plot all data as pcolormesh
             """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
@@ -183,6 +191,10 @@ class SimplePlotter(object):
             s = Style()
             s.apply_to_fig(fig)
             return fig
+
+        decorated.__name__ = func.__name__
+        decorated.__doc__ = textwrap.dedent(decorated.__doc__)+"\nSpecial Options for this plot:"+\
+                            textwrap.dedent(func.__doc__)
         return decorated
 
     def _select_label(self, kwargs, key, values, label, unit_for_label):
@@ -435,7 +447,7 @@ class MultiPlot(object):
         No Parameters (to add files use add_file)
         """
         self._simple_plotters = []
-        self._figure = plt.figure()
+        self._figure = plt.figure(tight_layout=True)
 
     def clone(self):
         """Return a copy of this instance"""
@@ -462,9 +474,13 @@ class MultiPlot(object):
 
     def __getattr__(self, attr):
         if len(self._simple_plotters) == 0:
-            def do_nothing():
-                pass
-            return  do_nothing # Return or do something like raise an exception?
+            # return callable to prevent 'NoneType' object is not callable exception
+            def warn_no_file(*args, **kwargs):
+                warn("MultiPlot."+attr+" called without files to plot.")
+
+            warn_no_file.__doc__ = "Dummy Method. Retry when files are added."
+            warn_no_file.__name__ = attr
+            return warn_no_file
         if hasattr(self._simple_plotters[0][0], attr):
             self._figure.clear()
             def inner(*args, **kwargs):
@@ -474,6 +490,10 @@ class MultiPlot(object):
                         kwargs["label"] = sp[1]
                     getattr(sp[0], attr)(*args, **kwargs)
                 return self._figure
+            inner.__name__ = attr
+            inner.__doc__ = "MultiPlot."+attr+" will override 'fig' kwarg. \nIf 'label' was passed to add_file "+\
+                            "'label' in kwarg will be overriden with that value for the corresponding file.\n"+\
+                            "\nDelegated Options from SimplePlotter:\n"+ getattr(self._simple_plotters[0][0], attr).__doc__
             return inner
         else:
             raise Exception("MultiPlot does not have attribute " + attr)
