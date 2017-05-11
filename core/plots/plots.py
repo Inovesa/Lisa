@@ -14,7 +14,8 @@ import matplotlib
 import numpy as np
 import glob
 from numbers import Number
-from warnings import warn
+
+import sys
 
 ##video stuff
 from moviepy.video.io.bindings import mplfig_to_npimage
@@ -29,6 +30,8 @@ colors = [(0, 0, 1, 1), (0.8, 0.4, 0, 0.6), (1, 0, 1, 0.6), (0, 1, 1, 0.6), (1, 
 trans_value = 0.8
 
 _simple_plotter_plot_methods = []
+
+warn = lambda x: sys.stderr.write("Warning: "+str(x)+"\n")
 
 def setup_plots():  # todo arguments for latexify
     from blhelpers.plot_helpers import latexify
@@ -110,6 +113,8 @@ class SimplePlotter(object):
             :param fig: (optional) the figure to plot in
             :param label: (optional) the label for this plot (legend) (if line plot)
             :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
+            :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
+            :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
             """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
@@ -138,10 +143,12 @@ class SimplePlotter(object):
                 norm = kwargs['norm']
             else:
                 norm = matplotlib.colors.LogNorm()
-            pm = ax.pcolormesh(x, y, z, norm=norm)
+            pm = ax.pcolormesh(x, y, z, norm=norm, cmap=kwargs.get("colormap", "PuBu"))
             ax.set_xlabel(xlabel)  # TODO: What?
             ax.set_ylabel(ylabel)
-            # TODO: zlabel on colorbar?
+            if kwargs.get("force_bad_to_min", False):
+                pm.get_cmap().set_bad((pm.get_cmap()(pm.get_clim()[0])))
+            fig.colorbar(pm).set_label(zlabel);
             s = Style()
             s.apply_to_fig(fig)
             return fig
@@ -158,7 +165,7 @@ class SimplePlotter(object):
         """
         uc = kwargs.get('connector', self.unit_connector)
         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
-            print("Warning: '{}' is not a valid '{}' for this plot".format(kwargs[key], key))
+            warn("'{}' is not a valid '{}' for this plot".format(kwargs[key], key))
         if kwargs.get(key) == 'raw':
             return ' '.join([label, '(raw)'])
         if kwargs.get(key) in values:
@@ -176,7 +183,7 @@ class SimplePlotter(object):
         If the value of key in kwargs is 'raw' the raw data is returned
         """
         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
-            print("Warning: '{}' is not a valid '{}' for this plot".format(kwargs[key], key))
+            warn("'{}' is not a valid '{}' for this plot".format(kwargs[key], key))
         if kwargs.get(key) == 'raw':
             return data
         if kwargs.get(key) in values:
@@ -186,7 +193,11 @@ class SimplePlotter(object):
         if attr is None:
             return data
         attrs = dataAttrs if dataAttrs is not None else data.attrs
-        return data * attrs[attr]
+        factor = attrs[attr]
+        if factor == 0.0:
+            factor = 1.0
+            warn(attr + " is 0.0 in datafile using 1.0")
+        return data * np.float64(factor)
 
     def _get_unit_and_label(self, kwargs, key, values, label, unit_for_label, attributes, data):
         """
@@ -200,8 +211,8 @@ class SimplePlotter(object):
     def energy_spread(self, **kwargs):
         """
         kwargs:
-          * xunit: possible values: "ts", "seconds"
-          * yunit: possible values: "eV"
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "eV", "raw"
         """
         x, y = self._file.energy_spread
         x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
@@ -222,6 +233,7 @@ class SimplePlotter(object):
           * xunit: possible values: "meters", "seconds", "raw"
           * yunit: possible values: "ts", "seconds", "raw"
           * zunit: possible values: "coulomb", "ampere", "raw"
+          * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
 
@@ -233,6 +245,8 @@ class SimplePlotter(object):
             z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Popuation',
                                                  ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'],
                                                  self._file.bunch_profile[2])
+            if kwargs.get("pad_zero", False):
+                z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
             z = self._file.bunch_profile[2]
             z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
@@ -244,11 +258,34 @@ class SimplePlotter(object):
 
     @plot
     def bunch_length(self, **kwargs):
-        return (self._file.bunch_length[0], self._file.bunch_length[1],
-                "T in # Synchrotron Periods", "Bunch Length") # TODO: Unit
+        """
+        kwargs:
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "meters", "secons", "raw"
+        """
+        x, y = self._file.bunch_length
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
+                                             ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], x)
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['meters', 'seconds'], 'Bunch Length',
+                                             ['m', 's'], ['Factor4Meters', 'Factor4Seconds'], y)
+        return (x, y, xlabel, ylabel)
 
     @plot
     def csr_intensity(self, **kwargs):
+        """
+        kwargs:
+          * xunit: possible values: "ts", "seconds", "raw"
+          * yunit: possible values: "watt", "raw"
+        """
+        x, y = self._file.csr_intensity
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
+                                             'T', ['# Synchrotron Periods', 's'],
+                                             [None, 'Factor4Seconds'], x)
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['watt'], 'CSR Intensity', ['W'],
+                                             ['Factor4Watts'], y)
+        return (x, y, xlabel, ylabel)
+
         return (self._file.csr_intensity[0], self._file.csr_intensity[1],
                 "T in # Synchrotron Periods", "CSR Intensity") # TODO: Unit
 
@@ -341,13 +378,19 @@ class SimplePlotter(object):
 
     def impedance(self, *args, **kwargs):
         warn("Unit of x-Axis may not be correct")
+        f4h = self._file.impedance[0].attrs["Factor4Hertz"]
+        if f4h == 0:
+            warn("Factor4Hertz is zero in datafile using 1.0")
+            f4h = 1.0
         @SimplePlotter.plot
         def real(*args, **kwargs):
-            return self._file.impedance[0], self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$"
+            return (self._file.impedance[0]*f4h,
+                   self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$")
         fig = real(*args, label="Real", **kwargs)
         @SimplePlotter.plot
         def imag(*args, **kwargs):
-            return self._file.impedance[0], self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$"
+            return (self._file.impedance[0]*f4h,
+                    self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$")
         return imag(fig=fig, label="Imag", **kwargs)
 
 
