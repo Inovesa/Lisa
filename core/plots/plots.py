@@ -66,8 +66,9 @@ class SimplePlotter(object):
             :param fig: (optional) the figure to plot in
             :param label: (optional) the label for this plot (legend)
             :param scale_factor: (optional) a scale factor Note: This does not modify the labels
-            :param useOffset: (optional) a bool if one wants an offset on yaxis or not
-            :param forceExponential: (optional) a bool if one wants to force exponential notation on yaxis or not
+            :param use_offset: (optional) a bool if one wants an offset on yaxis or not
+            :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
+            :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
             """
             scale_factor = kwargs["scale_factor"] if "scale_factor" in kwargs else 1.
             if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
@@ -97,9 +98,11 @@ class SimplePlotter(object):
             ax.set_ylabel(ylabel)
             s = Style()
             s.apply_to_fig(fig)
-            if kwargs.get('useOffset', None) is not None:
+            if kwargs.get('use_offset', None) is not None:
                 ax.get_yaxis().get_major_formatter().set_useOffset(kwargs.get('useOffset'))
-            if kwargs.get("forceExponential", False):
+            if kwargs.get("force_exponential_x", False):
+                ax.get_xaxis().get_major_formatter().set_powerlimits((0, 0))
+            if kwargs.get("force_exponential_y", False):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             return fig
         return decorated
@@ -115,6 +118,8 @@ class SimplePlotter(object):
             :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
             :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
             :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
+            :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
+            :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
             """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
@@ -148,6 +153,11 @@ class SimplePlotter(object):
             ax.set_ylabel(ylabel)
             if kwargs.get("force_bad_to_min", False):
                 pm.get_cmap().set_bad((pm.get_cmap()(pm.get_clim()[0])))
+
+            if kwargs.get("force_exponential_x", False):
+                ax.get_xaxis().get_major_formatter().set_powerlimits((0, 0))
+            if kwargs.get("force_exponential_y", False):
+                ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             fig.colorbar(pm).set_label(zlabel);
             s = Style()
             s.apply_to_fig(fig)
