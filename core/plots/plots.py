@@ -69,6 +69,7 @@ class SimplePlotter(object):
             :param use_offset: (optional) a bool if one wants an offset on yaxis or not
             :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
             :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
+            :param plt_args: (optional) dictionary with arguments to the displaying function
             """
             scale_factor = kwargs["scale_factor"] if "scale_factor" in kwargs else 1.
             if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
@@ -79,6 +80,14 @@ class SimplePlotter(object):
                 ax = fig.add_subplot(111)
                 kwargs["axes"] = ax
             x, y, xlabel, ylabel = func(*args, **kwargs) # arguments contain self object
+            alpha = None
+            if 'alpha' in kwargs.get("plt_args", {}):
+                warn("'alpha' in plt_args will override auto generated alpha values for multiple plots.")
+                alpha = kwargs.get("plt_args").get("alpha")
+                del kwargs.get("plt_args")['alpha']
+            if 'label' in kwargs.get("plt_args", {}):
+                warn("'label' in plt_args is invalid. Use label in arguments. Will ignore.")
+                del kwargs.get("plt_args")['labemporl']
             if(hasattr(fig, "num_of_plots")):
                 nop = fig.num_of_plots
                 fig.num_of_plots += 1
@@ -86,10 +95,13 @@ class SimplePlotter(object):
                 nop = 0
                 fig.num_of_plots = 1
             if "label" in kwargs:
-                ax.plot(x, np.array(y)*scale_factor, label=kwargs["label"], alpha=(trans_value if nop > 0 else 1))
+                alpha = ((trans_value if nop > 0 else 1) if alpha is None else alpha)
+                ax.plot(x, np.array(y)*scale_factor, label=kwargs["label"], alpha=alpha, **kwargs.get("plt_args", {}))
                 ax.legend(loc="best")
             else:
-                ax.plot(x, np.array(y)*scale_factor, alpha=(trans_value if nop > 0 else 1))
+                alpha = ((trans_value if nop > 0 else 1) if alpha is None else alpha)
+                print(alpha)
+                ax.plot(x, np.array(y)*scale_factor, alpha=alpha, **kwargs.get("plt_args", {}))
             if(xlabel != "" and ax.get_xlabel()!="" and xlabel!=ax.get_xlabel()):
                 xlabel = ax.get_xlabel()+"\n"+xlabel
             if(ylabel != "" and ax.get_ylabel()!="" and ylabel!=ax.get_ylabel()):
@@ -120,6 +132,7 @@ class SimplePlotter(object):
             :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
             :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
             :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
+            :param plt_args: (optional) dictionary with arguments to the displaying function
             """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
@@ -148,7 +161,15 @@ class SimplePlotter(object):
                 norm = kwargs['norm']
             else:
                 norm = matplotlib.colors.LogNorm()
-            pm = ax.pcolormesh(x, y, z, norm=norm, cmap=kwargs.get("colormap", "PuBu"))
+            # warn if values in kwargs and plt_args
+            if 'norm' in kwargs.get("plt_args", {}):
+                warn("'norm' is already in arguments, duplicate in plt_args, will not use norm in plt_args")
+                del kwargs.get("plt_args")['norm']
+            if 'cmap' in kwargs.get("plt_args", {}):
+                warn("'cmap' will be set by this method. use colormap argument instead of cmap in plt_args.\n"+\
+                     "will ignore cmap in plt_args.")
+                del kwargs.get("plt_args")['cmap']
+            pm = ax.pcolormesh(x, y, z, norm=norm, cmap=kwargs.get("colormap", "PuBu"), **kwargs.get("plt_args", {}))
             ax.set_xlabel(xlabel)  # TODO: What?
             ax.set_ylabel(ylabel)
             if kwargs.get("force_bad_to_min", False):
@@ -366,10 +387,9 @@ class SimplePlotter(object):
           * yunit: possible values: "ts", "seconds", "raw"
           * zunit: possible values: "coulomb", "ampere", "raw"
         """
-
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
 
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['hertz'], 'Energy', ['eV'],
+        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['eV'], 'Energy', ['eV'],
                                              ['Factor4ElectronVolts'], self._file.energy_profile[0])
         y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
                                              [None, 'Factor4Seconds'], self._file.energy_profile[1])
