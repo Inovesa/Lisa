@@ -103,7 +103,6 @@ class SimplePlotter(object):
                 ax.legend(loc="best")
             else:
                 alpha = ((trans_value if nop > 0 else 1) if alpha is None else alpha)
-                print(alpha)
                 ax.plot(x, np.array(y)*scale_factor, alpha=alpha, **kwargs.get("plt_args", {}))
             if(xlabel != "" and ax.get_xlabel()!="" and xlabel!=ax.get_xlabel()):
                 xlabel = ax.get_xlabel()+"\n"+xlabel
@@ -114,7 +113,7 @@ class SimplePlotter(object):
             s = Style()
             s.apply_to_fig(fig)
             if kwargs.get('use_offset', None) is not None:
-                ax.get_yaxis().get_major_formatter().set_useOffset(kwargs.get('useOffset'))
+                ax.get_yaxis().get_major_formatter().set_useOffset(kwargs.get('use_offset'))
             if kwargs.get("force_exponential_x", False):
                 ax.get_xaxis().get_major_formatter().set_powerlimits((0, 0))
             if kwargs.get("force_exponential_y", False):
