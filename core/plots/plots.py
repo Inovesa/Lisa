@@ -430,6 +430,8 @@ class SimplePlotter(object):
             return (self._file.impedance[0]*f4h,
                    self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$")
         fig = real(*args, label="Real", **kwargs)
+        if 'fig' in kwargs:
+            del kwargs['fig']
         @SimplePlotter.plot
         def imag(*args, **kwargs):
             return (self._file.impedance[0]*f4h,
