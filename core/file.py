@@ -42,8 +42,6 @@ class File(object):
         self._particles = None
         self._phase_space = None
         self._wake_potential = None
-        self.registered_properties = []
-
 
     def _get_list(self, group, list_of_elements):
         """
