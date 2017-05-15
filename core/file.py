@@ -16,8 +16,9 @@ def registered_property(cls):
     Registeres properties of one class into another class.registered_properties
     """
     if hasattr(cls, 'registered_properties'):
-        if not isinstance(cls.registered_properties, list):
-            raise AttributeError(cls.__name__+" has attribute registered_properties of wrong type.")
+        if hasattr(cls, 'registered_properties'):
+            if not isinstance(cls.registered_properties, list):
+                raise AttributeError(cls.__name__+" has attribute registered_properties of wrong type.")
         else:
             cls.registered_properties = []
     def wrapper(func):
