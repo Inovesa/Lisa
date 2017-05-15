@@ -120,8 +120,9 @@ class SimplePlotter(object):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             return fig
         decorated.__name__ = func.__name__
-        decorated.__doc__ = textwrap.dedent(decorated.__doc__)+"\nSpecial Options for this plot:"+\
-                            textwrap.dedent(func.__doc__)
+        decorated.__doc__ = textwrap.dedent(decorated.__doc__)
+        if func.__doc__ is not None:
+            decorated.__doc__ += "\nSpecial Options for this plot:"+textwrap.dedent(func.__doc__)
         return decorated
 
     def meshPlot(func):
@@ -192,8 +193,9 @@ class SimplePlotter(object):
             return fig
 
         decorated.__name__ = func.__name__
-        decorated.__doc__ = textwrap.dedent(decorated.__doc__)+"\nSpecial Options for this plot:"+\
-                            textwrap.dedent(func.__doc__)
+        decorated.__doc__ = textwrap.dedent(decorated.__doc__)
+        if func.__doc__ is not None:
+            decorated.__doc__ += "\nSpecial Options for this plot:"+textwrap.dedent(func.__doc__)
         return decorated
 
     def _select_label(self, kwargs, key, values, label, unit_for_label):

@@ -8,6 +8,24 @@ Created on Mon Mar  6 13:19:04 2017
 import h5py as h5
 import glob
 
+class FileDataRegister():
+    registered_properties = []
+
+def registered_property(cls):
+    """
+    Registeres properties of one class into another class.registered_properties
+    """
+    if hasattr(cls, 'registered_properties'):
+        if not isinstance(cls.registered_properties, list):
+            raise AttributeError(cls.__name__+" has attribute registered_properties of wrong type.")
+        else:
+            cls.registered_properties = []
+    def wrapper(func):
+        # if func.__name__ not in cls.registered_properties:  ## Use this if stuff turns up multiple times
+        cls.registered_properties.append(func.__name__)
+        return property(func)
+    return wrapper
+
 class File(object):
     def __init__(self, filename):
         self.filename = filename
@@ -24,7 +42,9 @@ class File(object):
         self._particles = None
         self._phase_space = None
         self._wake_potential = None
-        
+        self.registered_properties = []
+
+
     def _get_list(self, group, list_of_elements):
         """
         Will get the group "group" from the hdf5 file and return the children
@@ -35,83 +55,83 @@ class File(object):
         for elem in list_of_elements:
             ret.append(gr.get(elem))
         return ret
-        
-    @property
+
+    @registered_property(FileDataRegister)
     def energy_spread(self):
         if self._energy_spread is None:
             self._energy_spread = [self.file.get("EnergySpread").get("axis0"),
                                    self.file.get("EnergySpread").get("data")]
         return self._energy_spread
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def bunch_length(self):
         if self._bunch_length is None:
             self._bunch_length = [self.file.get("BunchLength").get("axis0"),
                                   self.file.get("BunchLength").get("data")]
         return self._bunch_length
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def bunch_position(self):
         if self._bunch_position is None:
             self._bunch_position = [self.file.get("BunchPosition").get("axis0"),
                                     self.file.get("BunchPosition").get("data")]
         return self._bunch_position
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def bunch_population(self):
         if self._bunch_population is None:
             self._bunch_population = self._get_list("BunchPopulation", ["axis0", "data"])
         return self._bunch_population
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def bunch_profile(self):
         if self._bunch_profile is None:
             self._bunch_profile = self._get_list("BunchProfile", ["axis0", "axis1", "data"])
         return self._bunch_profile
 
-    @property
+    @registered_property(FileDataRegister)
     def csr_intensity(self):
         if self._csr_intensity is None:
             self._csr_intensity = self._get_list("CSR/Intensity", ["axis0", "data"])
         return self._csr_intensity
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def csr_spectrum(self):
         if self._csr_spectrum is None:
             self._csr_spectrum = self._get_list("CSR/Spectrum", ["axis0", "axis1", "data"])
         return self._csr_spectrum
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def energy_profile(self):
         if self._energy_profile is None:
             self._energy_profile = self._get_list("EnergyProfile", ["axis0", "axis1", "data"])
         return self._energy_profile
 
-    @property
+    @registered_property(FileDataRegister)
     def impedance(self):
         if self._impedance is None:
             self._impedance = self._get_list("Impedance", ["axis0", "data/real", "data/imag"])
         return self._impedance
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def particles(self):
         if self._particles is None:
             self._particles = self._get_list("Particles", ["axis0", "data"])
         return self._particles
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def phase_space(self):
         if self._phase_space is None:
             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
         return self._phase_space
-    
-    @property
+
+    @registered_property(FileDataRegister)
     def wake_potential(self):
         if self._wake_potential is None:
             self._wake_potential = self._get_list("WakePotential", ["axis0", "data"])
         return self._wake_potential
-            
-    @property
+
+    @registered_property(FileDataRegister)
     def parameters(self):
         return self.file.get("Info/Parameters").attrs
 
@@ -154,6 +174,9 @@ class MultiFile(object):
 
 
     def strlst(self, sorted=True):
+        """
+        Get File list as string list
+        """
         if sorted:
             if self._sort_changed:
                 self._sort_file_list()
@@ -162,6 +185,9 @@ class MultiFile(object):
             return self._filelist
 
     def objlst(self):
+        """
+        Get File list as Lisa.File object list
+        """
         if sorted:
             if self._sort_changed:
                 self._sort_file_list()
