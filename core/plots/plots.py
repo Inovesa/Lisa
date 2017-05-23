@@ -425,18 +425,25 @@ class SimplePlotter(object):
         if f4h == 0:
             warn("Factor4Hertz is zero in datafile using 1.0")
             f4h = np.float64(1.0)
+        label = kwargs.get("label", False)
+        if label is not False:
+            del kwargs['label']
+            label = label + " "
+        else:
+            label = ""
+        
         @SimplePlotter.plot
         def real(*args, **kwargs):
             return (self._file.impedance[0]*f4h,
                    self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$")
-        fig = real(*args, label="Real", **kwargs)
+        fig = real(*args, label=label+"Real", **kwargs)
         if 'fig' in kwargs:
             del kwargs['fig']
         @SimplePlotter.plot
         def imag(*args, **kwargs):
             return (self._file.impedance[0]*f4h,
                     self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$")
-        return imag(fig=fig, label="Imag", **kwargs)
+        return imag(fig=fig, label=label+"Imag", **kwargs)
 
 
 
