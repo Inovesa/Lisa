@@ -26,6 +26,7 @@ import textwrap
 
 from ..file import File
 from .config import Style
+from ..internals import lisa_print
 
 colors = [(0, 0, 1, 1), (0.8, 0.4, 0, 0.6), (1, 0, 1, 0.6), (0, 1, 1, 0.6), (1, 0, 0, 0.6),
           (0, 1, 0, 0.4)]
@@ -145,10 +146,10 @@ class SimplePlotter(object):
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
                 if period not in y:
-                    print("Interpolating for usable period (using nearest): ",end="")
+                    lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
                 idx = np.argmin(np.abs(np.array(y)-period))
                 if period not in y:
-                    print(y[idx])
+                    lisa_print(y[idx], debug=False)
                 @SimplePlotter.plot
                 def dummy(x, z, xlabel, zlabel, *args, **kwargs):
                     if hasattr(z, 'unit_function'):
@@ -207,6 +208,7 @@ class SimplePlotter(object):
         The first value/label is default (if key not in kwargs or value is not in values)
         If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
         """
+        lisa_print("Selecting Label", "kwargs", kwargs, "key", key, "values", values, "label", label, "unit_for_label", unit_for_label)
         uc = kwargs.get('connector', self.unit_connector)
         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
             warn("'{}' is not a valid '{}' for this plot".format(kwargs[key], key))
@@ -226,6 +228,7 @@ class SimplePlotter(object):
         The first value/attribute is default (if key not in kwargs or value not in values)
         If the value of key in kwargs is 'raw' the raw data is returned
         """
+        lisa_print("Selecting Unit", "kwargs", kwargs, "key", key, "values", values, "attributes", attributes, "dataAttrs", dataAttrs)
         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
             warn("'{}' is not a valid '{}' for this plot".format(kwargs[key], key))
         if kwargs.get(key) == 'raw':
@@ -329,9 +332,6 @@ class SimplePlotter(object):
         y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['watt'], 'CSR Intensity', ['W'],
                                              ['Factor4Watts'], y)
         return (x, y, xlabel, ylabel)
-
-        return (self._file.csr_intensity[0], self._file.csr_intensity[1],
-                "T in # Synchrotron Periods", "CSR Intensity") # TODO: Unit
 
     @plot
     def bunch_position(self, **kwargs):

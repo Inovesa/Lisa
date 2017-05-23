@@ -1,4 +1,5 @@
 from .file import File,  FileDataRegister
+from .internals import lisa_print
 import numpy as np
 
 class UnitError(Exception):
@@ -37,9 +38,11 @@ class Data(object):
             if 'unit' in kwargs:
                 unit = kwargs.get('unit')
             unit = unit.lower()
+            lisa_print("using unit specification", unit)
             if unit == '':
                 raise UnitError("No unit given.")
             elif unit not in self._unit_map:
+                lisa_print("possible units", self._unit_map.keys())
                 raise UnitError(unit+" is not a valid unit.")
             data = getattr(self._file, attr)[idx]
             if self._unit_map[unit] is None:  # do not modify
@@ -48,6 +51,7 @@ class Data(object):
             if self._unit_map[unit] in data.attrs:
                 return data*data.attrs[self._unit_map[unit]]
             else:
+                lisa_print("units for this data", list(data.attrs))
                 raise UnitError(unit+" is not a valid unit for this data.")
         return inner
 
