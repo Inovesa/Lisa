@@ -1450,7 +1450,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
  *                 unit = args[0]
  *             if 'unit' in kwargs:             # <<<<<<<<<<<<<<
  *                 unit = kwargs.get('unit')
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  */
   __pyx_t_1 = (__Pyx_PyDict_ContainsTF(__pyx_n_u_unit, __pyx_v_kwargs, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_5 = (__pyx_t_1 != 0);
@@ -1460,7 +1460,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
  *                 unit = args[0]
  *             if 'unit' in kwargs:
  *                 unit = kwargs.get('unit')             # <<<<<<<<<<<<<<
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  *             lisa_print("using unit specification", unit)
  */
     __pyx_t_4 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_u_unit, Py_None); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -1473,43 +1473,51 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
  *                 unit = args[0]
  *             if 'unit' in kwargs:             # <<<<<<<<<<<<<<
  *                 unit = kwargs.get('unit')
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  */
   }
 
   /* "Lisa/core/data_cython.py":40
  *             if 'unit' in kwargs:
  *                 unit = kwargs.get('unit')
- *             unit = unit.lower()             # <<<<<<<<<<<<<<
+ *             unit = unit.lower() if unit is not None else None             # <<<<<<<<<<<<<<
  *             lisa_print("using unit specification", unit)
  *             if unit == '':
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_unit, __pyx_n_s_lower); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_7)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_7);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
+  __pyx_t_5 = (__pyx_v_unit != Py_None);
+  if ((__pyx_t_5 != 0)) {
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_unit, __pyx_n_s_lower); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_7))) {
+      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_7);
+      if (likely(__pyx_t_8)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_8);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_7, function);
+      }
     }
-  }
-  if (__pyx_t_7) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__pyx_t_8) {
+      __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    } else {
+      __pyx_t_6 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_4 = __pyx_t_6;
+    __pyx_t_6 = 0;
   } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_INCREF(Py_None);
+    __pyx_t_4 = Py_None;
   }
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF_SET(__pyx_v_unit, __pyx_t_4);
   __pyx_t_4 = 0;
 
   /* "Lisa/core/data_cython.py":41
  *                 unit = kwargs.get('unit')
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  *             lisa_print("using unit specification", unit)             # <<<<<<<<<<<<<<
  *             if unit == '':
  *                 raise UnitError("No unit given.")
@@ -1546,11 +1554,11 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "Lisa/core/data_cython.py":42
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  *             lisa_print("using unit specification", unit)
  *             if unit == '':             # <<<<<<<<<<<<<<
  *                 raise UnitError("No unit given.")
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  */
   __pyx_t_5 = (__Pyx_PyUnicode_Equals(__pyx_v_unit, __pyx_kp_u_, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_5) {
@@ -1559,7 +1567,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
  *             lisa_print("using unit specification", unit)
  *             if unit == '':
  *                 raise UnitError("No unit given.")             # <<<<<<<<<<<<<<
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())
  */
     __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_UnitError); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -1572,32 +1580,41 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
     /* "Lisa/core/data_cython.py":42
- *             unit = unit.lower()
+ *             unit = unit.lower() if unit is not None else None
  *             lisa_print("using unit specification", unit)
  *             if unit == '':             # <<<<<<<<<<<<<<
  *                 raise UnitError("No unit given.")
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  */
   }
 
   /* "Lisa/core/data_cython.py":44
  *             if unit == '':
  *                 raise UnitError("No unit given.")
- *             elif unit not in self._unit_map:             # <<<<<<<<<<<<<<
+ *             elif unit not in self._unit_map and unit is not None:             # <<<<<<<<<<<<<<
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")
  */
   if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_unit, __pyx_t_6, Py_NE)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_unit, __pyx_t_6, Py_NE)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_1 = (__pyx_t_5 != 0);
-  if (__pyx_t_1) {
+  __pyx_t_3 = (__pyx_t_1 != 0);
+  if (__pyx_t_3) {
+  } else {
+    __pyx_t_5 = __pyx_t_3;
+    goto __pyx_L8_bool_binop_done;
+  }
+  __pyx_t_3 = (__pyx_v_unit != Py_None);
+  __pyx_t_1 = (__pyx_t_3 != 0);
+  __pyx_t_5 = __pyx_t_1;
+  __pyx_L8_bool_binop_done:;
+  if (__pyx_t_5) {
 
     /* "Lisa/core/data_cython.py":45
  *                 raise UnitError("No unit given.")
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())             # <<<<<<<<<<<<<<
  *                 raise UnitError(unit+" is not a valid unit.")
  *             data = getattr(self._file, attr)[idx]
@@ -1658,11 +1675,11 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
     /* "Lisa/core/data_cython.py":46
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")             # <<<<<<<<<<<<<<
  *             data = getattr(self._file, attr)[idx]
- *             if self._unit_map[unit] is None:  # do not modify
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify
  */
     __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_UnitError); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
@@ -1701,7 +1718,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
     /* "Lisa/core/data_cython.py":44
  *             if unit == '':
  *                 raise UnitError("No unit given.")
- *             elif unit not in self._unit_map:             # <<<<<<<<<<<<<<
+ *             elif unit not in self._unit_map and unit is not None:             # <<<<<<<<<<<<<<
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")
  */
@@ -1711,7 +1728,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")
  *             data = getattr(self._file, attr)[idx]             # <<<<<<<<<<<<<<
- *             if self._unit_map[unit] is None:  # do not modify
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  */
   if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
@@ -1733,23 +1750,32 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
   /* "Lisa/core/data_cython.py":48
  *                 raise UnitError(unit+" is not a valid unit.")
  *             data = getattr(self._file, attr)[idx]
- *             if self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
  */
+  __pyx_t_1 = (__pyx_v_unit == Py_None);
+  __pyx_t_3 = (__pyx_t_1 != 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_5 = __pyx_t_3;
+    goto __pyx_L11_bool_binop_done;
+  }
   if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_9 = PyObject_GetItem(__pyx_t_4, __pyx_v_unit); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_1 = (__pyx_t_9 == Py_None);
+  __pyx_t_3 = (__pyx_t_9 == Py_None);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_5 = (__pyx_t_1 != 0);
+  __pyx_t_1 = (__pyx_t_3 != 0);
+  __pyx_t_5 = __pyx_t_1;
+  __pyx_L11_bool_binop_done:;
   if (__pyx_t_5) {
 
     /* "Lisa/core/data_cython.py":50
- *             if self._unit_map[unit] is None:  # do not modify
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)             # <<<<<<<<<<<<<<
  *             if self._unit_map[unit] in data.attrs:
@@ -1774,7 +1800,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(Py
     /* "Lisa/core/data_cython.py":48
  *                 raise UnitError(unit+" is not a valid unit.")
  *             data = getattr(self._file, attr)[idx]
- *             if self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
  */
@@ -2778,7 +2804,7 @@ static int __Pyx_InitCachedConstants(void) {
  *             lisa_print("using unit specification", unit)
  *             if unit == '':
  *                 raise UnitError("No unit given.")             # <<<<<<<<<<<<<<
- *             elif unit not in self._unit_map:
+ *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())
  */
   __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_No_unit_given); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -2786,7 +2812,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__2);
 
   /* "Lisa/core/data_cython.py":50
- *             if self._unit_map[unit] is None:  # do not modify
+ *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)             # <<<<<<<<<<<<<<
  *             if self._unit_map[unit] in data.attrs:

@@ -37,15 +37,15 @@ class Data(object):
                 unit = args[0]
             if 'unit' in kwargs:
                 unit = kwargs.get('unit')
-            unit = unit.lower()
+            unit = unit.lower() if unit is not None else None
             lisa_print("using unit specification", unit)
             if unit == '':
                 raise UnitError("No unit given.")
-            elif unit not in self._unit_map:
+            elif unit not in self._unit_map and unit is not None:
                 lisa_print("possible units", self._unit_map.keys())
                 raise UnitError(unit+" is not a valid unit.")
             data = getattr(self._file, attr)[idx]
-            if self._unit_map[unit] is None:  # do not modify
+            if unit is None or self._unit_map[unit] is None:  # do not modify
                 # TODO: Check if this is valid for the given data
                 return data * np.float64(1.0)
             if self._unit_map[unit] in data.attrs:

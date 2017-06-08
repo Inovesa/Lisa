@@ -3525,7 +3525,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_22particles(CYTHON_UNU
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):             # <<<<<<<<<<<<<<
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  */
 
 /* Python wrapper */
@@ -3562,7 +3562,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_24phase_space(CYTHON_U
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):
  *         if self._phase_space is None:             # <<<<<<<<<<<<<<
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  *         return self._phase_space
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_phase_space); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -3575,7 +3575,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_24phase_space(CYTHON_U
     /* "Lisa/core/file_cython.py":124
  *     def phase_space(self):
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])             # <<<<<<<<<<<<<<
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])             # <<<<<<<<<<<<<<
  *         return self._phase_space
  * 
  */
@@ -3583,12 +3583,12 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_24phase_space(CYTHON_U
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = PyList_New(3); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_INCREF(__pyx_n_u_axis0);
-    __Pyx_GIVEREF(__pyx_n_u_axis0);
-    PyList_SET_ITEM(__pyx_t_5, 0, __pyx_n_u_axis0);
     __Pyx_INCREF(__pyx_n_u_axis1);
     __Pyx_GIVEREF(__pyx_n_u_axis1);
-    PyList_SET_ITEM(__pyx_t_5, 1, __pyx_n_u_axis1);
+    PyList_SET_ITEM(__pyx_t_5, 0, __pyx_n_u_axis1);
+    __Pyx_INCREF(__pyx_n_u_axis0);
+    __Pyx_GIVEREF(__pyx_n_u_axis0);
+    PyList_SET_ITEM(__pyx_t_5, 1, __pyx_n_u_axis0);
     __Pyx_INCREF(__pyx_n_u_data);
     __Pyx_GIVEREF(__pyx_n_u_data);
     PyList_SET_ITEM(__pyx_t_5, 2, __pyx_n_u_data);
@@ -3626,14 +3626,14 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_24phase_space(CYTHON_U
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):
  *         if self._phase_space is None:             # <<<<<<<<<<<<<<
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  *         return self._phase_space
  */
   }
 
   /* "Lisa/core/file_cython.py":125
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  *         return self._phase_space             # <<<<<<<<<<<<<<
  * 
  *     @registered_property(FileDataRegister)
@@ -3650,7 +3650,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11file_cython_4File_24phase_space(CYTHON_U
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):             # <<<<<<<<<<<<<<
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  */
 
   /* function exit code */
@@ -6207,7 +6207,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):             # <<<<<<<<<<<<<<
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  */
   __pyx_tuple__49 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__49)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__49);
@@ -7361,7 +7361,7 @@ PyMODINIT_FUNC PyInit_file_cython(void)
  *     @registered_property(FileDataRegister)
  *     def phase_space(self):             # <<<<<<<<<<<<<<
  *         if self._phase_space is None:
- *             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
+ *             self._phase_space = self._get_list("PhaseSpace", ["axis1", "axis0", "data"])
  */
   __pyx_t_6 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_11file_cython_4File_25phase_space, 0, __pyx_n_s_File_phase_space, NULL, __pyx_n_s_Lisa_core_file_cython, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);

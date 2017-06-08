@@ -171,6 +171,16 @@ class Style(dict):
         """
         self.update({key: value})
 
+    def selectors(self, print_out=True):
+        """Print or Get a list of possible selectors"""
+        sels = []
+        for k, v in selectors.items():
+            sels.append([k, v[1]])
+        if not print_out:
+            return sels
+        else:
+            for i in sels:
+                print(i[0], 'with attributes: ', ' '.joini[1])
 
 def _apply_style(sel, sub, attr, value, axes):  # if the method does not require a subsel then subsel is to be []
     if not isinstance(sub, list):

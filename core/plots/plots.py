@@ -378,14 +378,17 @@ class SimplePlotter(object):
 
         x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['hertz'], 'Frequency', ['Hz'],
                                              ['Factor4Hertz'], self._file.csr_spectrum[1])
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
+        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T',
+                                             ['# Synchrotron Periods', 's'],
                                              [None, 'Factor4Seconds'], self._file.csr_spectrum[0])
         if period is None:  # if no period provided
-            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['watt'], 'Power', ['W'], ['Factor4Watts'],
+            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['watt'], 'Power', ['W'],
+                                                 ['Factor4Watts'],
                                                  self._file.csr_spectrum[2])
         else:
             z = self._file.csr_spectrum[2]
-            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period], ['watt'], ['Factor4Watts'],
+            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
+                                                               ['watt'], ['Factor4Watts'],
                                                                dataAttrs=z.attrs)
             zlabel = self._select_label(kwargs, 'zunit', ['watt'], 'Power', ['W'])
         return period, x, y, z, xlabel, ylabel, zlabel
@@ -431,11 +434,11 @@ class SimplePlotter(object):
             label = label + " "
         else:
             label = ""
-        
+
         @SimplePlotter.plot
         def real(*args, **kwargs):
             return (self._file.impedance[0]*f4h,
-                   self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$")
+                   self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$") # TODO: wirklich kOhm?
         fig = real(*args, label=label+"Real", **kwargs)
         if 'fig' in kwargs:
             del kwargs['fig']
@@ -525,6 +528,10 @@ class PhaseSpace(object):
             self._file = File(file)
         #self._figure = plt.figure()
 
+    def _x_to_y(self, data):
+        return data.T[::-1, :]  # Inovesa phasespace data is in shape [x, y] and imshow needs [y, x]
+        # also y seems to be flipped? TODO: Check with Patrik
+
     def clone(self):
         """
         Return a copy of this instance
@@ -533,7 +540,8 @@ class PhaseSpace(object):
         return PhaseSpace(self._file)
 
     def plot_ps(self, index):
-        data = self._file.phase_space[2][index]
+        # data = self._file.phase_space[2][index].T[::-1, :] # Transpose because is 90deg wrong
+        data = self._x_to_y(self._file.phase_space[2][index])
         fig, ax = plt.subplots(1)
         im = ax.imshow(data)
         im.set_cmap('inferno')
@@ -557,7 +565,10 @@ class PhaseSpace(object):
             Phase space might be too intensive
         """
         plt.ioff()
-        writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), bitrate=bitrate)
+        if fps is not None:
+            writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), fps=fps, bitrate=bitrate)
+        else:
+            writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), bitrate=bitrate)
         fig = plt.figure(frameon=False)
         fig.set_size_inches(5,5)
         fig.subplots_adjust(left=0, bottom=0, right=1,top=1, wspace=None, hspace=None)
@@ -566,7 +577,7 @@ class PhaseSpace(object):
         ub = len(self._file.phase_space[2]) if to_idx == -1 else to_idx
 
         #index = [0 if fr_idx==-1 else fr_idx]
-        im = [plt.imshow(self._file.phase_space[2][lb], animated=True, aspect='auto')]
+        im = [plt.imshow(self._x_to_y(self._file.phase_space[2][lb]), animated=True, aspect='auto')]
         im[0].set_cmap('inferno')
         plt.axis(axis)
 
@@ -576,7 +587,7 @@ class PhaseSpace(object):
 
         def gen_data(i):
             idx = i + lb
-            return self._file.phase_space[2][idx]
+            return self._x_to_y(self._file.phase_space[2][idx])
 
         def gen_image(i):
             im[0].set_data(gen_data(i))
@@ -587,7 +598,7 @@ class PhaseSpace(object):
         #ani = anim.FuncAnimation(fig, gen_image, gen_data, init, interval=interval, blit=True, repeat=False)
         ani = anim.FuncAnimation(fig, gen_image, frames=ub-lb, interval=interval, blit=True, repeat=False)
         if path is not None:
-            ani.save(path, writer, fps=fps)
+            ani.save(path, writer)
         return ani
 
 class MultiPhaseSpaceMovie(object):
