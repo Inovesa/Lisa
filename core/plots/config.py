@@ -139,13 +139,20 @@ class Style(dict):
     def update(self, E=None, **F):
         """
         Update the value in the internal dictionary and update the axes object
-        :param E: dictionary with key/value pairs to update
+        :param E: dictionary with key/value pairs to update or name of a predefined style
         """
-        if(hasattr(self, 'ax')):
+        if len(self._get_list_of_ax()) > 0:
             for a in self._get_list_of_ax():
                 dict = _style_plot(E, axes=a)
         else:
             warn("No axes object was associated to this style. Use apply_to_ax first")
+            if isinstance(E, str):
+                if E in styles:
+                    dict = styles[E]
+                else:
+                    warn("ERROR Not a dictionary and not a valid style name")
+            else:
+                dict = E
         super(Style, self).update(dict)
 
     def update_style(self, E):
