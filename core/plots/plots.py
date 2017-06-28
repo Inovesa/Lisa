@@ -540,6 +540,10 @@ class PhaseSpace(object):
         return PhaseSpace(self._file)
 
     def plot_ps(self, index):
+        """
+        Plot the phasespace.
+        :param index: the index of the dataset (in timeaxis)
+        """
         # data = self._file.phase_space[2][index].T[::-1, :] # Transpose because is 90deg wrong
         data = self._x_to_y(self._file.phase_space[2][index])
         fig, ax = plt.subplots(1)
