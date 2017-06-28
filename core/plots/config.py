@@ -8,7 +8,8 @@ selectors = {'spine': [['top', 'bottom', 'right', 'left'], ['color']],
              'ticks': [['x', 'y'], ['color', 'below', 'direction']],
              'grid': [[], ['color', 'linewidth', 'dashes', 'linestyle', 'visible', 'style']],
              'face': [[], ['color']],
-             'legend': [[], ['fontfamily', 'fontsize', 'color']]}
+             'legend': [[], ['fontfamily', 'fontsize', 'color']],
+             'marker': [[], ['type', 'edgecolor', 'facecolor', 'size']]}
 
 class Alias:
     """
@@ -42,7 +43,11 @@ methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
            'face': {'color': lambda ax, w, v: ax.set_facecolor(v)},
            'legend': {'fontfamily': lambda ax, w, v: [i.set_family(v) for i in ax.get_legend().get_texts()],
                       'fontsize': lambda ax, w, v: [i.set_fontsize(v) for i in ax.get_legend().get_texts()],
-                      'color': lambda ax, w, v: [i.set_color(v) for i in ax.get_legend().get_texts()]}
+                      'color': lambda ax, w, v: [i.set_color(v) for i in ax.get_legend().get_texts()]},
+           'marker': {'type': lambda ax, w, v: [i.set_marker(v) for i in ax.lines],
+                      'edgecolor': lambda ax, w, v: [i.set_markeredgecolor(v) for i in ax.lines],
+                      'facecolor': lambda ax, w, v: [i.set_markerfacecolor(v) for i in ax.lines],
+                      'size': lambda ax, w, v: [i.set_markersize(v) for i in ax.lines]}
            }
 
 class StyleError(Exception):
@@ -57,7 +62,7 @@ styles = {
     'inverse_ggplot': {
         'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': (0.5, (1, 4)), 'grid:linewidth': 0.8,
         'label:color': 'black', 'spine:color': '#D5D5D5', 'ticklabels:color': 'black', 'ticks:color': '#555555',
-        'ticks:direction': 'out', 'grid:visible': True
+        'ticks:direction': 'out', 'grid:visible': True, 'marker:type': '.'
     },
     'inverse_ggplot_straight': {
         'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': 'solid', 'grid:linewidth': 0.8,
