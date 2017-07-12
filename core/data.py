@@ -1,7 +1,5 @@
 """
-Created on Mon May 15 10:08:42 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 
 from .file_cython import File,  FileDataRegister

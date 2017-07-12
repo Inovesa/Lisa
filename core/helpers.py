@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar  28 14:44:32 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 
 from IPython.display import display, HTML

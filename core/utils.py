@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar  6 13:19:56 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 def color_map_inferno():
   

@@ -1,7 +1,5 @@
 """
-Created on Mon Apr 22 10:11:37 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 
 import matplotlib as mpl

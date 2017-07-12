@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 """
-Created on Mon Mar  6 13:48:14 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 
 import matplotlib.pyplot as plt
@@ -553,8 +551,7 @@ class PhaseSpace(object):
         im.set_cmap('inferno')
         return fig, ax, im
 
-    def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off',
-                 fr_idx=-1, to_idx=-1, autorescale=False, percentile=None):
+    def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off', fr_idx=-1, to_idx=-1, autorescale=False, percentile=None):
         """
         Create a movie from the phasespace information
         :param path: the file to write the movie to if None: do not save

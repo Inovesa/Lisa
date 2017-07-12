@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar  6 13:19:04 2017
-
-@author: patrick
+:Author: Patrick Schreiber
 """
 
 import h5py as h5
