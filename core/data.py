@@ -1,3 +1,9 @@
+"""
+Created on Mon May 15 10:08:42 2017
+
+@author: patrick
+"""
+
 from .file_cython import File,  FileDataRegister
 from .internals import lisa_print
 import numpy as np

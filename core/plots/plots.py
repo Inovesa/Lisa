@@ -43,10 +43,10 @@ def setup_plots():  # todo arguments for latexify
 
 class SimplePlotter(object):
     """
-    A Simple Plot Helper Class
-    It takes a Filename to the Constructor.
-    Each Method takes a optional label and a optional figure (kwarg fig)
-    If fig is given the data is plotted into this figure
+    | A Simple Plot Helper Class.
+    | It takes a Filename to the Constructor.
+    | Each Method takes a optional label and a optional figure (kwarg fig)
+    | If fig is given the data is plotted into this figure
     """
     def __init__(self, filef, unit_connector='in'):
         """
@@ -203,12 +203,12 @@ class SimplePlotter(object):
 
     def _select_label(self, kwargs, key, values, label, unit_for_label):
         """
-        Select the correct label for the given kwargs.
-        Usage example:
-            label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
-                                                       ['T in # Synchrotron Periods', 'T in s'])
-        The first value/label is default (if key not in kwargs or value is not in values)
-        If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
+        | Select the correct label for the given kwargs.
+        | Usage example:
+        |     label = self._select_label(kwargs, 'xunit', ['ts','seconds'],
+        |                                               ['T in # Synchrotron Periods', 'T in s'])
+        | The first value/label is default (if key not in kwargs or value is not in values)
+        | If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
         """
         lisa_print("Selecting Label", "kwargs", kwargs, "key", key, "values", values, "label", label, "unit_for_label", unit_for_label)
         uc = kwargs.get('connector', self.unit_connector)
@@ -223,12 +223,12 @@ class SimplePlotter(object):
 
     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):
         """
-        Select the correct unit and apply to data.
-        Usage example:
-          data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
-        A attribute None is treated as "do not modify data".
-        The first value/attribute is default (if key not in kwargs or value not in values)
-        If the value of key in kwargs is 'raw' the raw data is returned
+        | Select the correct unit and apply to data.
+        | Usage example:
+        |   data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])
+        | A attribute None is treated as "do not modify data".
+        | The first value/attribute is default (if key not in kwargs or value not in values)
+        | If the value of key in kwargs is 'raw' the raw data is returned
         """
         lisa_print("Selecting Unit", "kwargs", kwargs, "key", key, "values", values, "attributes", attributes, "dataAttrs", dataAttrs)
         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
@@ -275,9 +275,9 @@ class SimplePlotter(object):
     @meshPlot
     def bunch_profile(self, *args, **kwargs):
         """
-        Plot the bunch_profile either as line plot or as pcolormesh
-        to plot as line pass either the period as first argument or a keyword argument period
-        Note: if yunit is passed period is in that unit, else in default value.
+        | Plot the bunch_profile either as line plot or as pcolormesh
+        | to plot as line pass either the period as first argument or a keyword argument period
+        | Note: if yunit is passed period is in that unit, else in default value.
         kwargs: (first value is default)
           * xunit: possible values: "meters", "seconds", "raw"
           * yunit: possible values: "ts", "seconds", "raw"
@@ -367,9 +367,9 @@ class SimplePlotter(object):
     @meshPlot
     def csr_spectrum(self, *args, **kwargs):
         """
-        Plot the csr_spectrum either as line plot or as pcolormesh
-        to plot as line pass either the period as first argument or a keyword argument period
-        Note: if yunit is passed period is in that unit, else in default value.
+        | Plot the csr_spectrum either as line plot or as pcolormesh
+        | to plot as line pass either the period as first argument or a keyword argument period
+        | Note: if yunit is passed period is in that unit, else in default value.
         kwargs: (first value is default)
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "hertz", "raw"
@@ -398,8 +398,8 @@ class SimplePlotter(object):
     @meshPlot
     def energy_profile(self, *args, **kwargs):
         """
-        Plot the energy_profile either as line plot or as pcolormesh
-        to plot as line pass either the period as first argument or a keyword argument period
+        | Plot the energy_profile either as line plot or as pcolormesh
+        | to plot as line pass either the period as first argument or a keyword argument period
         kwargs: (first value is default)
           * xunit: possible values: "eV", "raw"
           * yunit: possible values: "ts", "seconds", "raw"
@@ -458,8 +458,8 @@ class MultiPlot(object):
     """
     def __init__(self):
         """
-        Creates MultiPlot Instance
-        No Parameters (to add files use add_file)
+        | Creates MultiPlot Instance
+        | No Parameters (to add files use add_file)
         """
         self._simple_plotters = []
 
@@ -536,8 +536,8 @@ class PhaseSpace(object):
 
     def clone(self):
         """
-        Return a copy of this instance
-        This effectively creates a new object with same file object
+        | Return a copy of this instance
+        | This effectively creates a new object with same file object
         """
         return PhaseSpace(self._file)
 
@@ -609,8 +609,8 @@ class PhaseSpace(object):
 
 class MultiPhaseSpaceMovie(object):
     """
-    Create Phasespace of multiple Files
-    Useful to check the phasespace over multiple currenst (spectrogram)
+    | Create Phasespace of multiple Files
+    | Useful to check the phasespace over multiple currenst (spectrogram)
     """
     def __init__(self, path):
         self._path = path

@@ -14,6 +14,7 @@ class FileDataRegister():
 
 
 class AttributedNPArray(np.ndarray):
+    """Simple Wrarpper around numpy.ndarray to include h5 attrs attribute"""
     def __new__(cls, orig_arr, attrs):
         obj = np.asarray(orig_arr).view(cls)
         obj.attrs = attrs
@@ -42,8 +43,14 @@ def registered_property(cls):
     return wrapper
 
 class File(object):
-    """Wrapper around a h5 File created by Inovesa"""
+    """
+    Wrapper around a h5 File created by Inovesa
+    """
     def __init__(self, filename):
+        """
+        Create File object
+        :param filename: The filename of the Inovesa result file
+        """
         self.filename = filename
         self.file = h5.File(filename, 'r')
         self._bunch_length = None

@@ -1,3 +1,9 @@
+"""
+Created on Mon Apr 22 10:11:37 2017
+
+@author: patrick
+"""
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from warnings import warn
@@ -90,13 +96,13 @@ class Style(dict):
     Style for Matplotlib axes
     It is essentially a dictionary with overriden methods
     Usage: (assume ax is an matplotlib axes object
-        .. code:: python
-            style = Style()
-            style.apply_to_ax(ax)
-            style.update({selector: value})  # or use style.update_style
-            style['selector']=value  # this also updates the axes object
-            # if you have done some modifications to the plot yourself and want to update the style again use
-            style.reapply()
+    .. code:: python
+        style = Style()
+        style.apply_to_ax(ax)
+        style.update({selector: value})  # or use style.update_style
+        style['selector']=value  # this also updates the axes object
+        # if you have done some modifications to the plot yourself and want to update the style again use
+        style.reapply()
 
     Note: instead of working with the Style object directly you can use ax.current_style after you applied a style
     Note: You can apply one Style object to more than one axes object. Just call apply_to_ax multiple times or with a list of axes
