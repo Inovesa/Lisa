@@ -1,5 +1,7 @@
 .. parsedoc:: /home/patrick/Python/Lisa/core/file.py
-    :module: False
+    :module: True
     :wo_docstr: True
     :heading: Inovesa Result Files
-    :private: True
+    :private: False
+    :exclude: FileDataRegister;registered_property
+    :include: __init__

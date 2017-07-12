@@ -1,5 +1,5 @@
 .. parsedoc:: /home/patrick/Python/Lisa/core/helpers.py
-    :module: False
+    :module: True
     :wo_docstr: True
     :heading: Helpers
     :private: True

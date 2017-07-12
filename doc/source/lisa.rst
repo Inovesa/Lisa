@@ -1,4 +1,4 @@
 .. parsedoc:: /home/patrick/Python/Lisa/lisa.py
-    :module: False
+    :module: True
     :wo_docstr: True
     :heading: Unused Main Module

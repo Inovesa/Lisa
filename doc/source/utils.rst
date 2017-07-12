@@ -1,4 +1,4 @@
 .. parsedoc:: /home/patrick/Python/Lisa/core/utils.py
-    :module: False
+    :module: True
     :wo_docstr: True
     :heading: Internal Utilities

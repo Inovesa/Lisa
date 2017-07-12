@@ -36,6 +36,9 @@ _simple_plotter_plot_methods = []
 warn = lambda x: sys.stderr.write("Warning: "+str(x)+"\n")
 
 def setup_plots():  # todo arguments for latexify
+    """
+    Setup Plots to look native in Latex documents. Subject to change.
+    """
     from blhelpers.plot_helpers import latexify
     latexify()
 
@@ -45,6 +48,7 @@ class SimplePlotter(object):
     | It takes a Filename to the Constructor.
     | Each Method takes a optional label and a optional figure (kwarg fig)
     | If fig is given the data is plotted into this figure
+
     """
     def __init__(self, filef, unit_connector='in'):
         """
@@ -276,6 +280,7 @@ class SimplePlotter(object):
         | Plot the bunch_profile either as line plot or as pcolormesh
         | to plot as line pass either the period as first argument or a keyword argument period
         | Note: if yunit is passed period is in that unit, else in default value.
+
         kwargs: (first value is default)
           * xunit: possible values: "meters", "seconds", "raw"
           * yunit: possible values: "ts", "seconds", "raw"
@@ -368,6 +373,7 @@ class SimplePlotter(object):
         | Plot the csr_spectrum either as line plot or as pcolormesh
         | to plot as line pass either the period as first argument or a keyword argument period
         | Note: if yunit is passed period is in that unit, else in default value.
+
         kwargs: (first value is default)
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "hertz", "raw"
@@ -398,6 +404,7 @@ class SimplePlotter(object):
         """
         | Plot the energy_profile either as line plot or as pcolormesh
         | to plot as line pass either the period as first argument or a keyword argument period
+
         kwargs: (first value is default)
           * xunit: possible values: "eV", "raw"
           * yunit: possible values: "ts", "seconds", "raw"
@@ -423,6 +430,9 @@ class SimplePlotter(object):
         return period, x, y, z, xlabel, ylabel, zlabel
 
     def impedance(self, *args, **kwargs):
+        """
+        Plot Impedance (Fixed units). Real and Imaginary Part
+        """
         warn("Unit of x-Axis may not be correct")
         f4h = self._file.impedance[0].attrs["Factor4Hertz"]
         if f4h == 0:
@@ -608,6 +618,7 @@ class MultiPhaseSpaceMovie(object):
     """
     | Create Phasespace of multiple Files
     | Useful to check the phasespace over multiple currenst (spectrogram)
+
     """
     def __init__(self, path):
         self._path = path

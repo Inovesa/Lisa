@@ -1,5 +1,6 @@
 .. parsedoc:: /home/patrick/Python/Lisa/core/data.py
-    :module: False
+    :module: True
     :wo_docstr: True
     :heading: Data with Units
-    :private: True
+    :private: False
+    :include: __init__;__getattr__
