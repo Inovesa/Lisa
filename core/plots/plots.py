@@ -51,6 +51,7 @@ class SimplePlotter(object):
         """
         Initialise a Simple Plotter instance
         :param filef: The file name of this Plotter or a Lisa.File instance
+        :param unit_connector: The string to use between label and unit.
         """
         if isinstance(filef, File):
             self._file = filef
@@ -460,7 +461,6 @@ class MultiPlot(object):
         No Parameters (to add files use add_file)
         """
         self._simple_plotters = []
-        self._figure = plt.figure(tight_layout=True)
 
     def clone(self):
         """Return a copy of this instance"""
@@ -495,7 +495,8 @@ class MultiPlot(object):
             warn_no_file.__name__ = attr
             return warn_no_file
         if hasattr(self._simple_plotters[0][0], attr):
-            self._figure.clear()
+            # self._figure.clear()
+            self._figure = plt.figure(tight_layout=True)
             def inner(*args, **kwargs):
                 kwargs["fig"] = self._figure
                 for sp in self._simple_plotters:

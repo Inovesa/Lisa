@@ -26,6 +26,13 @@ class Data(object):
             return getattr(self._file, attr[:-4])
         if attr not in FileDataRegister.registered_properties:
             raise AttributeError("Data object (and File object) does not have an attribute "+attr)
+        if attr == 'parameters':
+            def inner(what):
+                if what == 'all':
+                    return getattr(self._file, attr)
+                else:
+                    return getattr(self._file, attr)[what]
+            return inner
         def inner(idx, *args, **kwargs):
             """
             Convert to correct unit.

@@ -5,7 +5,7 @@
 For detailed help on methods see the python help or docstrings.
 
 #### SimplePlotter
-Each Dataset in the inovesa generated h5 files is a possible plott. Just call the corresponding function.
+Each Dataset in the Inovesa generated h5 files is a possible plot. Just call the corresponding function.
 
 Plots for data with multiple axes expect a period as parameter. If this is omitted a meshplot is done.
 The period is used to generate a slice in the time axis.
@@ -19,7 +19,7 @@ sp.energy_spread()
 ```
 
 #### MultiPlot
-MultiPlot is the same as SimploePlotter except it works on multiple files.
+MultiPlot is the same as SimplePlotter except it works on multiple files.
 
 ```python
 import Lisa

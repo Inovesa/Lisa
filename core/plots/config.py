@@ -194,6 +194,10 @@ class Style(dict):
             for i in sels:
                 print(i[0], 'with attributes: ', ' '.joini[1])
 
+    def __reduce__(self):
+        """For Pickling figure objects that contain a Style object"""
+        return type(self), (dict(self),)
+
 def _apply_style(sel, sub, attr, value, axes):  # if the method does not require a subsel then subsel is to be []
     if not isinstance(sub, list):
         sub = [sub,]

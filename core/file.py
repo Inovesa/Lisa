@@ -7,9 +7,21 @@ Created on Mon Mar  6 13:19:04 2017
 
 import h5py as h5
 import glob
+import numpy as np
 
 class FileDataRegister():
     registered_properties = []
+
+
+class AttributedNPArray(np.ndarray):
+    def __new__(cls, orig_arr, attrs):
+        obj = np.asarray(orig_arr).view(cls)
+        obj.attrs = attrs
+        return obj
+    def __array_finalize__(self, obj):
+        if obj is None: return
+        self.attrs = getattr(obj, 'attrs', None)
+
 
 def registered_property(cls):
     """
@@ -54,6 +66,16 @@ class File(object):
         for elem in list_of_elements:
             ret.append(gr.get(elem))
         return ret
+
+    def preload_full(self, what):
+        try:
+            h5data = getattr(self, what)
+            tmp = [np.zeros(i.shape, dtype=i.dtype) for i in h5data]
+            sdata = [i.read_direct(tmp[idx]) for idx, i in enumerate(h5data)]
+            sdata = [AttributedNPArray(tmp[idx], i.attrs) for idx, i in enumerate(h5data)]
+            setattr(self, "_"+what, sdata)
+        except:
+            print("Error")
 
     @registered_property(FileDataRegister)
     def energy_spread(self):
