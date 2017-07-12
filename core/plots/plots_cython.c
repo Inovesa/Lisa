@@ -510,7 +510,7 @@ struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_2_decorate
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
 struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_3_bunch_profile {
   PyObject_HEAD
@@ -525,7 +525,7 @@ struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_3_bunch_pr
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
 struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_4_csr_spectrum {
   PyObject_HEAD
@@ -540,7 +540,7 @@ struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_4_csr_spec
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
 struct __pyx_obj_4Lisa_4core_5plots_12plots_cython___pyx_scope_struct_5_energy_profile {
   PyObject_HEAD
@@ -1368,9 +1368,9 @@ static char __pyx_k_is_0_0_in_datafile_using_1_0[] = " is 0.0 in datafile using 
 static char __pyx_k_is_not_a_valid_for_this_plot[] = "'{}' is not a valid '{}' for this plot";
 static char __pyx_k_Special_Options_for_this_plot[] = "\nSpecial Options for this plot:";
 static char __pyx_k_SimplePlotter_bunch_population[] = "SimplePlotter.bunch_population";
-static char __pyx_k_A_Simple_Plot_Helper_Class_It_t[] = "\n    A Simple Plot Helper Class\n    It takes a Filename to the Constructor.\n    Each Method takes a optional label and a optional figure (kwarg fig)\n    If fig is given the data is plotted into this figure\n    ";
+static char __pyx_k_A_Simple_Plot_Helper_Class_It_t[] = "\n    | A Simple Plot Helper Class.\n    | It takes a Filename to the Constructor.\n    | Each Method takes a optional label and a optional figure (kwarg fig)\n    | If fig is given the data is plotted into this figure\n    ";
 static char __pyx_k_Combine_multiple_files_into_one[] = "\n    Combine multiple files into one plot\n    ";
-static char __pyx_k_Create_Phasespace_of_multiple_F[] = "\n    Create Phasespace of multiple Files\n    Useful to check the phasespace over multiple currenst (spectrogram)\n    ";
+static char __pyx_k_Create_Phasespace_of_multiple_F[] = "\n    | Create Phasespace of multiple Files\n    | Useful to check the phasespace over multiple currenst (spectrogram)\n    ";
 static char __pyx_k_Delegated_Options_from_SimplePl[] = "\nDelegated Options from SimplePlotter:\n";
 static char __pyx_k_Interpolating_for_usable_period[] = "Interpolating for usable period (using nearest): ";
 static char __pyx_k_Plot_PhaseSpaces_of_a_single_In[] = "\n    Plot PhaseSpaces of a single Inovesa result file\n    ";
@@ -2213,7 +2213,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_setup_plots(CYTHON_U
 }
 
 /* "Lisa/core/plots/plots_cython.py":51
- *     If fig is given the data is plotted into this figure
+ *     | If fig is given the data is plotted into this figure
  *     """
  *     def __init__(self, filef, unit_connector='in'):             # <<<<<<<<<<<<<<
  *         """
@@ -2410,7 +2410,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter___in
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_unit_connector, __pyx_v_unit_connector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "Lisa/core/plots/plots_cython.py":51
- *     If fig is given the data is plotted into this figure
+ *     | If fig is given the data is plotted into this figure
  *     """
  *     def __init__(self, filef, unit_connector='in'):             # <<<<<<<<<<<<<<
  *         """
@@ -5968,12 +5968,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_4mes
  * 
  *     def _select_label(self, kwargs, key, values, label, unit_for_label):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct label for the given kwargs.
+ *         | Select the correct label for the given kwargs.
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_7_select_label(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_select_label[] = "\n        Select the correct label for the given kwargs.\n        Usage example:\n            label = self._select_label(kwargs, 'xunit', ['ts','seconds'],\n                                                       ['T in # Synchrotron Periods', 'T in s'])\n        The first value/label is default (if key not in kwargs or value is not in values)\n        If the value of key in kwargs is 'raw' a label with + '(raw)' is returned\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_select_label[] = "\n        | Select the correct label for the given kwargs.\n        | Usage example:\n        |     label = self._select_label(kwargs, 'xunit', ['ts','seconds'],\n        |                                               ['T in # Synchrotron Periods', 'T in s'])\n        | The first value/label is default (if key not in kwargs or value is not in values)\n        | If the value of key in kwargs is 'raw' a label with + '(raw)' is returned\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_7_select_label = {"_select_label", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_7_select_label, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_select_label};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_7_select_label(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
@@ -6091,7 +6091,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_se
   __Pyx_RefNannySetupContext("_select_label", 0);
 
   /* "Lisa/core/plots/plots_cython.py":213
- *         If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
+ *         | If the value of key in kwargs is 'raw' a label with + '(raw)' is returned
  *         """
  *         lisa_print("Selecting Label", "kwargs", kwargs, "key", key, "values", values, "label", label, "unit_for_label", unit_for_label)             # <<<<<<<<<<<<<<
  *         uc = kwargs.get('connector', self.unit_connector)
@@ -6542,7 +6542,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_se
  * 
  *     def _select_label(self, kwargs, key, values, label, unit_for_label):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct label for the given kwargs.
+ *         | Select the correct label for the given kwargs.
  */
 
   /* function exit code */
@@ -6568,12 +6568,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_6_se
  * 
  *     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct unit and apply to data.
+ *         | Select the correct unit and apply to data.
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_9_select_unit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_8_select_unit[] = "\n        Select the correct unit and apply to data.\n        Usage example:\n          data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])\n        A attribute None is treated as \"do not modify data\".\n        The first value/attribute is default (if key not in kwargs or value not in values)\n        If the value of key in kwargs is 'raw' the raw data is returned\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_8_select_unit[] = "\n        | Select the correct unit and apply to data.\n        | Usage example:\n        |   data = self._select_unit(kwargs, 'xunit', data, ['ts', 'seconds'], [None, 'Factor4Seconds'])\n        | A attribute None is treated as \"do not modify data\".\n        | The first value/attribute is default (if key not in kwargs or value not in values)\n        | If the value of key in kwargs is 'raw' the raw data is returned\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_9_select_unit = {"_select_unit", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_9_select_unit, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_8_select_unit};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_9_select_unit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   CYTHON_UNUSED PyObject *__pyx_v_self = 0;
@@ -6705,7 +6705,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_8_se
   __Pyx_RefNannySetupContext("_select_unit", 0);
 
   /* "Lisa/core/plots/plots_cython.py":233
- *         If the value of key in kwargs is 'raw' the raw data is returned
+ *         | If the value of key in kwargs is 'raw' the raw data is returned
  *         """
  *         lisa_print("Selecting Unit", "kwargs", kwargs, "key", key, "values", values, "attributes", attributes, "dataAttrs", dataAttrs)             # <<<<<<<<<<<<<<
  *         if key in kwargs and kwargs[key] not in values and kwargs[key] != 'raw':
@@ -7254,7 +7254,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_8_se
  * 
  *     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct unit and apply to data.
+ *         | Select the correct unit and apply to data.
  */
 
   /* function exit code */
@@ -8057,12 +8057,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_12en
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_15bunch_profile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_14bunch_profile[] = "\n        Plot the bunch_profile either as line plot or as pcolormesh\n        to plot as line pass either the period as first argument or a keyword argument period\n        Note: if yunit is passed period is in that unit, else in default value.\n        kwargs: (first value is default)\n          * xunit: possible values: \"meters\", \"seconds\", \"raw\"\n          * yunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * zunit: possible values: \"coulomb\", \"ampere\", \"raw\"\n          * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_14bunch_profile[] = "\n        | Plot the bunch_profile either as line plot or as pcolormesh\n        | to plot as line pass either the period as first argument or a keyword argument period\n        | Note: if yunit is passed period is in that unit, else in default value.\n        kwargs: (first value is default)\n          * xunit: possible values: \"meters\", \"seconds\", \"raw\"\n          * yunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * zunit: possible values: \"coulomb\", \"ampere\", \"raw\"\n          * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_15bunch_profile = {"bunch_profile", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_15bunch_profile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_14bunch_profile};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_15bunch_profile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
@@ -8281,7 +8281,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
 
 static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_14bunch_profile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
@@ -9074,7 +9074,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_14bu
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
 
   /* function exit code */
@@ -11130,12 +11130,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_22bu
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_25csr_spectrum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24csr_spectrum[] = "\n        Plot the csr_spectrum either as line plot or as pcolormesh\n        to plot as line pass either the period as first argument or a keyword argument period\n        Note: if yunit is passed period is in that unit, else in default value.\n        kwargs: (first value is default)\n          * xunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * yunit: possible values: \"hertz\", \"raw\"\n          * zunit: possible values: \"watt\", \"raw\"\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24csr_spectrum[] = "\n        | Plot the csr_spectrum either as line plot or as pcolormesh\n        | to plot as line pass either the period as first argument or a keyword argument period\n        | Note: if yunit is passed period is in that unit, else in default value.\n        kwargs: (first value is default)\n          * xunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * yunit: possible values: \"hertz\", \"raw\"\n          * zunit: possible values: \"watt\", \"raw\"\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_25csr_spectrum = {"csr_spectrum", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_25csr_spectrum, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24csr_spectrum};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_25csr_spectrum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
@@ -11348,7 +11348,7 @@ static PyObject *__pyx_lambda_funcdef_lambda2(PyObject *__pyx_self, PyObject *__
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
 
 static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24csr_spectrum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
@@ -12043,7 +12043,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24cs
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
 
   /* function exit code */
@@ -12076,12 +12076,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_24cs
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_27energy_profile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_26energy_profile[] = "\n        Plot the energy_profile either as line plot or as pcolormesh\n        to plot as line pass either the period as first argument or a keyword argument period\n        kwargs: (first value is default)\n          * xunit: possible values: \"eV\", \"raw\"\n          * yunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * zunit: possible values: \"coulomb\", \"ampere\", \"raw\"\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_26energy_profile[] = "\n        | Plot the energy_profile either as line plot or as pcolormesh\n        | to plot as line pass either the period as first argument or a keyword argument period\n        kwargs: (first value is default)\n          * xunit: possible values: \"eV\", \"raw\"\n          * yunit: possible values: \"ts\", \"seconds\", \"raw\"\n          * zunit: possible values: \"coulomb\", \"ampere\", \"raw\"\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_27energy_profile = {"energy_profile", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_27energy_profile, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_26energy_profile};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_27energy_profile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
@@ -12308,7 +12308,7 @@ static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
 
 static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_26energy_profile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
@@ -13010,7 +13010,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_26en
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
 
   /* function exit code */
@@ -13787,12 +13787,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_28im
  *     """
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         """
- *         Creates MultiPlot Instance
+ *         | Creates MultiPlot Instance
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_9MultiPlot_1__init__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_9MultiPlot___init__[] = "\n        Creates MultiPlot Instance\n        No Parameters (to add files use add_file)\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_9MultiPlot___init__[] = "\n        | Creates MultiPlot Instance\n        | No Parameters (to add files use add_file)\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_9MultiPlot_1__init__ = {"__init__", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_9MultiPlot_1__init__, METH_O, __pyx_doc_4Lisa_4core_5plots_12plots_cython_9MultiPlot___init__};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_9MultiPlot_1__init__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -13815,7 +13815,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_9MultiPlot___init__(
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "Lisa/core/plots/plots_cython.py":464
- *         No Parameters (to add files use add_file)
+ *         | No Parameters (to add files use add_file)
  *         """
  *         self._simple_plotters = []             # <<<<<<<<<<<<<<
  * 
@@ -13831,7 +13831,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_9MultiPlot___init__(
  *     """
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         """
- *         Creates MultiPlot Instance
+ *         | Creates MultiPlot Instance
  */
 
   /* function exit code */
@@ -15450,12 +15450,12 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_2_x_to_
  * 
  *     def clone(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return a copy of this instance
+ *         | Return a copy of this instance
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_5clone(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_4clone[] = "\n        Return a copy of this instance\n        This effectively creates a new object with same file object\n        ";
+static char __pyx_doc_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_4clone[] = "\n        | Return a copy of this instance\n        | This effectively creates a new object with same file object\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_5clone = {"clone", (PyCFunction)__pyx_pw_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_5clone, METH_O, __pyx_doc_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_4clone};
 static PyObject *__pyx_pw_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_5clone(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -15482,7 +15482,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_4clone(
   __Pyx_RefNannySetupContext("clone", 0);
 
   /* "Lisa/core/plots/plots_cython.py":542
- *         This effectively creates a new object with same file object
+ *         | This effectively creates a new object with same file object
  *         """
  *         return PhaseSpace(self._file)             # <<<<<<<<<<<<<<
  * 
@@ -15528,7 +15528,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_4clone(
  * 
  *     def clone(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return a copy of this instance
+ *         | Return a copy of this instance
  */
 
   /* function exit code */
@@ -17037,7 +17037,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_8ps_mov
 }
 
 /* "Lisa/core/plots/plots_cython.py":615
- *     Useful to check the phasespace over multiple currenst (spectrogram)
+ *     | Useful to check the phasespace over multiple currenst (spectrogram)
  *     """
  *     def __init__(self, path):             # <<<<<<<<<<<<<<
  *         self._path = path
@@ -17124,7 +17124,7 @@ static PyObject *__pyx_pf_4Lisa_4core_5plots_12plots_cython_20MultiPhaseSpaceMov
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_path_2, __pyx_v_path) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 616; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "Lisa/core/plots/plots_cython.py":615
- *     Useful to check the phasespace over multiple currenst (spectrogram)
+ *     | Useful to check the phasespace over multiple currenst (spectrogram)
  *     """
  *     def __init__(self, path):             # <<<<<<<<<<<<<<
  *         self._path = path
@@ -21038,7 +21038,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__72 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__71, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_p, __pyx_n_s_setup_plots, 40, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__72)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "Lisa/core/plots/plots_cython.py":51
- *     If fig is given the data is plotted into this figure
+ *     | If fig is given the data is plotted into this figure
  *     """
  *     def __init__(self, filef, unit_connector='in'):             # <<<<<<<<<<<<<<
  *         """
@@ -21081,7 +21081,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     def _select_label(self, kwargs, key, values, label, unit_for_label):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct label for the given kwargs.
+ *         | Select the correct label for the given kwargs.
  */
   __pyx_tuple__80 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_kwargs, __pyx_n_s_key, __pyx_n_s_values, __pyx_n_s_label, __pyx_n_s_unit_for_label, __pyx_n_s_uc); if (unlikely(!__pyx_tuple__80)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__80);
@@ -21093,7 +21093,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct unit and apply to data.
+ *         | Select the correct unit and apply to data.
  */
   __pyx_tuple__82 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_kwargs, __pyx_n_s_key, __pyx_n_s_data, __pyx_n_s_values, __pyx_n_s_attributes, __pyx_n_s_dataAttrs, __pyx_n_s_attr, __pyx_n_s_attrs, __pyx_n_s_factor); if (unlikely(!__pyx_tuple__82)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__82);
@@ -21132,7 +21132,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
   __pyx_tuple__89 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_period, __pyx_n_s_x, __pyx_n_s_xlabel, __pyx_n_s_y, __pyx_n_s_ylabel, __pyx_n_s_z, __pyx_n_s_zlabel); if (unlikely(!__pyx_tuple__89)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__89);
@@ -21192,7 +21192,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
   __pyx_tuple__99 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_period, __pyx_n_s_x, __pyx_n_s_xlabel, __pyx_n_s_y, __pyx_n_s_ylabel, __pyx_n_s_z, __pyx_n_s_zlabel); if (unlikely(!__pyx_tuple__99)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__99);
@@ -21204,7 +21204,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
   __pyx_tuple__101 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_period, __pyx_n_s_x, __pyx_n_s_xlabel, __pyx_n_s_y, __pyx_n_s_ylabel, __pyx_n_s_z, __pyx_n_s_zlabel); if (unlikely(!__pyx_tuple__101)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__101);
@@ -21228,7 +21228,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     """
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         """
- *         Creates MultiPlot Instance
+ *         | Creates MultiPlot Instance
  */
   __pyx_tuple__105 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__105)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 459; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__105);
@@ -21339,7 +21339,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     def clone(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return a copy of this instance
+ *         | Return a copy of this instance
  */
   __pyx_tuple__124 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__124)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 537; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__124);
@@ -21374,7 +21374,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__130);
 
   /* "Lisa/core/plots/plots_cython.py":615
- *     Useful to check the phasespace over multiple currenst (spectrogram)
+ *     | Useful to check the phasespace over multiple currenst (spectrogram)
  *     """
  *     def __init__(self, path):             # <<<<<<<<<<<<<<
  *         self._path = path
@@ -21894,7 +21894,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  * class SimplePlotter(object):             # <<<<<<<<<<<<<<
  *     """
- *     A Simple Plot Helper Class
+ *     | A Simple Plot Helper Class.
  */
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -21907,7 +21907,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
   __Pyx_GOTREF(__pyx_t_3);
 
   /* "Lisa/core/plots/plots_cython.py":51
- *     If fig is given the data is plotted into this figure
+ *     | If fig is given the data is plotted into this figure
  *     """
  *     def __init__(self, filef, unit_connector='in'):             # <<<<<<<<<<<<<<
  *         """
@@ -21948,7 +21948,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  *     def _select_label(self, kwargs, key, values, label, unit_for_label):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct label for the given kwargs.
+ *         | Select the correct label for the given kwargs.
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_7_select_label, 0, __pyx_n_s_SimplePlotter__select_label, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__81)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -21960,7 +21960,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  *     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):             # <<<<<<<<<<<<<<
  *         """
- *         Select the correct unit and apply to data.
+ *         | Select the correct unit and apply to data.
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_9_select_unit, 0, __pyx_n_s_SimplePlotter__select_unit, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__83)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -22016,7 +22016,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  *     @meshPlot
  *     def bunch_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the bunch_profile either as line plot or as pcolormesh
+ *         | Plot the bunch_profile either as line plot or as pcolormesh
  */
   __pyx_t_6 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_15bunch_profile, 0, __pyx_n_s_SimplePlotter_bunch_profile, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__90)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
@@ -22171,7 +22171,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  *     @meshPlot
  *     def csr_spectrum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the csr_spectrum either as line plot or as pcolormesh
+ *         | Plot the csr_spectrum either as line plot or as pcolormesh
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_25csr_spectrum, 0, __pyx_n_s_SimplePlotter_csr_spectrum, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__100)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -22202,7 +22202,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  *     @meshPlot
  *     def energy_profile(self, *args, **kwargs):             # <<<<<<<<<<<<<<
  *         """
- *         Plot the energy_profile either as line plot or as pcolormesh
+ *         | Plot the energy_profile either as line plot or as pcolormesh
  */
   __pyx_t_6 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_13SimplePlotter_27energy_profile, 0, __pyx_n_s_SimplePlotter_energy_profile, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__102)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
@@ -22245,7 +22245,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  * class SimplePlotter(object):             # <<<<<<<<<<<<<<
  *     """
- *     A Simple Plot Helper Class
+ *     | A Simple Plot Helper Class.
  */
   __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_SimplePlotter, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -22277,7 +22277,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  *     """
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         """
- *         Creates MultiPlot Instance
+ *         | Creates MultiPlot Instance
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_9MultiPlot_1__init__, 0, __pyx_n_s_MultiPlot___init, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__106)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 459; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -22450,7 +22450,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  *     def clone(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return a copy of this instance
+ *         | Return a copy of this instance
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_5plots_12plots_cython_10PhaseSpace_5clone, 0, __pyx_n_s_PhaseSpace_clone, NULL, __pyx_n_s_Lisa_core_plots_plots_cython, __pyx_d, ((PyObject *)__pyx_codeobj__125)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 537; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
@@ -22502,7 +22502,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  * class MultiPhaseSpaceMovie(object):             # <<<<<<<<<<<<<<
  *     """
- *     Create Phasespace of multiple Files
+ *     | Create Phasespace of multiple Files
  */
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 610; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -22515,7 +22515,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
   __Pyx_GOTREF(__pyx_t_3);
 
   /* "Lisa/core/plots/plots_cython.py":615
- *     Useful to check the phasespace over multiple currenst (spectrogram)
+ *     | Useful to check the phasespace over multiple currenst (spectrogram)
  *     """
  *     def __init__(self, path):             # <<<<<<<<<<<<<<
  *         self._path = path
@@ -22556,7 +22556,7 @@ PyMODINIT_FUNC PyInit_plots_cython(void)
  * 
  * class MultiPhaseSpaceMovie(object):             # <<<<<<<<<<<<<<
  *     """
- *     Create Phasespace of multiple Files
+ *     | Create Phasespace of multiple Files
  */
   __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_MultiPhaseSpaceMovie, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 610; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);

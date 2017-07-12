@@ -12,6 +12,18 @@ class UnitError(Exception):
     pass
 
 class Data(object):
+    """
+    Get Data from Inovesa Result Datafiles with specified unit.
+
+    Use the same attributes that are available for Lisa.File objects.
+
+    Usage::
+
+      d = Lisa.Data("/path/to/file")
+      d.bunch_profile(2, unit="c")  # 2 for data and unit="c" for coulomb
+
+    .. seealso:: Lisa.File
+    """
     def __init__(self, p_file):
         """
         :param p_file: either a filename of a Lisa.File object
@@ -25,6 +37,11 @@ class Data(object):
         self._build_complete_unit_map()
 
     def __getattr__(self, attr):
+        """
+        Convert to correct unit.
+        :param idx: the index of the returned list by File objects
+        :param string unit: Use this as second argument or kwarg
+        """
         if attr.endswith("_raw"):
             """
             Return the raw data from File object
@@ -40,11 +57,6 @@ class Data(object):
                     return getattr(self._file, attr)[what]
             return inner
         def inner(idx, *args, **kwargs):
-            """
-            Convert to correct unit.
-            :param idx: the index of the returned list by File objects
-            Use a string for the desired unit either as second argument or as kwarg unit="unitname"
-            """
             unit = ''
             if len(args) > 0 and isinstance(args[0], str):
                 unit = args[0]
@@ -66,6 +78,8 @@ class Data(object):
             else:
                 lisa_print("units for this data", list(data.attrs))
                 raise UnitError(unit+" is not a valid unit for this data.")
+        inner.__doc__ = self.__getattr__.__doc__
+        inner.__name__ = attr
         return inner
 
     def _build_complete_unit_map(self):

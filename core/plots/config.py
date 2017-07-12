@@ -93,10 +93,11 @@ styles = {
 
 class Style(dict):
     """
-    Style for Matplotlib axes
-    It is essentially a dictionary with overriden methods
-    Usage: (assume ax is an matplotlib axes object
-    .. code:: python
+    Style for Matplotlib axes.
+    It is essentially a dictionary with overriden methods.
+
+    Usage (assume ax is an matplotlib axes object)::
+
         style = Style()
         style.apply_to_ax(ax)
         style.update({selector: value})  # or use style.update_style
@@ -104,8 +105,9 @@ class Style(dict):
         # if you have done some modifications to the plot yourself and want to update the style again use
         style.reapply()
 
-    Note: instead of working with the Style object directly you can use ax.current_style after you applied a style
-    Note: You can apply one Style object to more than one axes object. Just call apply_to_ax multiple times or with a list of axes
+
+    .. note:: instead of working with the Style object directly you can use ax.current_style after you applied a style
+    .. note:: You can apply one Style object to more than one axes object. Just call apply_to_ax multiple times or with a list of axes
         If you applied one Style to multiple axes objects and you use axes.current_style instead of the style object
         directly the updates/changes will nonetheless be applied to all applied axes objects
     """
@@ -116,8 +118,8 @@ class Style(dict):
 
     def apply_to_ax(self, ax):
         """
-        Apply this style to the given axes object
-        You can apply to multiple axes objects by calling this multiple times or with a list of objects
+        | Apply this style to the given axes object
+        | You can apply to multiple axes objects by calling this multiple times or with a list of objects
         :param ax: matplotlib axes object or list of those
         """
         ax = ax if isinstance(ax, list) else [ax,]
@@ -128,8 +130,8 @@ class Style(dict):
 
     def apply_to_fig(self, fig):
         """
-        Apply this style to the given figure and its axes (and new axes)
-        You can apply to multiple figures by calling this multiple times or with a list of figures
+        | Apply this style to the given figure and its axes (and new axes)
+        | You can apply to multiple figures by calling this multiple times or with a list of figures
         :param fig: matplotlib figure or list of those
         :return:
         """
@@ -238,11 +240,11 @@ def _split_key(key):
 
 def _style_plot(config=None, axes=None):
     """
-    Style a plot
-    format of config_dict:
-        {'top_selector:sub_selector:attribute': value}
-        you can omit sub_selector if you want to set a value for the attribute of all sub_selectors.
-        Format for that looks like so: 'top_selector::attribute' note the double colon
+    | Style a plot
+    | format of config_dict:
+    |     {'top_selector:sub_selector:attribute': value}
+    |     you can omit sub_selector if you want to set a value for the attribute of all sub_selectors.
+    |     Format for that looks like so: 'top_selector::attribute' note the double colon
     :param config: dictionary with style options or string with stylename (see styles variable in this module)
     :param axes: (optional) the axes object to style. Default is to use the current object (plt.gca())
     :return:
