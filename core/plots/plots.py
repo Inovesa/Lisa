@@ -24,7 +24,8 @@ from moviepy.editor import concatenate_videoclips
 
 import textwrap
 
-from ..file import File
+# from ..file import File
+from ..file_cython import File
 from .config import Style
 from ..internals import lisa_print
 

@@ -36,10 +36,13 @@ def registered_property(cls):
     def wrapper(func):
         # if func.__name__ not in cls.registered_properties:  ## Use this if stuff turns up multiple times
         cls.registered_properties.append(func.__name__)
-        return property(func)
+        p = property(func)
+        p.__doc__ = func.__doc__
+        return p
     return wrapper
 
 class File(object):
+    """Wrapper around a h5 File created by Inovesa"""
     def __init__(self, filename):
         self.filename = filename
         self.file = h5.File(filename, 'r')
@@ -68,6 +71,9 @@ class File(object):
         return ret
 
     def preload_full(self, what):
+        """
+        Preload Data into memory. This will speed up recurring reads by a lot
+        """
         try:
             h5data = getattr(self, what)
             tmp = [np.zeros(i.shape, dtype=i.dtype) for i in h5data]
@@ -79,6 +85,10 @@ class File(object):
 
     @registered_property(FileDataRegister)
     def energy_spread(self):
+        """
+        Return the EnergySpread
+        :return: [EnergySpread.axis0, EnergySpread.data]
+        """
         if self._energy_spread is None:
             self._energy_spread = [self.file.get("EnergySpread").get("axis0"),
                                    self.file.get("EnergySpread").get("data")]
@@ -86,6 +96,10 @@ class File(object):
 
     @registered_property(FileDataRegister)
     def bunch_length(self):
+        """
+        Return the BunchLength
+        :return: [BunchLength.axis0, BunchLength.data]
+        """
         if self._bunch_length is None:
             self._bunch_length = [self.file.get("BunchLength").get("axis0"),
                                   self.file.get("BunchLength").get("data")]
@@ -93,6 +107,10 @@ class File(object):
 
     @registered_property(FileDataRegister)
     def bunch_position(self):
+        """
+        Return the BunchPosition
+        :return: [BunchPosition.axis0, BunchPosition.data]
+        """
         if self._bunch_position is None:
             self._bunch_position = [self.file.get("BunchPosition").get("axis0"),
                                     self.file.get("BunchPosition").get("data")]
@@ -100,65 +118,113 @@ class File(object):
 
     @registered_property(FileDataRegister)
     def bunch_population(self):
+        """
+        Return the BunchPopulation
+        :return: [BunchPopulation.axis0, BunchPopulation.data]
+        """
         if self._bunch_population is None:
             self._bunch_population = self._get_list("BunchPopulation", ["axis0", "data"])
         return self._bunch_population
 
     @registered_property(FileDataRegister)
     def bunch_profile(self):
+        """
+        Return the BunchProfile
+        :return: [BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data]
+        """
         if self._bunch_profile is None:
             self._bunch_profile = self._get_list("BunchProfile", ["axis0", "axis1", "data"])
         return self._bunch_profile
 
     @registered_property(FileDataRegister)
     def csr_intensity(self):
+        """
+        Return the CSRIntensity
+        :return: [CSRIntensity.axis0, CSRIntensity.axis1, CSRIntensity.data]
+        """
         if self._csr_intensity is None:
             self._csr_intensity = self._get_list("CSR/Intensity", ["axis0", "data"])
         return self._csr_intensity
 
     @registered_property(FileDataRegister)
     def csr_spectrum(self):
+        """
+        Return the CSRSpectrum
+        :return: [CSRSpectrum.axis0, CSRSpectrum.axis1, CSRSpectrum.data]
+        """
         if self._csr_spectrum is None:
             self._csr_spectrum = self._get_list("CSR/Spectrum", ["axis0", "axis1", "data"])
         return self._csr_spectrum
 
     @registered_property(FileDataRegister)
     def energy_profile(self):
+        """
+        Return the EnergyProfile
+        :return: [EnergyProfile.axis0, EnergyProfile.axis1, EnergyProfile.data]
+        """
         if self._energy_profile is None:
             self._energy_profile = self._get_list("EnergyProfile", ["axis0", "axis1", "data"])
         return self._energy_profile
 
     @registered_property(FileDataRegister)
     def impedance(self):
+        """
+        Return the Impedance
+        :return: [Impedance.axis0, Impedance.real, Impedance.imag]
+        """
         if self._impedance is None:
             self._impedance = self._get_list("Impedance", ["axis0", "data/real", "data/imag"])
         return self._impedance
 
     @registered_property(FileDataRegister)
     def particles(self):
+        """
+        Return the Particles
+        :return: [Particles.axis0, Particles.data]
+        """
         if self._particles is None:
             self._particles = self._get_list("Particles", ["axis0", "data"])
         return self._particles
 
     @registered_property(FileDataRegister)
     def phase_space(self):
+        """
+        Return the PhaseSpace
+        :return: [PhaseSpace.axis0, PhaseSpace.axis1 ,PhaseSpace.data]
+        """
         if self._phase_space is None:
             self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
         return self._phase_space
 
     @registered_property(FileDataRegister)
     def wake_potential(self):
+        """
+        Return the WakePotential
+        :return: [WakePotential.axis0, WakePotential.data]
+        """
         if self._wake_potential is None:
             self._wake_potential = self._get_list("WakePotential", ["axis0", "data"])
         return self._wake_potential
 
     @registered_property(FileDataRegister)
     def parameters(self):
+        """
+        Return the Inovesa Parameters
+        :return: h5py.Attribute Instance
+        """
         return self.file.get("Info/Parameters").attrs
 
 
 class MultiFile(object):
+    """
+    Multiple File container for whole directories
+    """
     def __init__(self, path, pattern=None, sorter=None):
+        """
+        :param path: The path to search in
+        :param pattern: The pattern to search for (pattern has to be accepted by glob) (None for no pattern)
+        :param sorter: The sorting method to use. (None for default)
+        """
         self.path = path
         self.pattern = pattern
         self.sorter = sorter
@@ -190,6 +256,10 @@ class MultiFile(object):
             self._sorted_filelist = [i[1] for i in tmp_list]
 
     def set_sorter(self, sorter):
+        """
+        Set the sorting method
+        :param sorter: A callable that accepts a list of files as strings and returns a sorted list of strings
+        """
         self.sorter = sorter
         self._sort_changed = True
 
@@ -197,6 +267,7 @@ class MultiFile(object):
     def strlst(self, sorted=True):
         """
         Get File list as string list
+        :param sorted: True to sort the list
         """
         if sorted:
             if self._sort_changed:
@@ -205,9 +276,10 @@ class MultiFile(object):
         else:
             return self._filelist
 
-    def objlst(self):
+    def objlst(self, sorted=True):
         """
         Get File list as Lisa.File object list
+        :param sorted: True to sort the list
         """
         if sorted:
             if self._sort_changed:

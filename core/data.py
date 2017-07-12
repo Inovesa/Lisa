@@ -1,4 +1,4 @@
-from .file import File,  FileDataRegister
+from .file_cython import File,  FileDataRegister
 from .internals import lisa_print
 import numpy as np
 

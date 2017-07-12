@@ -827,7 +827,6 @@ static char __pyx_k_meter[] = "meter";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_watts[] = "watts";
 static char __pyx_k_ampere[] = "ampere";
-static char __pyx_k_file_2[] = "file";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_kwargs[] = "kwargs";
 static char __pyx_k_meters[] = "meters";
@@ -854,6 +853,7 @@ static char __pyx_k_metaclass[] = "__metaclass__";
 static char __pyx_k_lisa_print[] = "lisa_print";
 static char __pyx_k_parameters[] = "parameters";
 static char __pyx_k_Data___init[] = "Data.__init__";
+static char __pyx_k_file_cython[] = "file_cython";
 static char __pyx_k_syncperiods[] = "syncperiods";
 static char __pyx_k_Factor4Hertz[] = "Factor4Hertz";
 static char __pyx_k_Factor4Watts[] = "Factor4Watts";
@@ -927,7 +927,7 @@ static PyObject *__pyx_kp_u_electron_volts;
 static PyObject *__pyx_n_u_electronvolts;
 static PyObject *__pyx_n_s_endswith;
 static PyObject *__pyx_n_s_file;
-static PyObject *__pyx_n_s_file_2;
+static PyObject *__pyx_n_s_file_cython;
 static PyObject *__pyx_n_s_float64;
 static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_getattr;
@@ -2915,7 +2915,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_electronvolts, __pyx_k_electronvolts, sizeof(__pyx_k_electronvolts), 0, 1, 0, 1},
   {&__pyx_n_s_endswith, __pyx_k_endswith, sizeof(__pyx_k_endswith), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
-  {&__pyx_n_s_file_2, __pyx_k_file_2, sizeof(__pyx_k_file_2), 0, 0, 1, 1},
+  {&__pyx_n_s_file_cython, __pyx_k_file_cython, sizeof(__pyx_k_file_cython), 0, 0, 1, 1},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
   {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
   {&__pyx_n_s_getattr, __pyx_k_getattr, sizeof(__pyx_k_getattr), 0, 0, 1, 1},
@@ -3202,7 +3202,7 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   #endif
 
   /* "Lisa/core/data_cython.py":1
- * from .file import File,  FileDataRegister             # <<<<<<<<<<<<<<
+ * from .file_cython import File,  FileDataRegister             # <<<<<<<<<<<<<<
  * from .internals import lisa_print
  * import numpy as np
  */
@@ -3214,7 +3214,7 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   __Pyx_INCREF(__pyx_n_s_FileDataRegister);
   __Pyx_GIVEREF(__pyx_n_s_FileDataRegister);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_FileDataRegister);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_file_2, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_file_cython, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_File); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -3228,7 +3228,7 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "Lisa/core/data_cython.py":2
- * from .file import File,  FileDataRegister
+ * from .file_cython import File,  FileDataRegister
  * from .internals import lisa_print             # <<<<<<<<<<<<<<
  * import numpy as np
  * 
@@ -3248,7 +3248,7 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "Lisa/core/data_cython.py":3
- * from .file import File,  FileDataRegister
+ * from .file_cython import File,  FileDataRegister
  * from .internals import lisa_print
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
@@ -3352,7 +3352,7 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "Lisa/core/data_cython.py":1
- * from .file import File,  FileDataRegister             # <<<<<<<<<<<<<<
+ * from .file_cython import File,  FileDataRegister             # <<<<<<<<<<<<<<
  * from .internals import lisa_print
  * import numpy as np
  */
