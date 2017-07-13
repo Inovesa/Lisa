@@ -15,11 +15,6 @@ from numbers import Number
 
 import sys
 
-##video stuff
-from moviepy.video.io.bindings import mplfig_to_npimage
-from moviepy.video.VideoClip import DataVideoClip
-from moviepy.editor import concatenate_videoclips
-
 import textwrap
 
 # from ..file import File
@@ -640,6 +635,11 @@ class MultiPhaseSpaceMovie(object):
         :param autorescale(=False): if True will autorescale each frame (will not make sense if you want to compare)
         :return: True if file produced, moviepy video instance if None as filename was given
         """
+        ##video stuff - Import here to speed up overall Lisa import time. This will not slow down anything by a lot because create_movie is ony called once per movie (which takes a long time anyway)
+        from moviepy.video.io.bindings import mplfig_to_npimage
+        from moviepy.video.VideoClip import DataVideoClip
+        from moviepy.editor import concatenate_videoclips
+
         plt.ioff()
         clips = []
         # NOTE: The use of this function in conjunction with a lambda with default
