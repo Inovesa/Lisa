@@ -147,6 +147,7 @@ class SimplePlotter(object):
                 if period not in y:
                     lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
                 idx = np.argmin(np.abs(np.array(y)-period))
+                args[0]._last_interpol_idx = idx
                 if period not in y:
                     lisa_print(y[idx], debug=False)
                 @SimplePlotter.plot
@@ -500,8 +501,8 @@ class MultiPlot(object):
             return warn_no_file
         if hasattr(self._simple_plotters[0][0], attr):
             # self._figure.clear()
-            self._figure = plt.figure(tight_layout=True)
             def inner(*args, **kwargs):
+                self._figure = plt.figure(tight_layout=True)  # make shure it is only created when actual plotting is wanted
                 kwargs["fig"] = self._figure
                 for sp in self._simple_plotters:
                     if sp[1] != None:
@@ -513,6 +514,8 @@ class MultiPlot(object):
                             "'label' in kwarg will be overriden with that value for the corresponding file.\n"+\
                             "\nDelegated Options from SimplePlotter:\n"+ getattr(self._simple_plotters[0][0], attr).__doc__
             return inner
+        elif object.__hasattr__(self, attr):
+            return object.__getattr__(self, attr)
         else:
             raise Exception("MultiPlot does not have attribute " + attr)
 

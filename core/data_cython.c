@@ -449,6 +449,7 @@ static const char *__pyx_f[] = {
 
 /*--- Type declarations ---*/
 struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__;
+struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner;
 
 /* "Lisa/core/data_cython.py":37
  *         self._build_complete_unit_map()
@@ -461,6 +462,20 @@ struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ {
   PyObject_HEAD
   PyObject *__pyx_v_attr;
   PyObject *__pyx_v_self;
+};
+
+
+/* "Lisa/core/data_cython.py":57
+ *                     return getattr(self._file, attr)[what]
+ *             return inner
+ *         def inner(idx, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *             unit = ''
+ *             if len(args) > 0 and isinstance(args[0], str):
+ */
+struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner {
+  PyObject_HEAD
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *__pyx_outer_scope;
+  PyObject *__pyx_v_idx;
 };
 
 
@@ -600,6 +615,11 @@ static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname);
 
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 
+static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
+    int result = PySequence_Contains(seq, item);
+    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
+}
+
 #define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
     (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
     __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
@@ -632,16 +652,6 @@ static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyOb
 static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
 
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
-
-static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
-    int result = PySequence_Contains(seq, item);
-    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
-        PyObject* obj, Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** py_start, PyObject** py_stop, PyObject** py_slice,
-        int has_cstart, int has_cstop, int wraparound);
 
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
 
@@ -697,6 +707,11 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *m,
 static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *m,
                                                               PyObject *dict);
 static int __pyx_CyFunction_init(void);
+
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
+        PyObject* obj, Py_ssize_t cstart, Py_ssize_t cstop,
+        PyObject** py_start, PyObject** py_stop, PyObject** py_slice,
+        int has_cstart, int has_cstop, int wraparound);
 
 static CYTHON_INLINE int __Pyx_IterFinish(void);
 
@@ -781,6 +796,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'Lisa.core.data_cython' */
 static PyTypeObject *__pyx_ptype_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ = 0;
+static PyTypeObject *__pyx_ptype_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner = 0;
 #define __Pyx_MODULE_NAME "Lisa.core.data_cython"
 int __pyx_module_is_main_Lisa__core__data_cython = 0;
 
@@ -788,6 +804,8 @@ int __pyx_module_is_main_Lisa__core__data_cython = 0;
 static PyObject *__pyx_builtin_Exception;
 static PyObject *__pyx_builtin_object;
 static PyObject *__pyx_builtin_AttributeError;
+static PyObject *__pyx_builtin_filter;
+static PyObject *__pyx_builtin_IndexError;
 static char __pyx_k_[] = "";
 static char __pyx_k_A[] = "A";
 static char __pyx_k_C[] = "C";
@@ -797,6 +815,7 @@ static char __pyx_k_s[] = "s";
 static char __pyx_k_Hz[] = "Hz";
 static char __pyx_k_eV[] = "eV";
 static char __pyx_k_np[] = "np";
+static char __pyx_k_pd[] = "pd";
 static char __pyx_k_ts[] = "ts";
 static char __pyx_k_all[] = "all";
 static char __pyx_k_doc[] = "__doc__";
@@ -812,7 +831,7 @@ static char __pyx_k_file[] = "_file";
 static char __pyx_k_init[] = "__init__";
 static char __pyx_k_keys[] = "keys";
 static char __pyx_k_main[] = "__main__";
-static char __pyx_k_name[] = "__name__";
+static char __pyx_k_name[] = "name";
 static char __pyx_k_self[] = "self";
 static char __pyx_k_test[] = "__test__";
 static char __pyx_k_unit[] = "unit";
@@ -828,10 +847,12 @@ static char __pyx_k_meter[] = "meter";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_watts[] = "watts";
 static char __pyx_k_ampere[] = "ampere";
+static char __pyx_k_filter[] = "filter";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_kwargs[] = "kwargs";
 static char __pyx_k_meters[] = "meters";
 static char __pyx_k_module[] = "__module__";
+static char __pyx_k_name_2[] = "__name__";
 static char __pyx_k_object[] = "object";
 static char __pyx_k_p_file[] = "p_file";
 static char __pyx_k_second[] = "second";
@@ -851,6 +872,7 @@ static char __pyx_k_UnitError[] = "UnitError";
 static char __pyx_k_alias_map[] = "alias_map";
 static char __pyx_k_internals[] = "internals";
 static char __pyx_k_metaclass[] = "__metaclass__";
+static char __pyx_k_IndexError[] = "IndexError";
 static char __pyx_k_lisa_print[] = "lisa_print";
 static char __pyx_k_parameters[] = "parameters";
 static char __pyx_k_Data___init[] = "Data.__init__";
@@ -885,6 +907,9 @@ static char __pyx_k_Data__build_complete_unit_map[] = "Data._build_complete_unit
 static char __pyx_k_Get_Data_from_Inovesa_Result_Da[] = "\n    Get Data from Inovesa Result Datafiles with specified unit.\n\n    Use the same attributes that are available for Lisa.File objects.\n\n    Usage::\n\n      d = Lisa.Data(\"/path/to/file\")\n      d.bunch_profile(2, unit=\"c\")  # 2 for data and unit=\"c\" for coulomb\n\n    .. seealso:: Lisa.File\n    ";
 static char __pyx_k_home_patrick_Python_Lisa_core_d[] = "/home/patrick/Python/Lisa/core/data_cython.py";
 static char __pyx_k_is_not_a_valid_unit_for_this_da[] = " is not a valid unit for this data.";
+static char __pyx_k_s_is_not_a_valid_index_and_no_m[] = "'%s' is not a valid index and no matching element was found.";
+static char __pyx_k_s_was_not_found_or_was_found_mu[] = "'%s' was not found or was found multiple times.";
+static char __pyx_k_Data___getattr___locals_inner_lo[] = "Data.__getattr__.<locals>.inner.<locals>.<lambda>";
 static char __pyx_k_Data_object_and_File_object_does[] = "Data object (and File object) does not have an attribute ";
 static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_u_A;
@@ -893,6 +918,7 @@ static PyObject *__pyx_n_u_C;
 static PyObject *__pyx_n_s_Data;
 static PyObject *__pyx_n_s_Data___getattr;
 static PyObject *__pyx_n_s_Data___getattr___locals_inner;
+static PyObject *__pyx_n_s_Data___getattr___locals_inner_lo;
 static PyObject *__pyx_n_s_Data___init;
 static PyObject *__pyx_n_s_Data__build_complete_unit_map;
 static PyObject *__pyx_kp_u_Data_object_and_File_object_does;
@@ -908,6 +934,7 @@ static PyObject *__pyx_n_s_File;
 static PyObject *__pyx_n_s_FileDataRegister;
 static PyObject *__pyx_kp_s_Get_Data_from_Inovesa_Result_Da;
 static PyObject *__pyx_n_u_Hz;
+static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_n_s_Lisa_core_data_cython;
 static PyObject *__pyx_kp_u_No_unit_given;
 static PyObject *__pyx_n_s_UnitError;
@@ -932,6 +959,7 @@ static PyObject *__pyx_n_u_electronvolts;
 static PyObject *__pyx_n_s_endswith;
 static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_file_cython;
+static PyObject *__pyx_n_s_filter;
 static PyObject *__pyx_n_s_float64;
 static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_getattr;
@@ -956,11 +984,13 @@ static PyObject *__pyx_n_u_meter;
 static PyObject *__pyx_n_u_meters;
 static PyObject *__pyx_n_s_module;
 static PyObject *__pyx_n_s_name;
+static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_object;
 static PyObject *__pyx_n_s_p_file;
 static PyObject *__pyx_n_u_parameters;
+static PyObject *__pyx_n_s_pd;
 static PyObject *__pyx_n_u_periods;
 static PyObject *__pyx_kp_u_possible_units;
 static PyObject *__pyx_n_s_prepare;
@@ -968,6 +998,8 @@ static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_u_raw;
 static PyObject *__pyx_n_s_registered_properties;
 static PyObject *__pyx_n_u_s;
+static PyObject *__pyx_kp_u_s_is_not_a_valid_index_and_no_m;
+static PyObject *__pyx_kp_u_s_was_not_found_or_was_found_mu;
 static PyObject *__pyx_n_u_second;
 static PyObject *__pyx_n_u_seconds;
 static PyObject *__pyx_n_s_self;
@@ -986,10 +1018,12 @@ static PyObject *__pyx_n_u_watts;
 static PyObject *__pyx_n_s_what;
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_p_file); /* proto */
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___inner(PyObject *__pyx_self, PyObject *__pyx_v_what); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(PyObject *__pyx_self, PyObject *__pyx_v_idx, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_2__getattr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_attr); /* proto */
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_float_1_0;
 static PyObject *__pyx_int_neg_4;
 static PyObject *__pyx_slice__5;
@@ -1509,11 +1543,77 @@ static PyObject *__pyx_pw_4Lisa_4core_11data_cython_4Data_11__getattr___3inner(P
   return __pyx_r;
 }
 
+/* "Lisa/core/data_cython.py":74
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))             # <<<<<<<<<<<<<<
+ *                 if len(pd) > 1:
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4Lisa_4core_11data_cython_4Data_11__getattr___5inner_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
+static PyMethodDef __pyx_mdef_4Lisa_4core_11data_cython_4Data_11__getattr___5inner_lambda = {"lambda", (PyCFunction)__pyx_pw_4Lisa_4core_11data_cython_4Data_11__getattr___5inner_lambda, METH_O, 0};
+static PyObject *__pyx_pw_4Lisa_4core_11data_cython_4Data_11__getattr___5inner_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda (wrapper)", 0);
+  __pyx_r = __pyx_lambda_funcdef_lambda(__pyx_self, ((PyObject *)__pyx_v_x));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *__pyx_cur_scope;
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *__pyx_outer_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("lambda", 0);
+  __pyx_outer_scope = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_cur_scope = __pyx_outer_scope;
+  __Pyx_XDECREF(__pyx_r);
+  if (unlikely(!__pyx_cur_scope->__pyx_v_idx)) { __Pyx_RaiseClosureNameError("idx"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_name); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_cur_scope->__pyx_v_idx, __pyx_t_1, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("Lisa.core.data_cython.Data.__getattr__.inner.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "Lisa/core/data_cython.py":57
+ *                     return getattr(self._file, attr)[what]
+ *             return inner
+ *         def inner(idx, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *             unit = ''
+ *             if len(args) > 0 and isinstance(args[0], str):
+ */
+
 static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(PyObject *__pyx_self, PyObject *__pyx_v_idx, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *__pyx_cur_scope;
-  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *__pyx_outer_scope;
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *__pyx_cur_scope;
   PyObject *__pyx_v_unit = NULL;
   PyObject *__pyx_v_data = NULL;
+  PyObject *__pyx_v_pd = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -1529,8 +1629,18 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("inner", 0);
-  __pyx_outer_scope = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
-  __pyx_cur_scope = __pyx_outer_scope;
+  __pyx_cur_scope = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *)__pyx_tp_new_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(__pyx_ptype_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner, __pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __Pyx_RefNannyFinishContext();
+    return NULL;
+  }
+  __Pyx_GOTREF(__pyx_cur_scope);
+  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
+  __pyx_cur_scope->__pyx_v_idx = __pyx_v_idx;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_idx);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_idx);
 
   /* "Lisa/core/data_cython.py":58
  *             return inner
@@ -1736,8 +1846,8 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")
  */
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_unit, __pyx_t_6, Py_NE)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -1758,12 +1868,12 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())             # <<<<<<<<<<<<<<
  *                 raise UnitError(unit+" is not a valid unit.")
- *             data = getattr(self._file, attr)[idx]
+ *             # search index if idx is not int
  */
     __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_lisa_print); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_keys); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_9);
@@ -1819,8 +1929,8 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *             elif unit not in self._unit_map and unit is not None:
  *                 lisa_print("possible units", self._unit_map.keys())
  *                 raise UnitError(unit+" is not a valid unit.")             # <<<<<<<<<<<<<<
- *             data = getattr(self._file, attr)[idx]
- *             if unit is None or self._unit_map[unit] is None:  # do not modify
+ *             # search index if idx is not int
+ *             if isinstance(idx, int):
  */
     __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_UnitError); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
@@ -1865,32 +1975,213 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  */
   }
 
-  /* "Lisa/core/data_cython.py":70
- *                 lisa_print("possible units", self._unit_map.keys())
+  /* "Lisa/core/data_cython.py":71
  *                 raise UnitError(unit+" is not a valid unit.")
- *             data = getattr(self._file, attr)[idx]             # <<<<<<<<<<<<<<
+ *             # search index if idx is not int
+ *             if isinstance(idx, int):             # <<<<<<<<<<<<<<
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):
+ */
+  __pyx_t_6 = __pyx_cur_scope->__pyx_v_idx;
+  __Pyx_INCREF(__pyx_t_6);
+  __pyx_t_5 = PyInt_Check(__pyx_t_6); 
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_1 = (__pyx_t_5 != 0);
+  if (__pyx_t_1) {
+
+    /* "Lisa/core/data_cython.py":72
+ *             # search index if idx is not int
+ *             if isinstance(idx, int):
+ *                 data = getattr(self._file, attr)[idx]             # <<<<<<<<<<<<<<
+ *             elif isinstance(idx, str):
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ */
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_file); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_attr)) { __Pyx_RaiseClosureNameError("attr"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_4 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_attr;
+    __Pyx_INCREF(__pyx_t_4);
+    __pyx_t_9 = __Pyx_GetAttr(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyObject_GetItem(__pyx_t_9, __pyx_cur_scope->__pyx_v_idx); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_v_data = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "Lisa/core/data_cython.py":71
+ *                 raise UnitError(unit+" is not a valid unit.")
+ *             # search index if idx is not int
+ *             if isinstance(idx, int):             # <<<<<<<<<<<<<<
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):
+ */
+    goto __pyx_L10;
+  }
+
+  /* "Lisa/core/data_cython.py":73
+ *             if isinstance(idx, int):
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):             # <<<<<<<<<<<<<<
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ *                 if len(pd) > 1:
+ */
+  __pyx_t_4 = __pyx_cur_scope->__pyx_v_idx;
+  __Pyx_INCREF(__pyx_t_4);
+  __pyx_t_1 = PyUnicode_Check(__pyx_t_4); 
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_5 = (__pyx_t_1 != 0);
+  if (__pyx_t_5) {
+
+    /* "Lisa/core/data_cython.py":74
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))             # <<<<<<<<<<<<<<
+ *                 if len(pd) > 1:
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+ */
+    __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_11data_cython_4Data_11__getattr___5inner_lambda, 0, __pyx_n_s_Data___getattr___locals_inner_lo, ((PyObject*)__pyx_cur_scope), __pyx_n_s_Lisa_core_data_cython, __pyx_d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_file); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_attr)) { __Pyx_RaiseClosureNameError("attr"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_6 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_attr;
+    __Pyx_INCREF(__pyx_t_6);
+    __pyx_t_7 = __Pyx_GetAttr(__pyx_t_9, __pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_7);
+    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_filter, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PySequence_List(__pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_v_pd = ((PyObject*)__pyx_t_6);
+    __pyx_t_6 = 0;
+
+    /* "Lisa/core/data_cython.py":75
+ *             elif isinstance(idx, str):
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ *                 if len(pd) > 1:             # <<<<<<<<<<<<<<
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+ *                 else:
+ */
+    __pyx_t_2 = PyList_GET_SIZE(__pyx_v_pd); if (unlikely(__pyx_t_2 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = ((__pyx_t_2 > 1) != 0);
+    if (__pyx_t_5) {
+
+      /* "Lisa/core/data_cython.py":76
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ *                 if len(pd) > 1:
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     data = pd[0]
+ */
+      __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_INCREF(__pyx_cur_scope->__pyx_v_idx);
+      __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_idx);
+      PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_cur_scope->__pyx_v_idx);
+      __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = PyUnicode_Format(__pyx_kp_u_s_was_not_found_or_was_found_mu, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
+      __pyx_t_6 = 0;
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_IndexError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_Raise(__pyx_t_6, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+      /* "Lisa/core/data_cython.py":75
+ *             elif isinstance(idx, str):
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ *                 if len(pd) > 1:             # <<<<<<<<<<<<<<
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+ *                 else:
+ */
+    }
+
+    /* "Lisa/core/data_cython.py":78
+ *                     raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+ *                 else:
+ *                     data = pd[0]             # <<<<<<<<<<<<<<
+ *             else:
+ *                 raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
+ */
+    /*else*/ {
+      __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_pd, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_v_data = __pyx_t_6;
+      __pyx_t_6 = 0;
+    }
+
+    /* "Lisa/core/data_cython.py":73
+ *             if isinstance(idx, int):
+ *                 data = getattr(self._file, attr)[idx]
+ *             elif isinstance(idx, str):             # <<<<<<<<<<<<<<
+ *                 pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+ *                 if len(pd) > 1:
+ */
+    goto __pyx_L10;
+  }
+
+  /* "Lisa/core/data_cython.py":80
+ *                     data = pd[0]
+ *             else:
+ *                 raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))             # <<<<<<<<<<<<<<
  *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  */
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_file); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_attr)) { __Pyx_RaiseClosureNameError("attr"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_4 = __pyx_cur_scope->__pyx_v_attr;
-  __Pyx_INCREF(__pyx_t_4);
-  __pyx_t_9 = __Pyx_GetAttr(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyObject_GetItem(__pyx_t_9, __pyx_v_idx); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_v_data = __pyx_t_4;
-  __pyx_t_4 = 0;
+  /*else*/ {
+    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_idx);
+    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_idx);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_cur_scope->__pyx_v_idx);
+    __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyUnicode_Format(__pyx_kp_u_s_is_not_a_valid_index_and_no_m, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
+    __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_IndexError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_L10:;
 
-  /* "Lisa/core/data_cython.py":71
- *                 raise UnitError(unit+" is not a valid unit.")
- *             data = getattr(self._file, attr)[idx]
+  /* "Lisa/core/data_cython.py":81
+ *             else:
+ *                 raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
  *             if unit is None or self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
@@ -1900,22 +2191,22 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
   if (!__pyx_t_3) {
   } else {
     __pyx_t_5 = __pyx_t_3;
-    goto __pyx_L11_bool_binop_done;
+    goto __pyx_L13_bool_binop_done;
   }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_9 = PyObject_GetItem(__pyx_t_4, __pyx_v_unit); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_3 = (__pyx_t_9 == Py_None);
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyObject_GetItem(__pyx_t_6, __pyx_v_unit); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_3 = (__pyx_t_7 == Py_None);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_1 = (__pyx_t_3 != 0);
   __pyx_t_5 = __pyx_t_1;
-  __pyx_L11_bool_binop_done:;
+  __pyx_L13_bool_binop_done:;
   if (__pyx_t_5) {
 
-    /* "Lisa/core/data_cython.py":73
+    /* "Lisa/core/data_cython.py":83
  *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)             # <<<<<<<<<<<<<<
@@ -1923,52 +2214,52 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *                 return data*data.attrs[self._unit_map[unit]]
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_float64); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Multiply(__pyx_v_data, __pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_r = __pyx_t_4;
-    __pyx_t_4 = 0;
+    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_float64); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyNumber_Multiply(__pyx_v_data, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_r = __pyx_t_6;
+    __pyx_t_6 = 0;
     goto __pyx_L0;
 
-    /* "Lisa/core/data_cython.py":71
- *                 raise UnitError(unit+" is not a valid unit.")
- *             data = getattr(self._file, attr)[idx]
+    /* "Lisa/core/data_cython.py":81
+ *             else:
+ *                 raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
  *             if unit is None or self._unit_map[unit] is None:  # do not modify             # <<<<<<<<<<<<<<
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
  */
   }
 
-  /* "Lisa/core/data_cython.py":74
+  /* "Lisa/core/data_cython.py":84
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
  *             if self._unit_map[unit] in data.attrs:             # <<<<<<<<<<<<<<
  *                 return data*data.attrs[self._unit_map[unit]]
  *             else:
  */
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_9 = PyObject_GetItem(__pyx_t_4, __pyx_v_unit); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_t_9, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyObject_GetItem(__pyx_t_6, __pyx_v_unit); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_t_7, __pyx_t_6, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_1 = (__pyx_t_5 != 0);
   if (__pyx_t_1) {
 
-    /* "Lisa/core/data_cython.py":75
+    /* "Lisa/core/data_cython.py":85
  *                 return data * np.float64(1.0)
  *             if self._unit_map[unit] in data.attrs:
  *                 return data*data.attrs[self._unit_map[unit]]             # <<<<<<<<<<<<<<
@@ -1976,26 +2267,26 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *                 lisa_print("units for this data", list(data.attrs))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_4 = PyObject_GetItem(__pyx_t_7, __pyx_v_unit); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_6 = PyObject_GetItem(__pyx_t_9, __pyx_v_unit); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyObject_GetItem(__pyx_t_4, __pyx_t_6); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = PyObject_GetItem(__pyx_t_6, __pyx_t_4); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyNumber_Multiply(__pyx_v_data, __pyx_t_9); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_r = __pyx_t_6;
-    __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyNumber_Multiply(__pyx_v_data, __pyx_t_7); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_r = __pyx_t_4;
+    __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "Lisa/core/data_cython.py":74
+    /* "Lisa/core/data_cython.py":84
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)
  *             if self._unit_map[unit] in data.attrs:             # <<<<<<<<<<<<<<
@@ -2004,7 +2295,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  */
   }
 
-  /* "Lisa/core/data_cython.py":77
+  /* "Lisa/core/data_cython.py":87
  *                 return data*data.attrs[self._unit_map[unit]]
  *             else:
  *                 lisa_print("units for this data", list(data.attrs))             # <<<<<<<<<<<<<<
@@ -2012,82 +2303,82 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
  *         inner.__doc__ = self.__getattr__.__doc__
  */
   /*else*/ {
-    __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_lisa_print); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_List(__pyx_t_4); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_lisa_print); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_attrs); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_9 = PySequence_List(__pyx_t_6); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = NULL;
     __pyx_t_2 = 0;
-    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_4);
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
+        __Pyx_DECREF_SET(__pyx_t_7, function);
         __pyx_t_2 = 1;
       }
     }
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_8);
-    if (__pyx_t_4) {
-      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4); __pyx_t_4 = NULL;
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
     }
     __Pyx_INCREF(__pyx_kp_u_units_for_this_data);
     __Pyx_GIVEREF(__pyx_kp_u_units_for_this_data);
     PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_2, __pyx_kp_u_units_for_this_data);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_2, __pyx_t_7);
-    __pyx_t_7 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_8, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_9);
+    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_2, __pyx_t_9);
+    __pyx_t_9 = 0;
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "Lisa/core/data_cython.py":78
+    /* "Lisa/core/data_cython.py":88
  *             else:
  *                 lisa_print("units for this data", list(data.attrs))
  *                 raise UnitError(unit+" is not a valid unit for this data.")             # <<<<<<<<<<<<<<
  *         inner.__doc__ = self.__getattr__.__doc__
  *         inner.__name__ = attr
  */
-    __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_UnitError); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyNumber_Add(__pyx_v_unit, __pyx_kp_u_is_not_a_valid_unit_for_this_da); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_UnitError); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = PyNumber_Add(__pyx_v_unit, __pyx_kp_u_is_not_a_valid_unit_for_this_da); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_7 = NULL;
-    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_7);
+    __pyx_t_9 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_7))) {
+      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_7);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_9);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
+        __Pyx_DECREF_SET(__pyx_t_7, function);
       }
     }
-    if (!__pyx_t_7) {
-      __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_8); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!__pyx_t_9) {
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_GOTREF(__pyx_t_6);
-    } else {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7); __pyx_t_7 = NULL;
-      __Pyx_GIVEREF(__pyx_t_8);
-      PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_8);
-      __pyx_t_8 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_4, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    } else {
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_9); __pyx_t_9 = NULL;
+      __Pyx_GIVEREF(__pyx_t_8);
+      PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_8);
+      __pyx_t_8 = 0;
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_6, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
   /* "Lisa/core/data_cython.py":57
@@ -2110,6 +2401,8 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_11__getattr___2inner(P
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_unit);
   __Pyx_XDECREF(__pyx_v_data);
+  __Pyx_XDECREF(__pyx_v_pd);
+  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2297,31 +2590,31 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_2__getattr__(CYTHON_UN
   __pyx_v_inner = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "Lisa/core/data_cython.py":79
+  /* "Lisa/core/data_cython.py":89
  *                 lisa_print("units for this data", list(data.attrs))
  *                 raise UnitError(unit+" is not a valid unit for this data.")
  *         inner.__doc__ = self.__getattr__.__doc__             # <<<<<<<<<<<<<<
  *         inner.__name__ = attr
  *         return inner
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_getattr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_getattr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_doc); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_doc); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_inner, __pyx_n_s_doc, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_inner, __pyx_n_s_doc, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "Lisa/core/data_cython.py":80
+  /* "Lisa/core/data_cython.py":90
  *                 raise UnitError(unit+" is not a valid unit for this data.")
  *         inner.__doc__ = self.__getattr__.__doc__
  *         inner.__name__ = attr             # <<<<<<<<<<<<<<
  *         return inner
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_inner, __pyx_n_s_name, __pyx_cur_scope->__pyx_v_attr) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_inner, __pyx_n_s_name_2, __pyx_cur_scope->__pyx_v_attr) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "Lisa/core/data_cython.py":81
+  /* "Lisa/core/data_cython.py":91
  *         inner.__doc__ = self.__getattr__.__doc__
  *         inner.__name__ = attr
  *         return inner             # <<<<<<<<<<<<<<
@@ -2356,7 +2649,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_2__getattr__(CYTHON_UN
   return __pyx_r;
 }
 
-/* "Lisa/core/data_cython.py":83
+/* "Lisa/core/data_cython.py":93
  *         return inner
  * 
  *     def _build_complete_unit_map(self):             # <<<<<<<<<<<<<<
@@ -2403,44 +2696,44 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_build_complete_unit_map", 0);
 
-  /* "Lisa/core/data_cython.py":85
+  /* "Lisa/core/data_cython.py":95
  *     def _build_complete_unit_map(self):
  *         unit_to_attr_map = {
  *             "m": "Factor4Meters",             # <<<<<<<<<<<<<<
  *             "s": "Factor4Seconds",
  *             "ts": None,
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_m, __pyx_n_u_Factor4Meters) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_s, __pyx_n_u_Factor4Seconds) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_m, __pyx_n_u_Factor4Meters) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_s, __pyx_n_u_Factor4Seconds) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "Lisa/core/data_cython.py":87
+  /* "Lisa/core/data_cython.py":97
  *             "m": "Factor4Meters",
  *             "s": "Factor4Seconds",
  *             "ts": None,             # <<<<<<<<<<<<<<
  *             "W": "Factor4Watts",
  *             "A": "Factor4Ampere",
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ts, Py_None) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_W, __pyx_n_u_Factor4Watts) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_A, __pyx_n_u_Factor4Ampere) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_C, __pyx_n_u_Factor4Coulomb) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_Hz, __pyx_n_u_Factor4Hertz) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_eV, __pyx_n_u_Factor4ElectronVolts) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ts, Py_None) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_W, __pyx_n_u_Factor4Watts) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_A, __pyx_n_u_Factor4Ampere) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_C, __pyx_n_u_Factor4Coulomb) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_Hz, __pyx_n_u_Factor4Hertz) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_eV, __pyx_n_u_Factor4ElectronVolts) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_unit_to_attr_map = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Lisa/core/data_cython.py":95
+  /* "Lisa/core/data_cython.py":105
  *         }
  *         alias_map = {
  *             "m": ["meter", "meters"],             # <<<<<<<<<<<<<<
  *             "s": ["second", "seconds"],
  *             "ts": ["syncperiods","periods", "synchrotron periods"],
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_meter);
   __Pyx_GIVEREF(__pyx_n_u_meter);
@@ -2448,17 +2741,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_n_u_meters);
   __Pyx_GIVEREF(__pyx_n_u_meters);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_meters);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_m, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_m, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":96
+  /* "Lisa/core/data_cython.py":106
  *         alias_map = {
  *             "m": ["meter", "meters"],
  *             "s": ["second", "seconds"],             # <<<<<<<<<<<<<<
  *             "ts": ["syncperiods","periods", "synchrotron periods"],
  *             "W": ["watt", "watts"],
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_second);
   __Pyx_GIVEREF(__pyx_n_u_second);
@@ -2466,17 +2759,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_n_u_seconds);
   __Pyx_GIVEREF(__pyx_n_u_seconds);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_seconds);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_s, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_s, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":97
+  /* "Lisa/core/data_cython.py":107
  *             "m": ["meter", "meters"],
  *             "s": ["second", "seconds"],
  *             "ts": ["syncperiods","periods", "synchrotron periods"],             # <<<<<<<<<<<<<<
  *             "W": ["watt", "watts"],
  *             "A": ["ampere", "amperes"],
  */
-  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_syncperiods);
   __Pyx_GIVEREF(__pyx_n_u_syncperiods);
@@ -2487,17 +2780,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_kp_u_synchrotron_periods);
   __Pyx_GIVEREF(__pyx_kp_u_synchrotron_periods);
   PyList_SET_ITEM(__pyx_t_2, 2, __pyx_kp_u_synchrotron_periods);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ts, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ts, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":98
+  /* "Lisa/core/data_cython.py":108
  *             "s": ["second", "seconds"],
  *             "ts": ["syncperiods","periods", "synchrotron periods"],
  *             "W": ["watt", "watts"],             # <<<<<<<<<<<<<<
  *             "A": ["ampere", "amperes"],
  *             "C": ["coulomb", "coulombs"],
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_watt);
   __Pyx_GIVEREF(__pyx_n_u_watt);
@@ -2505,17 +2798,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_n_u_watts);
   __Pyx_GIVEREF(__pyx_n_u_watts);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_watts);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_W, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_W, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":99
+  /* "Lisa/core/data_cython.py":109
  *             "ts": ["syncperiods","periods", "synchrotron periods"],
  *             "W": ["watt", "watts"],
  *             "A": ["ampere", "amperes"],             # <<<<<<<<<<<<<<
  *             "C": ["coulomb", "coulombs"],
  *             "Hz": ["hertz"],
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_ampere);
   __Pyx_GIVEREF(__pyx_n_u_ampere);
@@ -2523,17 +2816,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_n_u_amperes);
   __Pyx_GIVEREF(__pyx_n_u_amperes);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_amperes);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_A, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_A, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":100
+  /* "Lisa/core/data_cython.py":110
  *             "W": ["watt", "watts"],
  *             "A": ["ampere", "amperes"],
  *             "C": ["coulomb", "coulombs"],             # <<<<<<<<<<<<<<
  *             "Hz": ["hertz"],
  *             "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_coulomb);
   __Pyx_GIVEREF(__pyx_n_u_coulomb);
@@ -2541,32 +2834,32 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_n_u_coulombs);
   __Pyx_GIVEREF(__pyx_n_u_coulombs);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_coulombs);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_C, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_C, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":101
+  /* "Lisa/core/data_cython.py":111
  *             "A": ["ampere", "amperes"],
  *             "C": ["coulomb", "coulombs"],
  *             "Hz": ["hertz"],             # <<<<<<<<<<<<<<
  *             "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
  *         }
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_u_hertz);
   __Pyx_GIVEREF(__pyx_n_u_hertz);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_u_hertz);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_Hz, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_Hz, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Lisa/core/data_cython.py":102
+  /* "Lisa/core/data_cython.py":112
  *             "C": ["coulomb", "coulombs"],
  *             "Hz": ["hertz"],
  *             "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]             # <<<<<<<<<<<<<<
  *         }
  *         for unit, attr in unit_to_attr_map.items():
  */
-  __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_kp_u_electron_volts);
   __Pyx_GIVEREF(__pyx_kp_u_electron_volts);
@@ -2580,12 +2873,12 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   __Pyx_INCREF(__pyx_kp_u_electron_volts);
   __Pyx_GIVEREF(__pyx_kp_u_electron_volts);
   PyList_SET_ITEM(__pyx_t_2, 3, __pyx_kp_u_electron_volts);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_eV, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_eV, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_alias_map = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Lisa/core/data_cython.py":104
+  /* "Lisa/core/data_cython.py":114
  *             "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
  *         }
  *         for unit, attr in unit_to_attr_map.items():             # <<<<<<<<<<<<<<
@@ -2593,7 +2886,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
  *             for alias in alias_map[unit]:
  */
   __pyx_t_3 = 0;
-  __pyx_t_2 = __Pyx_dict_iterator(__pyx_v_unit_to_attr_map, 1, __pyx_n_s_items, (&__pyx_t_4), (&__pyx_t_5)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_dict_iterator(__pyx_v_unit_to_attr_map, 1, __pyx_n_s_items, (&__pyx_t_4), (&__pyx_t_5)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_1);
   __pyx_t_1 = __pyx_t_2;
@@ -2601,7 +2894,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_4, &__pyx_t_3, &__pyx_t_2, &__pyx_t_6, NULL, __pyx_t_5);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_XDECREF_SET(__pyx_v_unit, __pyx_t_2);
@@ -2609,16 +2902,16 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
     __Pyx_XDECREF_SET(__pyx_v_attr, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "Lisa/core/data_cython.py":105
+    /* "Lisa/core/data_cython.py":115
  *         }
  *         for unit, attr in unit_to_attr_map.items():
  *             self._unit_map[unit.lower()] = attr             # <<<<<<<<<<<<<<
  *             for alias in alias_map[unit]:
  *                 self._unit_map[alias.lower()] = attr
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_unit, __pyx_n_s_lower); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_unit, __pyx_n_s_lower); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_9 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_8))) {
@@ -2631,32 +2924,32 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
       }
     }
     if (__pyx_t_9) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     } else {
-      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_8); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_8); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_t_6, __pyx_t_2, __pyx_v_attr) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyObject_SetItem(__pyx_t_6, __pyx_t_2, __pyx_v_attr) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "Lisa/core/data_cython.py":106
+    /* "Lisa/core/data_cython.py":116
  *         for unit, attr in unit_to_attr_map.items():
  *             self._unit_map[unit.lower()] = attr
  *             for alias in alias_map[unit]:             # <<<<<<<<<<<<<<
  *                 self._unit_map[alias.lower()] = attr
  */
-    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_alias_map, __pyx_v_unit); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_alias_map, __pyx_v_unit); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_2);
     if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
       __pyx_t_6 = __pyx_t_2; __Pyx_INCREF(__pyx_t_6); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_11 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_11 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     for (;;) {
@@ -2664,17 +2957,17 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_6, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_6, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
           if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_6, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_6, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -2684,7 +2977,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -2693,14 +2986,14 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
       __Pyx_XDECREF_SET(__pyx_v_alias, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "Lisa/core/data_cython.py":107
+      /* "Lisa/core/data_cython.py":117
  *             self._unit_map[unit.lower()] = attr
  *             for alias in alias_map[unit]:
  *                 self._unit_map[alias.lower()] = attr             # <<<<<<<<<<<<<<
  */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_unit_map); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_alias, __pyx_n_s_lower); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_alias, __pyx_n_s_lower); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_12 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_9))) {
@@ -2713,18 +3006,18 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
         }
       }
       if (__pyx_t_12) {
-        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_12); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_12); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       } else {
-        __pyx_t_8 = __Pyx_PyObject_CallNoArg(__pyx_t_9); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __Pyx_PyObject_CallNoArg(__pyx_t_9); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(PyObject_SetItem(__pyx_t_2, __pyx_t_8, __pyx_v_attr) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (unlikely(PyObject_SetItem(__pyx_t_2, __pyx_t_8, __pyx_v_attr) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "Lisa/core/data_cython.py":106
+      /* "Lisa/core/data_cython.py":116
  *         for unit, attr in unit_to_attr_map.items():
  *             self._unit_map[unit.lower()] = attr
  *             for alias in alias_map[unit]:             # <<<<<<<<<<<<<<
@@ -2735,7 +3028,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data_4_build_complete_unit_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "Lisa/core/data_cython.py":83
+  /* "Lisa/core/data_cython.py":93
  *         return inner
  * 
  *     def _build_complete_unit_map(self):             # <<<<<<<<<<<<<<
@@ -2877,6 +3170,117 @@ static PyTypeObject __pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct____g
   #endif
 };
 
+static struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *__pyx_freelist_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner[8];
+static int __pyx_freecount_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner = 0;
+
+static PyObject *__pyx_tp_new_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner)))) {
+    o = (PyObject*)__pyx_freelist_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner[--__pyx_freecount_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner];
+    memset(o, 0, sizeof(struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(PyObject *o) {
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *p = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_outer_scope);
+  Py_CLEAR(p->__pyx_v_idx);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner)))) {
+    __pyx_freelist_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner[__pyx_freecount_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner++] = ((struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *p = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *)o;
+  if (p->__pyx_outer_scope) {
+    e = (*v)(((PyObject*)p->__pyx_outer_scope), a); if (e) return e;
+  }
+  if (p->__pyx_v_idx) {
+    e = (*v)(p->__pyx_v_idx, a); if (e) return e;
+  }
+  return 0;
+}
+
+static int __pyx_tp_clear_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner(PyObject *o) {
+  PyObject* tmp;
+  struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *p = (struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner *)o;
+  tmp = ((PyObject*)p->__pyx_outer_scope);
+  p->__pyx_outer_scope = ((struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->__pyx_v_idx);
+  p->__pyx_v_idx = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  return 0;
+}
+
+static PyTypeObject __pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "Lisa.core.data_cython.__pyx_scope_struct_1_inner", /*tp_name*/
+  sizeof(struct __pyx_obj_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner, /*tp_traverse*/
+  __pyx_tp_clear_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -2907,6 +3311,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Data, __pyx_k_Data, sizeof(__pyx_k_Data), 0, 0, 1, 1},
   {&__pyx_n_s_Data___getattr, __pyx_k_Data___getattr, sizeof(__pyx_k_Data___getattr), 0, 0, 1, 1},
   {&__pyx_n_s_Data___getattr___locals_inner, __pyx_k_Data___getattr___locals_inner, sizeof(__pyx_k_Data___getattr___locals_inner), 0, 0, 1, 1},
+  {&__pyx_n_s_Data___getattr___locals_inner_lo, __pyx_k_Data___getattr___locals_inner_lo, sizeof(__pyx_k_Data___getattr___locals_inner_lo), 0, 0, 1, 1},
   {&__pyx_n_s_Data___init, __pyx_k_Data___init, sizeof(__pyx_k_Data___init), 0, 0, 1, 1},
   {&__pyx_n_s_Data__build_complete_unit_map, __pyx_k_Data__build_complete_unit_map, sizeof(__pyx_k_Data__build_complete_unit_map), 0, 0, 1, 1},
   {&__pyx_kp_u_Data_object_and_File_object_does, __pyx_k_Data_object_and_File_object_does, sizeof(__pyx_k_Data_object_and_File_object_does), 0, 1, 0, 0},
@@ -2922,6 +3327,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_FileDataRegister, __pyx_k_FileDataRegister, sizeof(__pyx_k_FileDataRegister), 0, 0, 1, 1},
   {&__pyx_kp_s_Get_Data_from_Inovesa_Result_Da, __pyx_k_Get_Data_from_Inovesa_Result_Da, sizeof(__pyx_k_Get_Data_from_Inovesa_Result_Da), 0, 0, 1, 0},
   {&__pyx_n_u_Hz, __pyx_k_Hz, sizeof(__pyx_k_Hz), 0, 1, 0, 1},
+  {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_n_s_Lisa_core_data_cython, __pyx_k_Lisa_core_data_cython, sizeof(__pyx_k_Lisa_core_data_cython), 0, 0, 1, 1},
   {&__pyx_kp_u_No_unit_given, __pyx_k_No_unit_given, sizeof(__pyx_k_No_unit_given), 0, 1, 0, 0},
   {&__pyx_n_s_UnitError, __pyx_k_UnitError, sizeof(__pyx_k_UnitError), 0, 0, 1, 1},
@@ -2946,6 +3352,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_endswith, __pyx_k_endswith, sizeof(__pyx_k_endswith), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_file_cython, __pyx_k_file_cython, sizeof(__pyx_k_file_cython), 0, 0, 1, 1},
+  {&__pyx_n_s_filter, __pyx_k_filter, sizeof(__pyx_k_filter), 0, 0, 1, 1},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
   {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
   {&__pyx_n_s_getattr, __pyx_k_getattr, sizeof(__pyx_k_getattr), 0, 0, 1, 1},
@@ -2970,11 +3377,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_meters, __pyx_k_meters, sizeof(__pyx_k_meters), 0, 1, 0, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
+  {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_n_s_object, __pyx_k_object, sizeof(__pyx_k_object), 0, 0, 1, 1},
   {&__pyx_n_s_p_file, __pyx_k_p_file, sizeof(__pyx_k_p_file), 0, 0, 1, 1},
   {&__pyx_n_u_parameters, __pyx_k_parameters, sizeof(__pyx_k_parameters), 0, 1, 0, 1},
+  {&__pyx_n_s_pd, __pyx_k_pd, sizeof(__pyx_k_pd), 0, 0, 1, 1},
   {&__pyx_n_u_periods, __pyx_k_periods, sizeof(__pyx_k_periods), 0, 1, 0, 1},
   {&__pyx_kp_u_possible_units, __pyx_k_possible_units, sizeof(__pyx_k_possible_units), 0, 1, 0, 0},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
@@ -2982,6 +3391,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_raw, __pyx_k_raw, sizeof(__pyx_k_raw), 0, 1, 0, 1},
   {&__pyx_n_s_registered_properties, __pyx_k_registered_properties, sizeof(__pyx_k_registered_properties), 0, 0, 1, 1},
   {&__pyx_n_u_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 1, 0, 1},
+  {&__pyx_kp_u_s_is_not_a_valid_index_and_no_m, __pyx_k_s_is_not_a_valid_index_and_no_m, sizeof(__pyx_k_s_is_not_a_valid_index_and_no_m), 0, 1, 0, 0},
+  {&__pyx_kp_u_s_was_not_found_or_was_found_mu, __pyx_k_s_was_not_found_or_was_found_mu, sizeof(__pyx_k_s_was_not_found_or_was_found_mu), 0, 1, 0, 0},
   {&__pyx_n_u_second, __pyx_k_second, sizeof(__pyx_k_second), 0, 1, 0, 1},
   {&__pyx_n_u_seconds, __pyx_k_seconds, sizeof(__pyx_k_seconds), 0, 1, 0, 1},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
@@ -3004,6 +3415,8 @@ static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_Exception = __Pyx_GetBuiltinName(__pyx_n_s_Exception); if (!__pyx_builtin_Exception) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 9; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_AttributeError = __Pyx_GetBuiltinName(__pyx_n_s_AttributeError); if (!__pyx_builtin_AttributeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_filter = __Pyx_GetBuiltinName(__pyx_n_s_filter); if (!__pyx_builtin_filter) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3024,14 +3437,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "Lisa/core/data_cython.py":73
+  /* "Lisa/core/data_cython.py":83
  *             if unit is None or self._unit_map[unit] is None:  # do not modify
  *                 # TODO: Check if this is valid for the given data
  *                 return data * np.float64(1.0)             # <<<<<<<<<<<<<<
  *             if self._unit_map[unit] in data.attrs:
  *                 return data*data.attrs[self._unit_map[unit]]
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_float_1_0); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_float_1_0); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
@@ -3076,10 +3489,10 @@ static int __Pyx_InitCachedConstants(void) {
  *             unit = ''
  *             if len(args) > 0 and isinstance(args[0], str):
  */
-  __pyx_tuple__8 = PyTuple_Pack(5, __pyx_n_s_idx, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_unit, __pyx_n_s_data); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__8 = PyTuple_Pack(6, __pyx_n_s_idx, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_unit, __pyx_n_s_data, __pyx_n_s_pd); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_d, __pyx_n_s_inner, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_d, __pyx_n_s_inner, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "Lisa/core/data_cython.py":25
  *     .. seealso:: Lisa.File
@@ -3105,17 +3518,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__12);
   __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_d, __pyx_n_s_getattr, 37, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "Lisa/core/data_cython.py":83
+  /* "Lisa/core/data_cython.py":93
  *         return inner
  * 
  *     def _build_complete_unit_map(self):             # <<<<<<<<<<<<<<
  *         unit_to_attr_map = {
  *             "m": "Factor4Meters",
  */
-  __pyx_tuple__14 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_unit_to_attr_map, __pyx_n_s_alias_map, __pyx_n_s_unit, __pyx_n_s_attr, __pyx_n_s_alias); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__14 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_unit_to_attr_map, __pyx_n_s_alias_map, __pyx_n_s_unit, __pyx_n_s_attr, __pyx_n_s_alias); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_d, __pyx_n_s_build_complete_unit_map, 83, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_patrick_Python_Lisa_core_d, __pyx_n_s_build_complete_unit_map, 93, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3224,6 +3637,9 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   if (PyType_Ready(&__pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__.tp_print = 0;
   __pyx_ptype_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__ = &__pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct____getattr__;
+  if (PyType_Ready(&__pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner.tp_print = 0;
+  __pyx_ptype_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner = &__pyx_type_4Lisa_4core_11data_cython___pyx_scope_struct_1_inner;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
@@ -3358,16 +3774,16 @@ PyMODINIT_FUNC PyInit_data_cython(void)
   if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_getattr, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "Lisa/core/data_cython.py":83
+  /* "Lisa/core/data_cython.py":93
  *         return inner
  * 
  *     def _build_complete_unit_map(self):             # <<<<<<<<<<<<<<
  *         unit_to_attr_map = {
  *             "m": "Factor4Meters",
  */
-  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_11data_cython_4Data_5_build_complete_unit_map, 0, __pyx_n_s_Data__build_complete_unit_map, NULL, __pyx_n_s_Lisa_core_data_cython, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_4Lisa_4core_11data_cython_4Data_5_build_complete_unit_map, 0, __pyx_n_s_Data__build_complete_unit_map, NULL, __pyx_n_s_Lisa_core_data_cython, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_build_complete_unit_map, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_build_complete_unit_map, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "Lisa/core/data_cython.py":12
@@ -4128,103 +4544,6 @@ bad:
 }
 #endif
 
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
-        Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** _py_start, PyObject** _py_stop, PyObject** _py_slice,
-        int has_cstart, int has_cstop, CYTHON_UNUSED int wraparound) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyMappingMethods* mp;
-#if PY_MAJOR_VERSION < 3
-    PySequenceMethods* ms = Py_TYPE(obj)->tp_as_sequence;
-    if (likely(ms && ms->sq_slice)) {
-        if (!has_cstart) {
-            if (_py_start && (*_py_start != Py_None)) {
-                cstart = __Pyx_PyIndex_AsSsize_t(*_py_start);
-                if ((cstart == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstart = 0;
-        }
-        if (!has_cstop) {
-            if (_py_stop && (*_py_stop != Py_None)) {
-                cstop = __Pyx_PyIndex_AsSsize_t(*_py_stop);
-                if ((cstop == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstop = PY_SSIZE_T_MAX;
-        }
-        if (wraparound && unlikely((cstart < 0) | (cstop < 0)) && likely(ms->sq_length)) {
-            Py_ssize_t l = ms->sq_length(obj);
-            if (likely(l >= 0)) {
-                if (cstop < 0) {
-                    cstop += l;
-                    if (cstop < 0) cstop = 0;
-                }
-                if (cstart < 0) {
-                    cstart += l;
-                    if (cstart < 0) cstart = 0;
-                }
-            } else {
-                if (PyErr_ExceptionMatches(PyExc_OverflowError))
-                    PyErr_Clear();
-                else
-                    goto bad;
-            }
-        }
-        return ms->sq_slice(obj, cstart, cstop);
-    }
-#endif
-    mp = Py_TYPE(obj)->tp_as_mapping;
-    if (likely(mp && mp->mp_subscript))
-#endif
-    {
-        PyObject* result;
-        PyObject *py_slice, *py_start, *py_stop;
-        if (_py_slice) {
-            py_slice = *_py_slice;
-        } else {
-            PyObject* owned_start = NULL;
-            PyObject* owned_stop = NULL;
-            if (_py_start) {
-                py_start = *_py_start;
-            } else {
-                if (has_cstart) {
-                    owned_start = py_start = PyInt_FromSsize_t(cstart);
-                    if (unlikely(!py_start)) goto bad;
-                } else
-                    py_start = Py_None;
-            }
-            if (_py_stop) {
-                py_stop = *_py_stop;
-            } else {
-                if (has_cstop) {
-                    owned_stop = py_stop = PyInt_FromSsize_t(cstop);
-                    if (unlikely(!py_stop)) {
-                        Py_XDECREF(owned_start);
-                        goto bad;
-                    }
-                } else
-                    py_stop = Py_None;
-            }
-            py_slice = PySlice_New(py_start, py_stop, Py_None);
-            Py_XDECREF(owned_start);
-            Py_XDECREF(owned_stop);
-            if (unlikely(!py_slice)) goto bad;
-        }
-#if CYTHON_COMPILING_IN_CPYTHON
-        result = mp->mp_subscript(obj, py_slice);
-#else
-        result = PyObject_GetItem(obj, py_slice);
-#endif
-        if (!_py_slice) {
-            Py_DECREF(py_slice);
-        }
-        return result;
-    }
-    PyErr_Format(PyExc_TypeError,
-        "'%.200s' object is unsliceable", Py_TYPE(obj)->tp_name);
-bad:
-    return NULL;
-}
-
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
     PyObject* fake_module;
     PyTypeObject* cached_type = NULL;
@@ -4827,6 +5146,103 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *func, Py
     __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
     m->func_annotations = dict;
     Py_INCREF(dict);
+}
+
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
+        Py_ssize_t cstart, Py_ssize_t cstop,
+        PyObject** _py_start, PyObject** _py_stop, PyObject** _py_slice,
+        int has_cstart, int has_cstop, CYTHON_UNUSED int wraparound) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyMappingMethods* mp;
+#if PY_MAJOR_VERSION < 3
+    PySequenceMethods* ms = Py_TYPE(obj)->tp_as_sequence;
+    if (likely(ms && ms->sq_slice)) {
+        if (!has_cstart) {
+            if (_py_start && (*_py_start != Py_None)) {
+                cstart = __Pyx_PyIndex_AsSsize_t(*_py_start);
+                if ((cstart == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
+            } else
+                cstart = 0;
+        }
+        if (!has_cstop) {
+            if (_py_stop && (*_py_stop != Py_None)) {
+                cstop = __Pyx_PyIndex_AsSsize_t(*_py_stop);
+                if ((cstop == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
+            } else
+                cstop = PY_SSIZE_T_MAX;
+        }
+        if (wraparound && unlikely((cstart < 0) | (cstop < 0)) && likely(ms->sq_length)) {
+            Py_ssize_t l = ms->sq_length(obj);
+            if (likely(l >= 0)) {
+                if (cstop < 0) {
+                    cstop += l;
+                    if (cstop < 0) cstop = 0;
+                }
+                if (cstart < 0) {
+                    cstart += l;
+                    if (cstart < 0) cstart = 0;
+                }
+            } else {
+                if (PyErr_ExceptionMatches(PyExc_OverflowError))
+                    PyErr_Clear();
+                else
+                    goto bad;
+            }
+        }
+        return ms->sq_slice(obj, cstart, cstop);
+    }
+#endif
+    mp = Py_TYPE(obj)->tp_as_mapping;
+    if (likely(mp && mp->mp_subscript))
+#endif
+    {
+        PyObject* result;
+        PyObject *py_slice, *py_start, *py_stop;
+        if (_py_slice) {
+            py_slice = *_py_slice;
+        } else {
+            PyObject* owned_start = NULL;
+            PyObject* owned_stop = NULL;
+            if (_py_start) {
+                py_start = *_py_start;
+            } else {
+                if (has_cstart) {
+                    owned_start = py_start = PyInt_FromSsize_t(cstart);
+                    if (unlikely(!py_start)) goto bad;
+                } else
+                    py_start = Py_None;
+            }
+            if (_py_stop) {
+                py_stop = *_py_stop;
+            } else {
+                if (has_cstop) {
+                    owned_stop = py_stop = PyInt_FromSsize_t(cstop);
+                    if (unlikely(!py_stop)) {
+                        Py_XDECREF(owned_start);
+                        goto bad;
+                    }
+                } else
+                    py_stop = Py_None;
+            }
+            py_slice = PySlice_New(py_start, py_stop, Py_None);
+            Py_XDECREF(owned_start);
+            Py_XDECREF(owned_stop);
+            if (unlikely(!py_slice)) goto bad;
+        }
+#if CYTHON_COMPILING_IN_CPYTHON
+        result = mp->mp_subscript(obj, py_slice);
+#else
+        result = PyObject_GetItem(obj, py_slice);
+#endif
+        if (!_py_slice) {
+            Py_DECREF(py_slice);
+        }
+        return result;
+    }
+    PyErr_Format(PyExc_TypeError,
+        "'%.200s' object is unsliceable", Py_TYPE(obj)->tp_name);
+bad:
+    return NULL;
 }
 
 static CYTHON_INLINE int __Pyx_IterFinish(void) {

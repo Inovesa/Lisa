@@ -67,7 +67,17 @@ class Data(object):
             elif unit not in self._unit_map and unit is not None:
                 lisa_print("possible units", self._unit_map.keys())
                 raise UnitError(unit+" is not a valid unit.")
-            data = getattr(self._file, attr)[idx]
+            # search index if idx is not int
+            if isinstance(idx, int):
+                data = getattr(self._file, attr)[idx]
+            elif isinstance(idx, str):
+                pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
+                if len(pd) > 1:
+                    raise IndexError("'%s' was not found or was found multiple times."%str(idx))
+                else:
+                    data = pd[0]
+            else:
+                raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
             if unit is None or self._unit_map[unit] is None:  # do not modify
                 # TODO: Check if this is valid for the given data
                 return data * np.float64(1.0)
