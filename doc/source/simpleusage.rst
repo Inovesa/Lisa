@@ -54,12 +54,12 @@ Data is an object encapsulating a File object. The benefit of this is it convert
 
     import Lisa
     data = Lisa.Data("/path/to/h5")
-    data.bunch_profile(unit="c")  # c for coulomb
-    data.bunch_position(unit="m")  # m for meter
+    data.bunch_profile(2, unit="c")  # c for coulomb. 2 for the data (can also use 'data' as first parameter for data or 'axis0' for first axis
+    data.bunch_position(1, unit="m")  # m for meter
 
 To get data as it is saved in the h5 file use unit=None.
 
-It is possible to pass the unit as first parameter without a keyword. (For raw data (unit=None) this is not possible).
+It is possible to pass the unit as second parameter without a keyword. (For raw data (unit=None) this is not possible).
 
 PhaseSpace
 ----------

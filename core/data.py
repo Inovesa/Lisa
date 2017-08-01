@@ -37,7 +37,7 @@ class Data(object):
     def __getattr__(self, attr):
         """
         Convert to correct unit.
-        :param idx: the index of the returned list by File objects
+        :param idx: the index of the returned list by File objects. If idx is str the h5 objects are searched for a matching name.
         :param string unit: Use this as second argument or kwarg
         """
         if attr.endswith("_raw"):
