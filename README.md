@@ -2,7 +2,9 @@
 
 ### Usage:
 
-For detailed help on methods see the documentation in /doc/ or python help or docstrings.
+This is only short introduction for very basic usage.
+
+Detailed documentation is located in the doc directory. For a prebuilt documentation see the 'doc' branch.
 
 #### SimplePlotter
 Each Dataset in the Inovesa generated h5 files is a possible plot. Just call the corresponding function.
@@ -48,8 +50,8 @@ Data is an object encapsulating a File object. The benefit of this is it convert
 ```python
 import Lisa
 data = Lisa.Data("/path/to/h5")
-data.bunch_profile(unit="c")  # c for coulomb
-data.bunch_position(unit="m")  # m for meter
+data.bunch_profile(2, unit="c")  # c for coulomb. 2 for the data (can also use 'data' as first parameter for data or 'axis0' for first axis
+data.bunch_position(1, unit="m")  # m for meter
 ```
 To get data as it is saved in the h5 file use unit=None.
 
