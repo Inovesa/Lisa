@@ -1,4 +1,4 @@
-.. parsedoc:: /home/patrick/Python/Lisa/core/data.py
+.. parsedoc:: ../core/data.py
     :module: True
     :wo_docstr: True
     :heading: Data with Units

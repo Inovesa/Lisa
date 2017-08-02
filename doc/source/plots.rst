@@ -1,4 +1,4 @@
-.. parsedoc:: /home/patrick/Python/Lisa/core/plots/plots.py
+.. parsedoc:: ../core/plots/plots.py
     :module: True
     :wo_docstr: True
     :heading: Inovesa Data Plots
