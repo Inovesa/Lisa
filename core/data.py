@@ -4,10 +4,8 @@
 
 from .file_cython import File,  FileDataRegister
 from .internals import lisa_print
+from .utils import attr_from_unit, UnitError
 import numpy as np
-
-class UnitError(Exception):
-    pass
 
 class Data(object):
     """
@@ -31,20 +29,18 @@ class Data(object):
         else:
             self._file = File(p_file)
 
-        self._unit_map = {}
-        self._build_complete_unit_map()
-
     def __getattr__(self, attr):
         """
         Convert to correct unit.
         :param idx: the index of the returned list by File objects. If idx is str the h5 objects are searched for a matching name.
         :param string unit: Use this as second argument or kwarg
+        :param sub_idx: (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2] then idx=0 and sub_idx is given will result in Dataset1[sub_idx]) This will speed up if only part of the data is used.
         """
         if attr.endswith("_raw"):
             """
             Return the raw data from File object
             """
-            return getattr(self._file, attr[:-4])
+            return lambda: getattr(self._file, attr[:-4])
         if attr not in FileDataRegister.registered_properties:
             raise AttributeError("Data object (and File object) does not have an attribute "+attr)
         if attr == 'parameters':
@@ -64,10 +60,6 @@ class Data(object):
             lisa_print("using unit specification", unit)
             if unit == '':
                 raise UnitError("No unit given.")
-            elif unit not in self._unit_map and unit is not None:
-                lisa_print("possible units", self._unit_map.keys())
-                raise UnitError(unit+" is not a valid unit.")
-            # search index if idx is not int
             if isinstance(idx, int):
                 data = getattr(self._file, attr)[idx]
             elif isinstance(idx, str):
@@ -78,40 +70,20 @@ class Data(object):
                     data = pd[0]
             else:
                 raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
-            if unit is None or self._unit_map[unit] is None:  # do not modify
-                # TODO: Check if this is valid for the given data
-                return data * np.float64(1.0)
-            if self._unit_map[unit] in data.attrs:
-                return data*data.attrs[self._unit_map[unit]]
+            conversion_attribute = attr_from_unit(unit)
+            if conversion_attribute is None:
+                if kwargs.get("sub_idx", None) is None:
+                    return data * np.float64(1.0)
+                else:
+                    return data[kwargs.get("sub_idx")] * np.float64(1.0)
+            elif conversion_attribute in data.attrs:
+                if kwargs.get("sub_idx", None) is None:
+                    return data*data.attrs[conversion_attribute]
+                else:
+                    return data[kwargs.get("sub_idx")] * data.attrs[conversion_attribute]
             else:
                 lisa_print("units for this data", list(data.attrs))
                 raise UnitError(unit+" is not a valid unit for this data.")
         inner.__doc__ = self.__getattr__.__doc__
         inner.__name__ = attr
         return inner
-
-    def _build_complete_unit_map(self):
-        unit_to_attr_map = {
-            "m": "Factor4Meters",
-            "s": "Factor4Seconds",
-            "ts": None,
-            "W": "Factor4Watts",
-            "A": "Factor4Ampere",
-            "C": "Factor4Coulomb",
-            "Hz": "Factor4Hertz",
-            "eV": "Factor4ElectronVolts"
-        }
-        alias_map = {
-            "m": ["meter", "meters"],
-            "s": ["second", "seconds"],
-            "ts": ["syncperiods","periods", "synchrotron periods"],
-            "W": ["watt", "watts"],
-            "A": ["ampere", "amperes"],
-            "C": ["coulomb", "coulombs"],
-            "Hz": ["hertz"],
-            "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
-        }
-        for unit, attr in unit_to_attr_map.items():
-            self._unit_map[unit.lower()] = attr
-            for alias in alias_map[unit]:
-                self._unit_map[alias.lower()] = attr

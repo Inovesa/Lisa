@@ -19,8 +19,10 @@ import textwrap
 
 # from ..file import File
 from ..file_cython import File
+from ..data_cython import Data
 from .config import Style
 from ..internals import lisa_print
+from ..utils import unit_from_attr, attr_from_unit, unit_from_spec
 
 colors = [(0, 0, 1, 1), (0.8, 0.4, 0, 0.6), (1, 0, 1, 0.6), (0, 1, 1, 0.6), (1, 0, 0, 0.6),
           (0, 1, 0, 0.4)]
@@ -29,6 +31,9 @@ trans_value = 0.8
 _simple_plotter_plot_methods = []
 
 warn = lambda x: sys.stderr.write("Warning: "+str(x)+"\n")
+
+class Deprecated(Exception):
+    msg = ("This is deprecated",)
 
 def setup_plots():  # todo arguments for latexify
     """
@@ -55,6 +60,7 @@ class SimplePlotter(object):
             self._file = filef
         else:
             self._file = File(filef)
+        self._data = Data(self._file)
         self.current = self._file.parameters["BunchCurrent"]
         self.unit_connector = unit_connector
 
@@ -67,22 +73,46 @@ class SimplePlotter(object):
             """
             General Options (always use as keywords):
             :param fig: (optional) the figure to plot in
+            :param ax: (optional) the axis to use to plot
             :param label: (optional) the label for this plot (legend)
             :param scale_factor: (optional) a scale factor Note: This does not modify the labels
             :param use_offset: (optional) a bool if one wants an offset on yaxis or not
             :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
             :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
+            :param fft: (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft
+            :param fft_padding: (optional) an integer to specify how much 0 will be padded to the data before fft default fft
+            :param abs: (optional) a bool to select if plot absolute values or direct data
             :param plt_args: (optional) dictionary with arguments to the displaying function
             """
             scale_factor = kwargs["scale_factor"] if "scale_factor" in kwargs else 1.
-            if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
+            if isinstance(kwargs.get("fig", None), plt.Figure):
                 fig = kwargs["fig"]
-                ax = fig.add_subplot(111)
+                if isinstance(kwargs.get("ax", None), plt.Axes):
+                    ax = kwargs.get("ax")
+                else:
+                    ax = fig.add_subplot(111)
             else:
-                fig = plt.figure(tight_layout=True)
-                ax = fig.add_subplot(111)
-                kwargs["axes"] = ax
+                if isinstance(kwargs.get("ax", None), plt.Axes):
+                    ax = kwargs.get("ax")
+                    fig = ax.figure
+                else:
+                    fig = plt.figure(tight_layout=True)
+                    ax = fig.add_subplot(111)
             x, y, xlabel, ylabel = func(*args, **kwargs) # arguments contain self object
+            if kwargs.get("fft"):
+                ylabel = "FFT("+ylabel+")"
+                xlabel = "Frequency like (1/("+xlabel+"))"
+                if kwargs.get("fft_padding"):
+                    y = np.append([0]*kwargs.get("fft_padding"), y)
+                    y = np.append(y, [0]*kwargs.get("fft_padding"))
+                if kwargs.get("fft") is True:
+                    x = np.fft.fftfreq(x.shape[0]+2*kwargs.get("fft_padding", 0), x[1]-x[0])
+                    y = np.fft.fft(y)
+                else:
+                    x = getattr(np.fft, kwargs.get("fft")+"freq")(x.shape[0]+2*kwargs.get("fft_padding", 0), x[1]-x[0])
+                    y = getattr(np.fft, kwargs.get("fft"))(y)
+            if kwargs.get("abs"):
+                y = np.abs(y)
             alpha = None
             if 'alpha' in kwargs.get("plt_args", {}):
                 warn("'alpha' in plt_args will override auto generated alpha values for multiple plots.")
@@ -133,6 +163,7 @@ class SimplePlotter(object):
             """
             General Options (always use as keywords):
             :param fig: (optional) the figure to plot in
+            :param ax: (optional) the axis to use to plot
             :param label: (optional) the label for this plot (legend) (if line plot)
             :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
             :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
@@ -163,13 +194,20 @@ class SimplePlotter(object):
                     return(x, z, xlabel, zlabel)
                 return dummy(x, z, xlabel, zlabel, **kwargs)
 
-            if ("fig" in kwargs and isinstance(kwargs["fig"], plt.Figure)):
+            if isinstance(kwargs.get("fig", None), plt.Figure):
                 fig = kwargs["fig"]
-                ax = fig.add_subplot(111)
+                if isinstance(kwargs.get("ax", None), plt.Axes):
+                    ax = kwargs.get("ax")
+                else:
+                    ax = fig.add_subplot(111)
             else:
-                fig = plt.figure()
-                ax = fig.add_subplot(111)
-                kwargs["axes"] = ax
+                if isinstance(kwargs.get("ax", None), plt.Axes):
+                    ax = kwargs.get("ax")
+                    fig = ax.figure
+                else:
+                    fig = plt.figure(tight_layout=True)
+                    ax = fig.add_subplot(111)
+
             if 'norm' in kwargs:
                 norm = kwargs['norm']
             else:
@@ -204,6 +242,7 @@ class SimplePlotter(object):
         return decorated
 
     def _select_label(self, kwargs, key, values, label, unit_for_label):
+        raise Deprecated()
         """
         | Select the correct label for the given kwargs.
         | Usage example:
@@ -224,6 +263,7 @@ class SimplePlotter(object):
             return ' '.join([label, uc, unit_for_label[0]])
 
     def _select_unit(self, kwargs, key, data, values, attributes, dataAttrs=None):
+        raise Deprecated()
         """
         | Select the correct unit and apply to data.
         | Usage example:
@@ -251,12 +291,23 @@ class SimplePlotter(object):
         return data * np.float64(factor)
 
     def _get_unit_and_label(self, kwargs, key, values, label, unit_for_label, attributes, data):
+        raise Deprecated()
         """
         Convenience wrapper around self._select_unit and self._select_label. This also reduces
         the risk of using a different order in the call of unit and label so unit and label always match
         """
         return (self._select_unit(kwargs, key, data, values, attributes),
                 self._select_label(kwargs, key, values, label, unit_for_label))
+
+    def _unit_and_label(self, kwargs, idx, axis, data, default, label, gen_sub=False):
+        if gen_sub:
+            d = getattr(self._data, data+"_raw")()[idx]
+            unit = unit_from_spec(kwargs.get(axis+"unit", default))
+            d.unit_function = lambda idx, _data=data, _idx=idx, _unit=unit: getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
+        else:
+            d = getattr(self._data, data)(idx, unit=kwargs.get(axis+"unit", default))
+        lab = label + " in " + unit_from_spec(kwargs.get(axis+"unit", default))
+        return d, lab
 
     @plot
     def energy_spread(self, **kwargs):
@@ -265,13 +316,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "eV", "raw"
         """
-        x, y = self._file.energy_spread
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
-                                             'T', ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], x)
-
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['eV'], 'Energy Spread', ['eV'],
-                                             ['Factor4ElectronVolts'], y)
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'energy_spread', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'energy_spread', 'eV', "Energy Spread")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -288,23 +334,14 @@ class SimplePlotter(object):
           * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['meters', 'seconds'], 'x', ['m', 's'],
-                                             ['Factor4Meters', 'Factor4Seconds'], self._file.bunch_profile[0])
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], self._file.bunch_profile[1])
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_profile', 'm', "x")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_profile', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Popuation',
-                                                 ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'],
-                                                 self._file.bunch_profile[2])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'bunch_profile', 'c', "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z = self._file.bunch_profile[2]
-            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
-                                         ['coulomb', 'ampere'], ['Factor4Coulomb', 'Factor4Ampere'],
-                                         dataAttrs=z.attrs)
-            zlabel = self._select_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population', ['C', 'A'])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'bunch_profile', 'c', "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
 
@@ -315,12 +352,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "secons", "raw"
         """
-        x, y = self._file.bunch_length
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
-                                             ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], x)
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['meters', 'seconds'], 'Bunch Length',
-                                             ['m', 's'], ['Factor4Meters', 'Factor4Seconds'], y)
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_length', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_length', 'm', "Bunch Length")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -330,12 +363,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "watt", "raw"
         """
-        x, y = self._file.csr_intensity
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'],
-                                             'T', ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], x)
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['watt'], 'CSR Intensity', ['W'],
-                                             ['Factor4Watts'], y)
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'csr_intensity', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'csr_intensity', 'W', "CSR Intensity")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -345,12 +374,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, y = self._file.bunch_position
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
-                                             ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], x)
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['meters', 'seconds'], 'Bunch Position',
-                                             ['m', 's'], ['Factor4Meters', 'Factor4Seconds'], y)
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_position', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_position', 'm', "Bunch Position")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -360,11 +385,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, y = self._file.bunch_population
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['ts', 'seconds'], 'T',
-                                             ['# Synchrotron Periods', 's'], [None, 'Factor4Seconds'], x)
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['coulomb', 'ampere'], 'Bunch Population',
-                                             ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'], y)
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_population', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_population', 'c', "Bunch Population")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -381,22 +403,14 @@ class SimplePlotter(object):
         """
         # NOTE: This does not seem to work
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['hertz'], 'Frequency', ['Hz'],
-                                             ['Factor4Hertz'], self._file.csr_spectrum[1])
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T',
-                                             ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], self._file.csr_spectrum[0])
+        x, xlabel = self._unit_and_label(kwargs, 1, 'x', 'csr_spectrum', 'Hz', "Frequency")
+        y, ylabel = self._unit_and_label(kwargs, 0, 'y', 'csr_spectrum', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['watt'], 'Power', ['W'],
-                                                 ['Factor4Watts'],
-                                                 self._file.csr_spectrum[2])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'csr_spectrum', 'w', "Power")
+            if kwargs.get("pad_zero", False):
+                z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z = self._file.csr_spectrum[2]
-            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
-                                                               ['watt'], ['Factor4Watts'],
-                                                               dataAttrs=z.attrs)
-            zlabel = self._select_label(kwargs, 'zunit', ['watt'], 'Power', ['W'])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'csr_spectrum', 'w', "Power", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     @meshPlot
@@ -411,22 +425,14 @@ class SimplePlotter(object):
           * zunit: possible values: "coulomb", "ampere", "raw"
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-
-        x, xlabel = self._get_unit_and_label(kwargs, 'xunit', ['eV'], 'Energy', ['eV'],
-                                             ['Factor4ElectronVolts'], self._file.energy_profile[0])
-        y, ylabel = self._get_unit_and_label(kwargs, 'yunit', ['ts', 'seconds'], 'T', ['# Synchrotron Periods', 's'],
-                                             [None, 'Factor4Seconds'], self._file.energy_profile[1])
+        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'energy_profile', 'eV', "Energy")
+        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'energy_profile', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._get_unit_and_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population',
-                                                 ['C', 'A'], ['Factor4Coulomb', 'Factor4Ampere'],
-                                                 self._file.energy_profile[2])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'energy_profile', 'c', "Population")
+            if kwargs.get("pad_zero", False):
+                z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z = self._file.energy_profile[2]
-            z.unit_function = lambda period: self._select_unit(kwargs, 'zunit', z[period],
-                                                               ['coulomb', 'ampere'],
-                                                               ['Factor4Coulomb', 'Factor4Ampere'],
-                                                               dataAttrs=z.attrs)
-            zlabel = self._select_label(kwargs, 'zunit', ['coulomb', 'ampere'], 'Population', ['C', 'A'])
+            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'energy_profile', 'c', "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     def impedance(self, *args, **kwargs):
@@ -457,7 +463,6 @@ class SimplePlotter(object):
             return (self._file.impedance[0]*f4h,
                     self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$")
         return imag(fig=fig, label=label+"Imag", **kwargs)
-
 
 
 class MultiPlot(object):

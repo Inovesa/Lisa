@@ -3,8 +3,76 @@
 """
 :Author: Patrick Schreiber
 """
+
+class UnitError(Exception):
+    pass
+
+unit_to_attr_map = {
+    "m": "Factor4Meters",
+    "s": "Factor4Seconds",
+    "ts": None,
+    "W": "Factor4Watts",
+    "A": "Factor4Ampere",
+    "C": "Factor4Coulomb",
+    "Hz": "Factor4Hertz",
+    "eV": "Factor4ElectronVolts"
+}
+
+attr_to_unit_map = {v: k for k, v in unit_to_attr_map.items() if k != "ts"}
+
+alias_map = {
+    "m": ["meter", "meters"],
+    "s": ["second", "seconds"],
+    "ts": ["syncperiods","periods", "synchrotron periods"],
+    "W": ["watt", "watts"],
+    "A": ["ampere", "amperes"],
+    "C": ["coulomb", "coulombs"],
+    "Hz": ["hertz"],
+    "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
+}
+# inverse_alias_map = {va: k for va in (v for k, v in alias_map.items())}
+inverse_alias_map = {}
+for k, v in alias_map.items():
+    for va in v:
+        inverse_alias_map[va.lower()] = k
+inverse_alias_map.update({k.lower():k for k in alias_map.keys()})  # also add the unit it self as alias
+
+def _build_complete_unit_map():
+    unit_map = {}
+    for unit, attr in unit_to_attr_map.items():
+        unit_map[unit.lower()] = attr
+        for alias in alias_map[unit]:
+            unit_map[alias.lower()] = attr
+    return unit_map
+complete_unit_map = _build_complete_unit_map()
+
+def attr_from_unit(unit):
+    if unit is None:
+        return None
+    try:
+        return complete_unit_map[unit.lower()]
+    except KeyError:
+        raise UnitError("Unit '"+unit+"' is unknown")
+
+def unit_from_attr(attr):
+    if attr is None:
+        return None
+    try:
+        return attr_to_unit_map[attr]
+    except KeyError:
+        raise UnitError("Attribute '"+attr+"' is unknown")
+
+def unit_from_spec(spec):
+    unit = inverse_alias_map.get(spec.lower(), False)
+    if unit is False:
+        raise UnitError("Unit Specification '"+spec+"' is unknown")
+    elif unit == "ts":
+        return "# Synchrotron Periods"
+    else:
+        return unit
+
 def color_map_inferno():
-  
+
   _inferno_data = [[0.001462, 0.000466, 0.013866],
                    [0.002267, 0.001270, 0.018570],
                    [0.003299, 0.002249, 0.024239],
