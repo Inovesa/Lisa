@@ -141,14 +141,18 @@ class SimplePlotter(object):
             :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
             :param plt_args: (optional) dictionary with arguments to the displaying function
             :param period: (optional) the period to use. If not given will plot all data as pcolormesh
+            :param use_index: (optional) Use period as index in data and not synchrotron period (default False)
             """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
-                if period not in y:
-                    lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
-                idx = np.argmin(np.abs(np.array(y)-period))
+                if kwargs.get("use_index", False):
+                    idx = period
+                else:
+                    if period not in y:
+                        lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
+                    idx = np.argmin(np.abs(np.array(y)-period))
                 args[0]._last_interpol_idx = idx
-                if period not in y:
+                if period not in y and not kwargs.get("use_index", False):
                     lisa_print(y[idx], debug=False)
                 @SimplePlotter.plot
                 def dummy(x, z, xlabel, zlabel, *args, **kwargs):

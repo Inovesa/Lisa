@@ -1274,7 +1274,7 @@ static PyObject *__pyx_pf_4Lisa_4core_11data_cython_4Data___init__(CYTHON_UNUSED
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4Lisa_4core_11data_cython_4Data_3__getattr__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4Lisa_4core_11data_cython_4Data_2__getattr__[] = "\n        Convert to correct unit.\n        :param idx: the index of the returned list by File objects\n        :param string unit: Use this as second argument or kwarg\n        ";
+static char __pyx_doc_4Lisa_4core_11data_cython_4Data_2__getattr__[] = "\n        Convert to correct unit.\n        :param idx: the index of the returned list by File objects. If idx is str the h5 objects are searched for a matching name.\n        :param string unit: Use this as second argument or kwarg\n        ";
 static PyMethodDef __pyx_mdef_4Lisa_4core_11data_cython_4Data_3__getattr__ = {"__getattr__", (PyCFunction)__pyx_pw_4Lisa_4core_11data_cython_4Data_3__getattr__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4Lisa_4core_11data_cython_4Data_2__getattr__};
 static PyObject *__pyx_pw_4Lisa_4core_11data_cython_4Data_3__getattr__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;

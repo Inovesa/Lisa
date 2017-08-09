@@ -18,6 +18,7 @@ Lisa is a Python module to easily plot and interact with Data from Inovesa resul
    data
    config
    helpers
+   animation
 
 
 .. only:: html

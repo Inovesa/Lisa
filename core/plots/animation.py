@@ -7,7 +7,7 @@ import numpy as np
 
 def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False, clear_between=False):
     """
-    Create a animation.
+    Create an animation.
     :param figure: The figure to use.
     :param frame_generator: Callable that generates a new frame on figure!
     :param frames: List with index for each frame
@@ -59,6 +59,13 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
 
 
 def data_frame_generator(fig, xdata, ydata, label_only_once=False):
+    """
+    Generate a frame generator for simple data.
+    :param fig: The figure to draw in
+    :param xdata: The xdata as iterable
+    :param ydata: The ydata as iterable
+    :param label_only_once: True to only show x and y tick labels only once (otherwise will be drawn over each other if axis present (not so nice))
+    """
     if len(fig.axes) > 0 and not label_only_once:
         print("Warning: An Axis is present, without clearing between frames the x and y axes will be drawn over the original.",
               "Use label_only_once to hide all axes except for the new one.")
