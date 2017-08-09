@@ -46,9 +46,7 @@ class SimplePlotter(object):
     """
     | A Simple Plot Helper Class.
     | It takes a Filename to the Constructor.
-    | Each Method takes a optional label and a optional figure (kwarg fig)
-    | If fig is given the data is plotted into this figure
-
+    | Each actual plotting function is decorated using plot or meshPlot. See those for additional parameters to each plot function.
     """
     def __init__(self, filef, unit_connector='in'):
         """
@@ -66,24 +64,24 @@ class SimplePlotter(object):
 
     def plot(func):
         """
-        Decorator to reuse plotting methods for different data
+        Decorator to reuse plotting methods for different data. Calling one of the actual plot functions will result in calling this.
+        This means the following options are available:
+
+        General Options (always use as keywords):
+        :param fig: (optional) the figure to plot in
+        :param ax: (optional) the axis to use to plot
+        :param label: (optional) the label for this plot (legend)
+        :param scale_factor: (optional) a scale factor Note: This does not modify the labels
+        :param use_offset: (optional) a bool if one wants an offset on yaxis or not
+        :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
+        :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
+        :param fft: (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft
+        :param fft_padding: (optional) an integer to specify how much 0 will be padded to the data before fft default fft
+        :param abs: (optional) a bool to select if plot absolute values or direct data
+        :param plt_args: (optional) dictionary with arguments to the displaying function
         """
         _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
-            """
-            General Options (always use as keywords):
-            :param fig: (optional) the figure to plot in
-            :param ax: (optional) the axis to use to plot
-            :param label: (optional) the label for this plot (legend)
-            :param scale_factor: (optional) a scale factor Note: This does not modify the labels
-            :param use_offset: (optional) a bool if one wants an offset on yaxis or not
-            :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
-            :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
-            :param fft: (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft
-            :param fft_padding: (optional) an integer to specify how much 0 will be padded to the data before fft default fft
-            :param abs: (optional) a bool to select if plot absolute values or direct data
-            :param plt_args: (optional) dictionary with arguments to the displaying function
-            """
             scale_factor = kwargs["scale_factor"] if "scale_factor" in kwargs else 1.
             if isinstance(kwargs.get("fig", None), plt.Figure):
                 fig = kwargs["fig"]
@@ -150,30 +148,32 @@ class SimplePlotter(object):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
             return fig
         decorated.__name__ = func.__name__
-        decorated.__doc__ = textwrap.dedent(decorated.__doc__)
+        decorated.__doc__ = "This method is decorated. See SimplePlotter.plot for additional parameters"
         if func.__doc__ is not None:
             decorated.__doc__ += "\nSpecial Options for this plot:"+textwrap.dedent(func.__doc__)
         return decorated
 
     def meshPlot(func):
         """
-        Decorator to reuse plotting methods and to unify colormesh plots and normal line plots
+        Decorator to reuse plotting methods and to unify colormesh plots and normal line plots.
+        Calling one of the actual plot functions will result in calling this.
+        This means the following options are available:
+
+        General Options (always use as keywords):
+        :param fig: (optional) the figure to plot in
+        :param ax: (optional) the axis to use to plot
+        :param label: (optional) the label for this plot (legend) (if line plot)
+        :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
+        :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
+        :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
+        :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
+        :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
+        :param plt_args: (optional) dictionary with arguments to the displaying function
+        :param period: (optional) the period to use. If not given will plot all data as pcolormesh
+        :param use_index: (optional) Use period as index in data and not synchrotron period (default False)
         """
+        _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
-            """
-            General Options (always use as keywords):
-            :param fig: (optional) the figure to plot in
-            :param ax: (optional) the axis to use to plot
-            :param label: (optional) the label for this plot (legend) (if line plot)
-            :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
-            :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
-            :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
-            :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
-            :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
-            :param plt_args: (optional) dictionary with arguments to the displaying function
-            :param period: (optional) the period to use. If not given will plot all data as pcolormesh
-            :param use_index: (optional) Use period as index in data and not synchrotron period (default False)
-            """
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
                 if kwargs.get("use_index", False):
@@ -236,7 +236,7 @@ class SimplePlotter(object):
             return fig
 
         decorated.__name__ = func.__name__
-        decorated.__doc__ = textwrap.dedent(decorated.__doc__)
+        decorated.__doc__ = "This method is decorated. See SimplePlotter.plot for additional parameters"
         if func.__doc__ is not None:
             decorated.__doc__ += "\nSpecial Options for this plot:"+textwrap.dedent(func.__doc__)
         return decorated
