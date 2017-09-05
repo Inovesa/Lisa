@@ -42,6 +42,15 @@ def setup_plots():  # todo arguments for latexify
     from blhelpers.plot_helpers import latexify
     latexify()
 
+try:
+    import matplotlib2tikz as m2t
+    def save_pgfplot(*args, **kwargs):
+        """Wrapper around matplotlib2tikz.save"""
+        m2t.save(*args, **kwargs)
+except ImportError:
+    pass
+
+
 class SimplePlotter(object):
     """
     | A Simple Plot Helper Class.
@@ -176,14 +185,19 @@ class SimplePlotter(object):
         def decorated(*args, **kwargs):
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
+                print_interpol = False
                 if kwargs.get("use_index", False):
                     idx = period
                 else:
                     if period not in y:
                         lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
+                        print_interpol = True
+                    if period < 0:
+                        period = np.max(y)+period
                     idx = np.argmin(np.abs(np.array(y)-period))
                 args[0]._last_interpol_idx = idx
-                if period not in y and not kwargs.get("use_index", False):
+                # if period not in y and not kwargs.get("use_index", False):
+                if print_interpol:
                     lisa_print(y[idx], debug=False)
                 @SimplePlotter.plot
                 def dummy(x, z, xlabel, zlabel, *args, **kwargs):

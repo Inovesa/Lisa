@@ -16,5 +16,7 @@ class _ConfOptions(object):
 config_options = _ConfOptions()
 
 def lisa_print(*args, **kwargs):
+    import sys
     if not kwargs.get("debug", True) or config_options.get("print_debug"):
         print(*args, end=kwargs.get("end", "\n"))
+        sys.stdout.flush()
