@@ -1,4 +1,5 @@
 from ..internals import config_options
+from .animation import *
 if config_options.get("use_cython"):
     try:
         from .plots_cython import *

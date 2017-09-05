@@ -1,4 +1,4 @@
-from .plots import SimplePlotter, MultiPlot, setup_plots, PhaseSpace, MultiPhaseSpaceMovie
+from .plots import SimplePlotter, MultiPlot, setup_plots, PhaseSpace, MultiPhaseSpaceMovie, create_animation, data_frame_generator
 from .internals import config_options
 if config_options.get("use_cython"):
     try:

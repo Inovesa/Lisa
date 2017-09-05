@@ -5,7 +5,7 @@ import numbers
 import inspect
 import numpy as np
 
-def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False, clear_between=False):
+def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False, clear_between=False, save_args=None):
     """
     Create an animation.
     :param figure: The figure to use.
@@ -31,11 +31,44 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
             figure.clf()
             return _frame_gen(*args, **kwargs)
         frame_generator = gen
+
+    import time
+    first_time = time.time()
+    eta = [0]
+    import sys
+    try:
+        from blhelpers.debug import BeautifulPrinter
+        b = BeautifulPrinter(False)
+        def perc(p):
+            b.mPercent(p)
+            if p != 100:
+                dt = time.time() - first_time
+                if eta[0] == 0:
+                    if p != 0:
+                        eta[0] = 100*dt/p
+                else:
+                    eta[0] = (eta[0] + 100*dt/p)/2
+                sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
+                sys.stdout.flush()
+    except ImportError:
+        def perc(p):
+            sys.stdout.write('\r')
+            sys.stdout.write("[{0}{1}] {2:.2f}%".format('='*(int(p)-1)+'>', ' '*(100-int(p)), round(p, 2)))
+            dt = time.time() - first_time
+            if eta[0] == 0:
+                if p != 0:
+                    eta[0] = 100*dt/p
+            else:
+                eta[0] = (eta[0] + 100*dt/p)/2
+            sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
+            sys.stdout.flush()
+
     def generator(*args, **kwargs):
-        has_kwargs =  any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
+        has_kwargs = any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
         has_clear = any(x.name == 'clear' for x in params.values())
         if has_clear or has_kwargs:
             kwargs['clear'] = clear_between
+        perc(args[0]/len(frames)*100)
         return frame_generator(*args, **kwargs)
 
     ani = anim.FuncAnimation(figure, generator, frames=frames, interval=interval, blit=blit, repeat=False)
@@ -54,7 +87,11 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
             key_press_handler(event, figure.canvas, figure.canvas.toolbar)
     figure.canvas.mpl_connect('key_press_event', OnKeyPress)
     if path is not None:
-        ani.save(path, writer, dpi=dpi)
+        if save_args is None:
+            save_args = {}
+        ani.save(path, writer, dpi=dpi, savefig_kwargs=save_args)
+    perc(100)
+    print()
     return ani
 
 
