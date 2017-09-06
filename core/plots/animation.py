@@ -40,7 +40,6 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
         from blhelpers.debug import BeautifulPrinter
         b = BeautifulPrinter(False)
         def perc(p):
-            b.mPercent(p)
             if p != 100:
                 dt = time.time() - first_time
                 if eta[0] == 0:
@@ -48,27 +47,32 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
                         eta[0] = 100*dt/p
                 else:
                     eta[0] = (eta[0] + 100*dt/p)/2
+                b.mPercent(p)
                 sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
                 sys.stdout.flush()
     except ImportError:
         def perc(p):
-            sys.stdout.write('\r')
-            sys.stdout.write("[{0}{1}] {2:.2f}%".format('='*(int(p)-1)+'>', ' '*(100-int(p)), round(p, 2)))
+
             dt = time.time() - first_time
             if eta[0] == 0:
                 if p != 0:
                     eta[0] = 100*dt/p
             else:
                 eta[0] = (eta[0] + 100*dt/p)/2
+            sys.stdout.write('\r')
+            sys.stdout.write("[{0}{1}] {2:.2f}%".format('='*(int(p)-1)+'>', ' '*(100-int(p)), round(p, 2)))
             sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
             sys.stdout.flush()
 
+    current_index = 0
     def generator(*args, **kwargs):
         has_kwargs = any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
         has_clear = any(x.name == 'clear' for x in params.values())
         if has_clear or has_kwargs:
             kwargs['clear'] = clear_between
-        perc(args[0]/len(frames)*100)
+        nonlocal current_index
+        current_index += 1
+        perc(current_index/len(frames)*100)
         return frame_generator(*args, **kwargs)
 
     ani = anim.FuncAnimation(figure, generator, frames=frames, interval=interval, blit=blit, repeat=False)
