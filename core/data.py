@@ -2,7 +2,17 @@
 :Author: Patrick Schreiber
 """
 
-from .file_cython import File,  FileDataRegister
+from .internals import config_options, lisa_print
+
+if config_options.get("use_cython"):
+    try:
+        from .file_cython import File, FileDataRegister
+    except ImportError as e:
+        print(e)
+        print("Fallback to python version")
+        from .file import File, FileDataRegister
+else:
+    from .file import File, FileDataRegister
 from .internals import lisa_print
 from .utils import attr_from_unit, UnitError
 import numpy as np
@@ -29,6 +39,8 @@ class Data(object):
         else:
             self._file = File(p_file)
 
+        self.version = self._file.version
+
     def __getattr__(self, attr):
         """
         Convert to correct unit.
@@ -40,15 +52,15 @@ class Data(object):
             """
             Return the raw data from File object
             """
-            return lambda: getattr(self._file, attr[:-4])
+            return getattr(self._file, attr[:-4])
         if attr not in FileDataRegister.registered_properties:
             raise AttributeError("Data object (and File object) does not have an attribute "+attr)
         if attr == 'parameters':
             def inner(what):
                 if what == 'all':
-                    return getattr(self._file, attr)
+                    return getattr(self._file, attr)()
                 else:
-                    return getattr(self._file, attr)[what]
+                    return getattr(self._file, attr)()[what]
             return inner
         def inner(idx, *args, **kwargs):
             unit = ''
@@ -60,17 +72,8 @@ class Data(object):
             lisa_print("using unit specification", unit)
             if unit == '':
                 raise UnitError("No unit given.")
-            if isinstance(idx, int):
-                data = getattr(self._file, attr)[idx]
-            elif isinstance(idx, str):
-                pd = list(filter(lambda x: idx in x.name, getattr(self._file, attr)))
-                if len(pd) > 1:
-                    raise IndexError("'%s' was not found or was found multiple times."%str(idx))
-                else:
-                    data = pd[0]
-            else:
-                raise IndexError("'%s' is not a valid index and no matching element was found."%str(idx))
-            conversion_attribute = attr_from_unit(unit)
+            data = getattr(self._file, attr)(idx)
+            conversion_attribute = attr_from_unit(unit, self.version)
             if conversion_attribute is None:
                 if kwargs.get("sub_idx", None) is None:
                     return data * np.float64(1.0)

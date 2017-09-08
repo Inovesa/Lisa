@@ -16,10 +16,20 @@ from numbers import Number
 import sys
 
 import textwrap
+from ..internals import config_options
 
-# from ..file import File
-from ..file_cython import File
-from ..data_cython import Data
+if config_options.get("use_cython"):
+    try:
+        from ..file_cython import File, Axis
+        from ..data_cython import Data
+    except ImportError as e:
+        print(e)
+        print("Fallback to python version")
+        from ..file import File, Axis
+        from ..data import Data
+else:
+    from ..file import File, Axis
+    from ..data import Data
 from .config import Style
 from ..internals import lisa_print
 from ..utils import unit_from_attr, attr_from_unit, unit_from_spec
@@ -68,7 +78,7 @@ class SimplePlotter(object):
         else:
             self._file = File(filef)
         self._data = Data(self._file)
-        self.current = self._file.parameters["BunchCurrent"]
+        self.current = self._file.parameters()["BunchCurrent"]
         self.unit_connector = unit_connector
 
     def plot(func):
@@ -315,7 +325,7 @@ class SimplePlotter(object):
 
     def _unit_and_label(self, kwargs, idx, axis, data, default, label, gen_sub=False):
         if gen_sub:
-            d = getattr(self._data, data+"_raw")()[idx]
+            d = getattr(self._data, data+"_raw")(idx)
             unit = unit_from_spec(kwargs.get(axis+"unit", default))
             d.unit_function = lambda idx, _data=data, _idx=idx, _unit=unit: getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
         else:
@@ -330,8 +340,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "eV", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'energy_spread', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'energy_spread', 'eV', "Energy Spread")
+        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'energy_spread', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'energy_spread', 'eV', "Energy Spread")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -348,14 +358,14 @@ class SimplePlotter(object):
           * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_profile', 'm', "x")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_profile', 'ts', "T")
+        x, xlabel = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 'm', "x")
+        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'bunch_profile', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'bunch_profile', 'c', "Population")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', 'c', "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'bunch_profile', 'c', "Population", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', 'c', "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
 
@@ -366,8 +376,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "secons", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_length', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_length', 'm', "Bunch Length")
+        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_length', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_length', 'm', "Bunch Length")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -377,8 +387,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "watt", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'csr_intensity', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'csr_intensity', 'W', "CSR Intensity")
+        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'csr_intensity', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'csr_intensity', 'W', "CSR Intensity")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -388,8 +398,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_position', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_position', 'm', "Bunch Position")
+        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_position', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_position', 'm', "Bunch Position")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -399,8 +409,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'bunch_population', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'bunch_population', 'c', "Bunch Population")
+        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_population', 'ts', "T")
+        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_population', 'c', "Bunch Population")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -417,14 +427,14 @@ class SimplePlotter(object):
         """
         # NOTE: This does not seem to work
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, 1, 'x', 'csr_spectrum', 'Hz', "Frequency")
-        y, ylabel = self._unit_and_label(kwargs, 0, 'y', 'csr_spectrum', 'ts', "T")
+        x, xlabel = self._unit_and_label(kwargs, Axis.FAXIS, 'x', 'csr_spectrum', 'Hz', "Frequency")
+        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'csr_spectrum', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'csr_spectrum', 'w', "Power")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'w', "Power")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'csr_spectrum', 'w', "Power", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'w', "Power", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     @meshPlot
@@ -439,14 +449,14 @@ class SimplePlotter(object):
           * zunit: possible values: "coulomb", "ampere", "raw"
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, 0, 'x', 'energy_profile', 'eV', "Energy")
-        y, ylabel = self._unit_and_label(kwargs, 1, 'y', 'energy_profile', 'ts', "T")
+        x, xlabel = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy")
+        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'energy_profile', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'energy_profile', 'c', "Population")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', 'c', "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, 2, 'z', 'energy_profile', 'c', "Population", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', 'c', "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     def impedance(self, *args, **kwargs):
@@ -454,7 +464,9 @@ class SimplePlotter(object):
         Plot Impedance (Fixed units). Real and Imaginary Part
         """
         warn("Unit of x-Axis may not be correct")
-        f4h = self._file.impedance[0].attrs["Factor4Hertz"]
+        from ..utils import attr_from_unit
+        f4h = self._file.impedance(Axis.FAXIS).attrs[attr_from_unit("hz", self._file.version)]
+        f4o = self._file.impedance("datagroup").attrs[attr_from_unit("ohm", self._file.version)]
         if f4h == 0:
             warn("Factor4Hertz is zero in datafile using 1.0")
             f4h = np.float64(1.0)
@@ -467,15 +479,15 @@ class SimplePlotter(object):
 
         @SimplePlotter.plot
         def real(*args, **kwargs):
-            return (self._file.impedance[0]*f4h,
-                   self._file.impedance[1], "Frequency in Hz", "Impedance in k$\\Omega$") # TODO: wirklich kOhm?
+            return (self._file.impedance(Axis.FAXIS)*f4h,
+                   self._file.impedance(Axis.REAL)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
         fig = real(*args, label=label+"Real", **kwargs)
         if 'fig' in kwargs:
             del kwargs['fig']
         @SimplePlotter.plot
         def imag(*args, **kwargs):
-            return (self._file.impedance[0]*f4h,
-                    self._file.impedance[2], "Frequency in Hz", "Impedance in k$\\Omega$")
+            return (self._file.impedance(Axis.FAXIS)*f4h,
+                    self._file.impedance(Axis.IMAG)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
         return imag(fig=fig, label=label+"Imag", **kwargs)
 
 
@@ -576,7 +588,7 @@ class PhaseSpace(object):
         :param index: the index of the dataset (in timeaxis)
         """
         # data = self._file.phase_space[2][index].T[::-1, :] # Transpose because is 90deg wrong
-        data = self._x_to_y(self._file.phase_space[2][index])
+        data = self._x_to_y(self._file.phase_space("data")[index])
         fig, ax = plt.subplots(1)
         im = ax.imshow(data)
         im.set_cmap('inferno')
@@ -608,20 +620,20 @@ class PhaseSpace(object):
         fig.subplots_adjust(left=0, bottom=0, right=1,top=1, wspace=None, hspace=None)
 
         lb = 0 if fr_idx == -1 else fr_idx
-        ub = len(self._file.phase_space[2]) if to_idx == -1 else to_idx
+        ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
 
         #index = [0 if fr_idx==-1 else fr_idx]
-        im = [plt.imshow(self._x_to_y(self._file.phase_space[2][lb]), animated=True, aspect='auto')]
+        im = [plt.imshow(self._x_to_y(self._file.phase_space(Axis.DATA)[lb]), animated=True, aspect='auto')]
         im[0].set_cmap('inferno')
         plt.axis(axis)
 
 #        im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.max(self._file.phase_space[2]))
         if not autorescale and percentile is not None:
-            im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.percentile(self._file.phase_space[2], percentile))
+            im[0].set_clim(vmin=np.min(self._file.phase_space(Axis.DATA)), vmax=np.percentile(self._file.phase_space(Axis.DATA), percentile))
 
         def gen_data(i):
             idx = i + lb
-            return self._x_to_y(self._file.phase_space[2][idx])
+            return self._x_to_y(self._file.phase_space(Axis.DATA)[idx])
 
         def gen_image(i):
             im[0].set_data(gen_data(i))
@@ -687,7 +699,7 @@ class MultiPhaseSpaceMovie(object):
             ps = PhaseSpace(file[1])
             if autorescale and clim is None:
                 clim = ps.plot_ps(0)[2].get_clim()
-            clips.append(DataVideoClip(range(len(ps._file.phase_space[2])), lambda dat, ps=ps, clim=clim: dtv(dat, ps, clim), fps=fps))
+            clips.append(DataVideoClip(range(len(ps._file.phase_space(Axis.DATA))), lambda dat, ps=ps, clim=clim: dtv(dat, ps, clim), fps=fps))
         if filename is None:
             return concatenate_videoclips(clips)
         else:

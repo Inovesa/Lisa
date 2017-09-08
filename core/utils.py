@@ -7,6 +7,47 @@
 class UnitError(Exception):
     pass
 
+
+class InovesaVersion(object):
+    """Object to make comparison of versions easier"""
+    def __init__(self, release, minor, fix):
+        self.release = release
+        self.minor = minor
+        self.fix = fix
+        self._v_tup = (self.release, self.minor, -self.fix)  # reverse fix because higher negative means "higer" version
+
+    def __other_tup(self, other):
+        if isinstance(other, InovesaVersion):
+            other = other._v_tup
+        else:
+            other = (other[0], other[1], -other[2])
+        return other
+
+    def __lt__(self, other):
+        return self._v_tup < self.__other_tup(other)
+
+    def __le__(self, other):
+        return self._v_tup <= self.__other_tup(other)
+
+    def __gt__(self, other):
+        return self._v_tup > self.__other_tup(other)
+
+    def __ge__(self, other):
+        return self._v_tup >= self.__other_tup(other)
+
+    def __eq__(self, other):
+        return self._v_tup == self.__other_tup(other)
+
+    def __hash__(self):
+        return hash(self._v_tup)
+
+    def __repr__(self):
+        return "{}.{}.-{}".format(*self._v_tup)
+
+# default version objects to compare to
+version15 = InovesaVersion(0, 15, 0)
+version14 = InovesaVersion(0, 14, 0)
+
 unit_to_attr_map = {
     "m": "Factor4Meters",
     "s": "Factor4Seconds",
@@ -15,10 +56,23 @@ unit_to_attr_map = {
     "A": "Factor4Ampere",
     "C": "Factor4Coulomb",
     "Hz": "Factor4Hertz",
-    "eV": "Factor4ElectronVolts"
+    "eV": "Factor4ElectronVolts",
+    "Ohm": "Factor4Ohms"
 }
 
+unit_to_attr_map_v15 = {key: value.split("4")[1].rstrip("s") if isinstance(value, str) else value
+                        for key, value in unit_to_attr_map.items()}
+for key, value in unit_to_attr_map.items():
+    if value is None:
+        unit_to_attr_map_v15[key] = None
+        continue
+    else:
+        unit_to_attr_map_v15[key] = value.split("4")[1].rstrip("s")
+        if key in ["C", "A"]:
+            unit_to_attr_map_v15[key] += "PerNBL"
+
 attr_to_unit_map = {v: k for k, v in unit_to_attr_map.items() if k != "ts"}
+attr_to_unit_map_v15 = {v: k for k, v in unit_to_attr_map_v15.items() if k != "ts"}
 
 alias_map = {
     "m": ["meter", "meters"],
@@ -28,7 +82,8 @@ alias_map = {
     "A": ["ampere", "amperes"],
     "C": ["coulomb", "coulombs"],
     "Hz": ["hertz"],
-    "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"]
+    "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"],
+    "Ohm": ["ohms"]
 }
 # inverse_alias_map = {va: k for va in (v for k, v in alias_map.items())}
 inverse_alias_map = {}
@@ -37,28 +92,39 @@ for k, v in alias_map.items():
         inverse_alias_map[va.lower()] = k
 inverse_alias_map.update({k.lower():k for k in alias_map.keys()})  # also add the unit it self as alias
 
-def _build_complete_unit_map():
+
+def _build_complete_unit_map(version):
     unit_map = {}
-    for unit, attr in unit_to_attr_map.items():
+    u_t_a_m = unit_to_attr_map if version < version15 else unit_to_attr_map_v15
+
+    for unit, attr in u_t_a_m.items():
         unit_map[unit.lower()] = attr
         for alias in alias_map[unit]:
             unit_map[alias.lower()] = attr
     return unit_map
-complete_unit_map = _build_complete_unit_map()
 
-def attr_from_unit(unit):
+complete_unit_map = _build_complete_unit_map(version14)
+complete_unit_map_v15 = _build_complete_unit_map(version15)
+
+def attr_from_unit(unit, version):
     if unit is None:
         return None
     try:
-        return complete_unit_map[unit.lower()]
+        if version < version15:
+            return complete_unit_map[unit.lower()]
+        else:
+            return complete_unit_map_v15[unit.lower()]
     except KeyError:
         raise UnitError("Unit '"+unit+"' is unknown")
 
-def unit_from_attr(attr):
+def unit_from_attr(attr, version):
     if attr is None:
         return None
     try:
-        return attr_to_unit_map[attr]
+        if version < version15:
+            return attr_to_unit_map[attr]
+        else:
+            return attr_to_unit_map_v15[attr]
     except KeyError:
         raise UnitError("Attribute '"+attr+"' is unknown")
 
@@ -70,6 +136,7 @@ def unit_from_spec(spec):
         return "# Synchrotron Periods"
     else:
         return unit
+
 
 def color_map_inferno():
 

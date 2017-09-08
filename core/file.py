@@ -7,6 +7,8 @@ import h5py as h5
 import glob
 import numpy as np
 
+from .utils import InovesaVersion, version14, version15
+
 class FileDataRegister():
     registered_properties = []
 
@@ -24,7 +26,8 @@ class AttributedNPArray(np.ndarray):
         self.name = getattr(obj, 'name', None)
 
 
-def registered_property(cls):
+
+def registered(cls):
     """
     Registeres properties of one class into another class.registered_properties
     """
@@ -35,12 +38,81 @@ def registered_property(cls):
         else:
             cls.registered_properties = []
     def wrapper(func):
-        # if func.__name__ not in cls.registered_properties:  ## Use this if stuff turns up multiple times
         cls.registered_properties.append(func.__name__)
-        p = property(func)
-        p.__doc__ = func.__doc__
-        return p
+        return func
     return wrapper
+
+
+class AxisSelector(object):
+    TIME = "timeaxis"
+    XAXIS = "spaceaxis"
+    EAXIS = "energyaxis"
+    FAXIS = "frequencyaxis"
+    DATA = "data"
+    REAL = "real"
+    IMAG = "imag"
+    def __init__(self):
+        self._specs = {
+            "BunchLength": [self.TIME, self.DATA],
+            "BunchPopulation": [self.TIME, self.DATA],
+            "BunchPosition": [self.TIME, self.DATA],
+            "BunchProfile": [self.TIME, self.XAXIS, self.DATA],
+            "CSR/Intensity": [self.TIME, self.DATA],
+            "CSR/Spectrum": [self.TIME, self.FAXIS],
+            "EnergyProfile": [self.TIME, self.EAXIS, self.DATA],
+            "EnergySpread": [self.TIME, self.DATA],
+            "Impedance": [self.FAXIS, self.REAL, self.IMAG, "datagroup"],
+            "Particles": [self.TIME, self.DATA],
+        }
+        self._axis_datasets = {
+            self.TIME: "/Info/AxisValues_t",
+            self.XAXIS: "/Info/AxisValues_z",
+            self.EAXIS: "/Info/AxisValues_E",
+            self.FAXIS: "/Info/AxisValues_f"
+        }
+        self._data_datasets = {
+            self.DATA: "data",
+            self.REAL: "data/real",
+            self.IMAG: "data/imag",
+            "datagroup": "data"
+        }
+
+    def all_for(self, group):
+        return self._specs[group]
+
+    def __call__(self, axis, group):  # csr_spectrum has swapped axis in versions below 0.15
+        if axis not in self._specs[group]:
+            raise ValueError("'"+axis+"' is not in group '"+group+"'")
+        return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
+
+Axis = AxisSelector
+
+
+class DataContainer(object):
+    def __new__(cls, data_dict, list_of_elements):
+        if len(list_of_elements) == 1:  # if only one element then do not bother with DataContainer but return h5 object
+            return data_dict[list_of_elements[0]]
+        else:
+            return super(DataContainer, cls).__new__(cls)
+
+    def __init__(self, data_dict, list_of_elements):
+        self._data_dict = data_dict
+        self._list_of_elements = list_of_elements
+
+    def __getitem__(self, name):
+        if isinstance(name, int):
+            return self._data_dict[self._list_of_elements[name]]
+        if name in self._data_dict:
+            return self._data_dict[name]
+        else:
+            raise ValueError("'"+name+"' not in this Container")
+
+    def __getattr__(self, item):
+        return self[item]
+
+    def __len__(self):
+        return len(self._list_of_elements)
+
 
 class File(object):
     """
@@ -53,18 +125,14 @@ class File(object):
         """
         self.filename = filename
         self.file = h5.File(filename, 'r')
-        self._bunch_length = None
-        self._bunch_position = None
-        self._bunch_population = None
-        self._bunch_profile = None
-        self._csr_intensity = None
-        self._csr_spectrum = None
-        self._energy_profile = None
-        self._energy_spread = None
-        self._impedance = None
-        self._particles = None
-        self._phase_space = None
-        self._wake_potential = None
+        self._data = {}
+
+        try:
+            self.version = InovesaVersion(*self.file.get("Info").get("Inovesa_v"))
+        except TypeError:
+            self.version = InovesaVersion(*self.file.get("Info").get("INOVESA_v"))
+
+        self.select_axis = AxisSelector()
 
     def _get_list(self, group, list_of_elements):
         """
@@ -76,6 +144,21 @@ class File(object):
         for elem in list_of_elements:
             ret.append(gr.get(elem))
         return ret
+
+    def _get_dict(self, group, list_of_elements):
+        """
+        Will get the group "group" from the hdf5 file and save it to self._data[key]
+        """
+        dg = self._data.setdefault(group, {})
+        if len(list_of_elements) == 0:
+            list_of_elements = self.select_axis.all_for(group)
+        set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
+        if len(set_of_new_elements) != 0:
+            gr = self.file.get(group)
+            for elem in set_of_new_elements:
+                ax = self.select_axis(elem, group)
+                dg[elem] = gr.get(ax)
+        return DataContainer(dg, list_of_elements)
 
     def preload_full(self, what):
         """
@@ -90,130 +173,107 @@ class File(object):
         except:
             print("Error")
 
-    @registered_property(FileDataRegister)
-    def energy_spread(self):
+    def _sub_element(self, what, sub):
+        if isinstance(sub, int):
+            return self._data[what][sub]
+        elif isinstance(sub, str):
+            if sub in self._data[what]:
+                return self._data[what][sub]
+            else:
+                pd = list(filter(lambda x: sub in x.name, self._data[what].values()))
+                if len(pd) > 1:
+                    raise IndexError("'%s' was not found or was found multiple times."%str(sub))
+                else:
+                    return pd[0]
+        else:
+            raise IndexError("'%s' is not a valid index and no matching element was found."%str(sub))
+
+    @registered(FileDataRegister)
+    def energy_spread(self, *selectors):
         """
         Return the EnergySpread
-        :return: [EnergySpread.axis0, EnergySpread.data]
         """
-        if self._energy_spread is None:
-            self._energy_spread = [self.file.get("EnergySpread").get("axis0"),
-                                   self.file.get("EnergySpread").get("data")]
-        return self._energy_spread
+        return self._get_dict("EnergySpread", selectors)
 
-    @registered_property(FileDataRegister)
-    def bunch_length(self):
+    @registered(FileDataRegister)
+    def bunch_length(self, *selectors):
         """
         Return the BunchLength
-        :return: [BunchLength.axis0, BunchLength.data]
         """
-        if self._bunch_length is None:
-            self._bunch_length = [self.file.get("BunchLength").get("axis0"),
-                                  self.file.get("BunchLength").get("data")]
-        return self._bunch_length
+        return self._get_dict("BunchLength", selectors)
 
-    @registered_property(FileDataRegister)
-    def bunch_position(self):
+    @registered(FileDataRegister)
+    def bunch_position(self, *selectors):
         """
         Return the BunchPosition
-        :return: [BunchPosition.axis0, BunchPosition.data]
         """
-        if self._bunch_position is None:
-            self._bunch_position = [self.file.get("BunchPosition").get("axis0"),
-                                    self.file.get("BunchPosition").get("data")]
-        return self._bunch_position
+        return self._get_dict("BunchPosition", selectors)
 
-    @registered_property(FileDataRegister)
-    def bunch_population(self):
+    @registered(FileDataRegister)
+    def bunch_population(self, *selectors):
         """
         Return the BunchPopulation
-        :return: [BunchPopulation.axis0, BunchPopulation.data]
         """
-        if self._bunch_population is None:
-            self._bunch_population = self._get_list("BunchPopulation", ["axis0", "data"])
-        return self._bunch_population
+        return self._get_dict("BunchPopulation", selectors)
 
-    @registered_property(FileDataRegister)
-    def bunch_profile(self):
+    @registered(FileDataRegister)
+    def bunch_profile(self, *selectors):
         """
         Return the BunchProfile
         :return: [BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data]
         """
-        if self._bunch_profile is None:
-            self._bunch_profile = self._get_list("BunchProfile", ["axis0", "axis1", "data"])
-        return self._bunch_profile
+        return self._get_dict("BunchProfile", selectors)
 
-    @registered_property(FileDataRegister)
-    def csr_intensity(self):
+    @registered(FileDataRegister)
+    def csr_intensity(self, *selectors):
         """
         Return the CSRIntensity
-        :return: [CSRIntensity.axis0, CSRIntensity.axis1, CSRIntensity.data]
         """
-        if self._csr_intensity is None:
-            self._csr_intensity = self._get_list("CSR/Intensity", ["axis0", "data"])
-        return self._csr_intensity
+        return self._get_dict("CSR/Intensity", selectors)
 
-    @registered_property(FileDataRegister)
-    def csr_spectrum(self):
+    @registered(FileDataRegister)
+    def csr_spectrum(self, *selectors):
         """
         Return the CSRSpectrum
-        :return: [CSRSpectrum.axis0, CSRSpectrum.axis1, CSRSpectrum.data]
         """
-        if self._csr_spectrum is None:
-            self._csr_spectrum = self._get_list("CSR/Spectrum", ["axis0", "axis1", "data"])
-        return self._csr_spectrum
+        return self._get_dict("CSR/Spectrum", selectors)
 
-    @registered_property(FileDataRegister)
-    def energy_profile(self):
+    @registered(FileDataRegister)
+    def energy_profile(self, *selectors):
         """
         Return the EnergyProfile
-        :return: [EnergyProfile.axis0, EnergyProfile.axis1, EnergyProfile.data]
         """
-        if self._energy_profile is None:
-            self._energy_profile = self._get_list("EnergyProfile", ["axis0", "axis1", "data"])
-        return self._energy_profile
+        return self._get_dict("EnergyProfile", selectors)
 
-    @registered_property(FileDataRegister)
-    def impedance(self):
+    @registered(FileDataRegister)
+    def impedance(self, *selectors):
         """
         Return the Impedance
-        :return: [Impedance.axis0, Impedance.real, Impedance.imag]
         """
-        if self._impedance is None:
-            self._impedance = self._get_list("Impedance", ["axis0", "data/real", "data/imag"])
-        return self._impedance
+        return self._get_dict("Impedance", selectors)
 
-    @registered_property(FileDataRegister)
-    def particles(self):
+    @registered(FileDataRegister)
+    def particles(self, *selectors):
         """
         Return the Particles
-        :return: [Particles.axis0, Particles.data]
         """
-        if self._particles is None:
-            self._particles = self._get_list("Particles", ["axis0", "data"])
-        return self._particles
+        return self._get_dict("Particles", selectors)
 
-    @registered_property(FileDataRegister)
-    def phase_space(self):
+    @registered(FileDataRegister)
+    def phase_space(self, *selectors):
         """
         Return the PhaseSpace
-        :return: [PhaseSpace.axis0, PhaseSpace.axis1 ,PhaseSpace.data]
         """
-        if self._phase_space is None:
-            self._phase_space = self._get_list("PhaseSpace", ["axis0", "axis1", "data"])
-        return self._phase_space
+        return self._get_dict("PhaseSpace", selectors)
 
-    @registered_property(FileDataRegister)
-    def wake_potential(self):
+    @registered(FileDataRegister)
+    def wake_potential(self, *selectors):
         """
         Return the WakePotential
-        :return: [WakePotential.axis0, WakePotential.data]
         """
-        if self._wake_potential is None:
-            self._wake_potential = self._get_list("WakePotential", ["axis0", "data"])
-        return self._wake_potential
+        return self._get_dict("WakePotential", selectors)
 
-    @registered_property(FileDataRegister)
+    @registered(FileDataRegister)
     def parameters(self):
         """
         Return the Inovesa Parameters
