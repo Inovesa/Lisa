@@ -200,7 +200,7 @@ class SimplePlotter(object):
                     idx = period
                 else:
                     if period not in y:
-                        lisa_print("Interpolating for usable period (using nearest): ",end="", debug=False)
+                        lisa_print("Interpolating for usable period (using nearest): ", end="", debug=False)
                         print_interpol = True
                     if period < 0:
                         period = np.max(y)+period

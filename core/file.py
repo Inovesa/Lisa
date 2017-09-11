@@ -82,20 +82,29 @@ class AxisSelector(object):
 
     def __call__(self, axis, group):  # csr_spectrum has swapped axis in versions below 0.15
         if axis not in self._specs[group]:
-            raise ValueError("'"+axis+"' is not in group '"+group+"'")
+            raise ValueError("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
         return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
 
 Axis = AxisSelector
 
 
+class DataError(Exception):
+    pass
+
+
 class DataContainer(object):
     def __new__(cls, data_dict, list_of_elements):
         if len(list_of_elements) == 1:  # if only one element then do not bother with DataContainer but return h5 object
-            return data_dict[list_of_elements[0]]
+            try:
+                return data_dict[list_of_elements[0]]
+            except:
+                raise DataError("Tried to access unavailable elements.")
         else:
             return super(DataContainer, cls).__new__(cls)
 
     def __init__(self, data_dict, list_of_elements):
+        if not all([l in data_dict for l in list_of_elements]):
+            raise DataError("Tried to access unavailable elements.")
         self._data_dict = data_dict
         self._list_of_elements = list_of_elements
 
@@ -107,16 +116,154 @@ class DataContainer(object):
         else:
             raise ValueError("'"+name+"' not in this Container")
 
+    def __contains__(self, item):
+        return item in self._list_of_elements
+
     def __getattr__(self, item):
         return self[item]
 
     def __len__(self):
         return len(self._list_of_elements)
 
+    def __iter__(self):
+        self.idx = 0
+        return self
+
+    def __next__(self):
+        self.idx += 1
+        if self.idx == len(self._list_of_elements):
+            raise StopIteration
+        return self._list_of_elements[self.idx-1], self._data_dict[self._list_of_elements[self.idx-1]]
+
 
 class File(object):
     """
     Wrapper around a h5 File created by Inovesa
+
+    Each Datagroup is a method of this object. To get a special axis of each group use additional parameters.
+
+    If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded, as AttributedNPArray.
+
+    If no or more than one parameter is supplied the data will be returned as DataContainer object containing
+    the HDF5.Dataset or AttributedNPArray objects.
+
+    This is not completely true for File.parameters.
+
+    ::
+
+        f = File("path/to/file")
+        tax = f.bunch_profile(Axis.TIME)
+        xax = f.bunch_profile(Axis.XAXIS)
+        data = f.bunch_profile(Axis.DATA)
+        all = f.bunch_profile()
+        axes = f.bunch_profile(Axis.TIME, Axis.XAXIS)
+
+    Method names are mostly the datagroup-names with underscores instead of camelcase (e.g. bunch_profile for BunchProfile)
+
+    Available Groups:
+
+        - energy_spread
+        - bunch_length
+        - bunch_position
+        - bunch_population
+        - bunch_profile
+        - csr_intensity
+        - csr_spectrum
+        - energy_profile
+        - impedance
+        - particles
+        - phase_space
+        - wake_potential
+        - * parameters
+
+    * parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.
+    Use File.parameters(param1, param2 ...) to get either a single parameter (with the datatype that this parameter is saved
+    in the hdf5 file) or a DataContainer object depending on how much params were passed.
+
+    """
+    def __init__(self, filename):
+        """
+        Create File object
+        :param filename: The filename of the Inovesa result file
+        """
+        self.filename = filename
+        self.file = h5.File(filename, 'r')
+        self._data = {}
+
+        try:
+            self.version = InovesaVersion(*self.file.get("Info").get("Inovesa_v"))
+        except TypeError:
+            self.version = InovesaVersion(*self.file.get("Info").get("INOVESA_v"))
+
+        self.select_axis = AxisSelector()
+
+        self._met2gr = {
+            "energy_spread": "EnergySpread",
+            "bunch_length": "BunchLength",
+            "bunch_position": "BunchPosition",
+            "bunch_population": "BunchPopulation",
+            "bunch_profile": "BunchProfile",
+            "csr_intensity": "CSR/Intensity",
+            "csr_spectrum": "CSR/Spectrum",
+            "energy_profile": "EnergyProfile",
+            "impedance": "Impedance",
+            "particles": "Particles",
+            "phase_space": "PhaseSpace",
+            "wake_potential": "WakePotential",
+            "parameters": "Info/Parameters"
+        }
+
+    def _get_dict(self, group, list_of_elements):
+        """
+        Will get the group "group" from the hdf5 file and save it to self._data[key]
+        """
+        dg = self._data.setdefault(group, {})
+        if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
+            list_of_elements = self.select_axis.all_for(group)
+        set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
+        if len(set_of_new_elements) != 0:
+            gr = self.file.get(group)
+            for elem in set_of_new_elements:
+                ax = self.select_axis(elem, group)
+                dg[elem] = gr.get(ax)
+        return DataContainer(dg, list_of_elements)
+
+    def preload_full(self, what, axis=None):
+        """
+        Preload Data into memory. This will speed up recurring reads by a lot
+        """
+        try:
+            h5data = getattr(self, what)(axis)
+            tmp = [np.zeros(i.shape, dtype=i.dtype) for _, i in h5data]
+            sdata = [i.read_direct(tmp[idx]) for idx, (_, i) in enumerate(h5data)]
+            sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name) for idx, (name, i) in enumerate(h5data)}
+            self._data[self._met2gr[what]].update(sdata)
+        except:
+            print("Error preloading data")
+
+    def __getattr__(self, what):
+        group = self._met2gr.get(what, None)
+        if group:
+            def data_getter(*selectors):
+                if what == "parameters":
+                    if len(selectors) == 0:
+                        return self.file.get("Info/Parameters").attrs
+                    else:
+                        try:
+                            return DataContainer(self.file.get("Info/Parameters").attrs, selectors)
+                        except DataError:
+                            raise DataError("One of the parameters is not saved in hdf5 file.")
+                else:
+                    return self._get_dict(group, selectors)
+            return data_getter
+        else:
+            raise ValueError("'{}' does not exist in file.".format(what))
+
+
+
+class File_dep(object):
+    """
+    Wrapper around an h5 File created by Inovesa
     """
     def __init__(self, filename):
         """
@@ -150,7 +297,7 @@ class File(object):
         Will get the group "group" from the hdf5 file and save it to self._data[key]
         """
         dg = self._data.setdefault(group, {})
-        if len(list_of_elements) == 0:
+        if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
             list_of_elements = self.select_axis.all_for(group)
         set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
         if len(set_of_new_elements) != 0:
@@ -160,18 +307,22 @@ class File(object):
                 dg[elem] = gr.get(ax)
         return DataContainer(dg, list_of_elements)
 
-    def preload_full(self, what):
+    def preload_full(self, what, axis=None):
         """
+        DEPRECATED
         Preload Data into memory. This will speed up recurring reads by a lot
         """
+        print("Not fully implemented. Use new version of File")
+        return
         try:
-            h5data = getattr(self, what)
-            tmp = [np.zeros(i.shape, dtype=i.dtype) for i in h5data]
-            sdata = [i.read_direct(tmp[idx]) for idx, i in enumerate(h5data)]
-            sdata = [AttributedNPArray(tmp[idx], i.attrs, i.name) for idx, i in enumerate(h5data)]
-            setattr(self, "_"+what, sdata)
+            h5data = getattr(self, what)(axis)
+            tmp = [np.zeros(i.shape, dtype=i.dtype) for _, i in h5data]
+            sdata = [i.read_direct(tmp[idx]) for idx, (_, i) in enumerate(h5data)]
+            sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name) for idx, (name, i) in enumerate(h5data)}
+            # NOTE: This does not work at the moment
+            # self._data[self._met2gr[what]].update(sdata)
         except:
-            print("Error")
+            print("Error preloading data")
 
     def _sub_element(self, what, sub):
         if isinstance(sub, int):

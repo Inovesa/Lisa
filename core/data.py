@@ -6,13 +6,13 @@ from .internals import config_options, lisa_print
 
 if config_options.get("use_cython"):
     try:
-        from .file_cython import File, FileDataRegister
+        from .file_cython import File
     except ImportError as e:
         print(e)
         print("Fallback to python version")
-        from .file import File, FileDataRegister
+        from .file import File
 else:
-    from .file import File, FileDataRegister
+    from .file import File
 from .internals import lisa_print
 from .utils import attr_from_unit, UnitError
 import numpy as np
@@ -53,7 +53,7 @@ class Data(object):
             Return the raw data from File object
             """
             return getattr(self._file, attr[:-4])
-        if attr not in FileDataRegister.registered_properties:
+        if attr not in self._file._met2gr:
             raise AttributeError("Data object (and File object) does not have an attribute "+attr)
         if attr == 'parameters':
             def inner(what):
