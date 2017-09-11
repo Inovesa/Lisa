@@ -47,6 +47,7 @@ class InovesaVersion(object):
 # default version objects to compare to
 version15 = InovesaVersion(0, 15, 0)
 version14 = InovesaVersion(0, 14, 0)
+version13 = InovesaVersion(0, 13, 0)
 
 unit_to_attr_map = {
     "m": "Factor4Meters",

@@ -7,7 +7,7 @@ import h5py as h5
 import glob
 import numpy as np
 
-from .utils import InovesaVersion, version14, version15
+from .utils import InovesaVersion, version14, version15, version13
 
 class FileDataRegister():
     registered_properties = []
@@ -51,7 +51,10 @@ class AxisSelector(object):
     DATA = "data"
     REAL = "real"
     IMAG = "imag"
-    def __init__(self):
+    XDATA = "xdata"
+    YDATA = "ydata"
+    def __init__(self, version):
+        self._version = version
         self._specs = {
             "BunchLength": [self.TIME, self.DATA],
             "BunchPopulation": [self.TIME, self.DATA],
@@ -63,7 +66,13 @@ class AxisSelector(object):
             "EnergySpread": [self.TIME, self.DATA],
             "Impedance": [self.FAXIS, self.REAL, self.IMAG, "datagroup"],
             "Particles": [self.TIME, self.DATA],
+            "WakePotential": [self.TIME, self.XAXIS, self.DATA],
+            "PhaseSpace": [self.TIME, self.XAXIS, self.EAXIS, self.DATA]
         }
+
+        if version > version13:
+            self._specs["SourceMap"] = [self.XAXIS, self.EAXIS, self.XDATA, self.YDATA]
+
         self._axis_datasets = {
             self.TIME: "/Info/AxisValues_t",
             self.XAXIS: "/Info/AxisValues_z",
@@ -72,15 +81,19 @@ class AxisSelector(object):
         }
         self._data_datasets = {
             self.DATA: "data",
-            self.REAL: "data/real",
-            self.IMAG: "data/imag",
+            self.REAL: "data/real",  # Impedance
+            self.IMAG: "data/imag",  # Impedance
+            self.XDATA: "data/x",  # SourceMap
+            self.YDATA: "data/y",  # SourceMap
             "datagroup": "data"
         }
 
     def all_for(self, group):
         return self._specs[group]
 
-    def __call__(self, axis, group):  # csr_spectrum has swapped axis in versions below 0.15
+    def __call__(self, axis, group):
+        if group not in self._specs:
+            raise ValueError("'{gr}' is not in a valid dataset".format(gr=group))
         if axis not in self._specs[group]:
             raise ValueError("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
         return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
@@ -121,6 +134,12 @@ class DataContainer(object):
 
     def __getattr__(self, item):
         return self[item]
+
+    def get(self, item, default):
+        try:
+            return self[item]
+        except ValueError:
+            return default
 
     def __len__(self):
         return len(self._list_of_elements)
@@ -174,6 +193,7 @@ class File(object):
         - particles
         - phase_space
         - wake_potential
+        - source_map (only Inovesa version 0.15 and above)
         - * parameters
 
     * parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.
@@ -195,7 +215,7 @@ class File(object):
         except TypeError:
             self.version = InovesaVersion(*self.file.get("Info").get("INOVESA_v"))
 
-        self.select_axis = AxisSelector()
+        self.select_axis = AxisSelector(self.version)
 
         self._met2gr = {
             "energy_spread": "EnergySpread",
@@ -212,14 +232,18 @@ class File(object):
             "wake_potential": "WakePotential",
             "parameters": "Info/Parameters"
         }
+        if self.version >= version13:
+            self._met2gr.update({"source_map": "SourceMap"})
 
     def _get_dict(self, group, list_of_elements):
         """
         Will get the group "group" from the hdf5 file and save it to self._data[key]
         """
         dg = self._data.setdefault(group, {})
+        # if no elements or None passed get all
         if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
             list_of_elements = self.select_axis.all_for(group)
+        # check what elements have to be loaded from disk (no real load)
         set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
         if len(set_of_new_elements) != 0:
             gr = self.file.get(group)
