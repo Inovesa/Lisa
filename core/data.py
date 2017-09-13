@@ -74,18 +74,22 @@ class Data(object):
                 raise UnitError("No unit given.")
             data = getattr(self._file, attr)(idx)
             conversion_attribute = attr_from_unit(unit, self.version)
+            if attr == "impedance" and conversion_attribute not in data.attrs:
+                attrs = self._file.impedance("datagroup").attrs
+            else:
+                attrs = data.attrs
             if conversion_attribute is None:
                 if kwargs.get("sub_idx", None) is None:
                     return data * np.float64(1.0)
                 else:
                     return data[kwargs.get("sub_idx")] * np.float64(1.0)
-            elif conversion_attribute in data.attrs:
+            elif conversion_attribute in attrs:
                 if kwargs.get("sub_idx", None) is None:
-                    return data*data.attrs[conversion_attribute]
+                    return data*attrs[conversion_attribute]
                 else:
-                    return data[kwargs.get("sub_idx")] * data.attrs[conversion_attribute]
+                    return data[kwargs.get("sub_idx")] * attrs[conversion_attribute]
             else:
-                lisa_print("units for this data", list(data.attrs))
+                lisa_print("units for this data", list(attrs))
                 raise UnitError(unit+" is not a valid unit for this data.")
         inner.__doc__ = self.__getattr__.__doc__
         inner.__name__ = attr

@@ -7,7 +7,7 @@ import h5py as h5
 import glob
 import numpy as np
 
-from .utils import InovesaVersion, version14, version15, version13
+from .utils import InovesaVersion, version14_1, version15_1, version13_0
 
 class FileDataRegister():
     registered_properties = []
@@ -61,7 +61,7 @@ class AxisSelector(object):
             "BunchPosition": [self.TIME, self.DATA],
             "BunchProfile": [self.TIME, self.XAXIS, self.DATA],
             "CSR/Intensity": [self.TIME, self.DATA],
-            "CSR/Spectrum": [self.TIME, self.FAXIS],
+            "CSR/Spectrum": [self.TIME, self.FAXIS, self.DATA],
             "EnergyProfile": [self.TIME, self.EAXIS, self.DATA],
             "EnergySpread": [self.TIME, self.DATA],
             "Impedance": [self.FAXIS, self.REAL, self.IMAG, "datagroup"],
@@ -70,7 +70,7 @@ class AxisSelector(object):
             "PhaseSpace": [self.TIME, self.XAXIS, self.EAXIS, self.DATA]
         }
 
-        if version > version13:
+        if version > version13_0:
             self._specs["SourceMap"] = [self.XAXIS, self.EAXIS, self.XDATA, self.YDATA]
 
         self._axis_datasets = {
@@ -232,7 +232,7 @@ class File(object):
             "wake_potential": "WakePotential",
             "parameters": "Info/Parameters"
         }
-        if self.version >= version13:
+        if self.version > version13_0:
             self._met2gr.update({"source_map": "SourceMap"})
 
     def _get_dict(self, group, list_of_elements):
@@ -267,21 +267,24 @@ class File(object):
 
     def __getattr__(self, what):
         group = self._met2gr.get(what, None)
-        if group:
-            def data_getter(*selectors):
-                if what == "parameters":
-                    if len(selectors) == 0:
-                        return self.file.get("Info/Parameters").attrs
-                    else:
-                        try:
-                            return DataContainer(self.file.get("Info/Parameters").attrs, selectors)
-                        except DataError:
-                            raise DataError("One of the parameters is not saved in hdf5 file.")
+        if not group:
+            if what in self._met2gr.values():
+                group = what
+            else:
+                raise ValueError("'{}' does not exist in file.".format(what))
+
+        def data_getter(*selectors):
+            if what == "parameters":
+                if len(selectors) == 0:
+                    return self.file.get("Info/Parameters").attrs
                 else:
-                    return self._get_dict(group, selectors)
-            return data_getter
-        else:
-            raise ValueError("'{}' does not exist in file.".format(what))
+                    try:
+                        return DataContainer(self.file.get("Info/Parameters").attrs, selectors)
+                    except DataError:
+                        raise DataError("One of the parameters is not saved in hdf5 file.")
+            else:
+                return self._get_dict(group, selectors)
+        return data_getter
 
 
 

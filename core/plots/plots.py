@@ -32,7 +32,7 @@ else:
     from ..data import Data
 from .config import Style
 from ..internals import lisa_print
-from ..utils import unit_from_attr, attr_from_unit, unit_from_spec
+from ..utils import unit_from_attr, attr_from_unit, unit_from_spec, version15_1
 
 colors = [(0, 0, 1, 1), (0.8, 0.4, 0, 0.6), (1, 0, 1, 0.6), (0, 1, 1, 0.6), (1, 0, 0, 0.6),
           (0, 1, 0, 0.4)]
@@ -254,7 +254,7 @@ class SimplePlotter(object):
                 ax.get_xaxis().get_major_formatter().set_powerlimits((0, 0))
             if kwargs.get("force_exponential_y", False):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
-            fig.colorbar(pm).set_label(zlabel);
+            fig.colorbar(pm).set_label(zlabel)
             s = Style()
             s.apply_to_fig(fig)
             return fig
@@ -360,12 +360,13 @@ class SimplePlotter(object):
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
         x, xlabel = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 'm', "x")
         y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'bunch_profile', 'ts', "T")
+        dataunit = "c" if self._file.version < version15_1 else "cpnbl"
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', 'c', "Population")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', 'c', "Population", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
 
@@ -451,12 +452,13 @@ class SimplePlotter(object):
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
         x, xlabel = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy")
         y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'energy_profile', 'ts', "T")
+        dataunit = "c" if self._file.version < version15_1 else "cpnes"
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', 'c', "Population")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', 'c', "Population", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     def impedance(self, *args, **kwargs):
@@ -470,25 +472,33 @@ class SimplePlotter(object):
         if f4h == 0:
             warn("Factor4Hertz is zero in datafile using 1.0")
             f4h = np.float64(1.0)
-        label = kwargs.get("label", False)
-        if label is not False:
-            del kwargs['label']
-            label = label + " "
-        else:
-            label = ""
+        label = kwargs.pop("label", False)
+        if label is not None:
+            if label is False:
+                label = ""
+            else:
+                label = label + " "
 
         @SimplePlotter.plot
         def real(*args, **kwargs):
             return (self._file.impedance(Axis.FAXIS)*f4h,
                    self._file.impedance(Axis.REAL)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
-        fig = real(*args, label=label+"Real", **kwargs)
+        if label is not None:
+            rlab = label + "Real"
+        else:
+            rlab = None
+        fig = real(*args, label=rlab, **kwargs)
         if 'fig' in kwargs:
             del kwargs['fig']
         @SimplePlotter.plot
         def imag(*args, **kwargs):
             return (self._file.impedance(Axis.FAXIS)*f4h,
                     self._file.impedance(Axis.IMAG)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
-        return imag(fig=fig, label=label+"Imag", **kwargs)
+        if label is not None:
+            ilab = label + "Imag"
+        else:
+            ilab = None
+        return imag(fig=fig, label=ilab, **kwargs)
 
 
 class MultiPlot(object):
