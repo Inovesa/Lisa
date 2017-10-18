@@ -3,4 +3,7 @@ __pycache__
 .idea
 .spyproject
 *.swp
-doc/build
+Lisa/doc/build
+.tox
+.cache
+*.egg-info

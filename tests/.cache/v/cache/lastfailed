@@ -1,7 +1,0 @@
-{
-  "file.py::FileTest::test_version_13": true,
-  "file.py::FileTest::test_version_14": true,
-  "file.py::FileTest::test_version_15": true,
-  "file.py::SomeTest::test_b": true,
-  "file.py::SomeTest::test_some": true
-}
