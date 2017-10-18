@@ -531,5 +531,8 @@ class MultiFile(object):
                 self._sort_file_list()
         if len(self._fileobjectlist) == 0:
             for file in self._sorted_filelist:
-                self._fileobjectlist.append(File(file))
+                if isinstance(file, list) or isinstance(file, tuple):
+                    self._fileobjectlist.append((File(file[0]), *file[1:]))
+                else:
+                    self._fileobjectlist.append(File(file))
         return self._fileobjectlist

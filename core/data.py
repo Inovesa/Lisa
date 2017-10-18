@@ -74,16 +74,24 @@ class Data(object):
                 raise UnitError("No unit given.")
             data = getattr(self._file, attr)(idx)
             conversion_attribute = attr_from_unit(unit, self.version)
-            if attr == "impedance" and conversion_attribute not in data.attrs:
-                attrs = self._file.impedance("datagroup").attrs
-            else:
-                attrs = data.attrs
+
+            if kwargs.get("sub_index", None) is not None:
+                if 'sub_idx' in kwargs:
+                    raise AssertionError("sub_idx or sub_index are to be used, not both")
+                kwargs['sub_idx'] = kwargs.pop("sub_index")
+
             if conversion_attribute is None:
                 if kwargs.get("sub_idx", None) is None:
                     return data * np.float64(1.0)
                 else:
                     return data[kwargs.get("sub_idx")] * np.float64(1.0)
-            elif conversion_attribute in attrs:
+            else:
+                if attr == "impedance" and conversion_attribute not in data.attrs:
+                    attrs = self._file.impedance("datagroup").attrs
+                else:
+                    attrs = data.attrs
+
+            if conversion_attribute in attrs:
                 if kwargs.get("sub_idx", None) is None:
                     return data*attrs[conversion_attribute]
                 else:

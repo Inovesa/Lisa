@@ -113,11 +113,20 @@ def _build_complete_unit_map(version):
     unit_map = {}
     u_t_a_m = unit_to_attr_map if version < version15_1 else unit_to_attr_map_v15
 
-
     for unit, attr in u_t_a_m.items():
         unit_map[unit.lower()] = attr
         for alias in alias_map[unit]:
             unit_map[alias.lower()] = attr
+
+    if version < version15_1:  # enable compatibility of new code with old versions
+        # could possibly be done without if but is cleaner and more easy to read like that
+        unit_map['cpnbl'] = u_t_a_m["C"]
+        unit_map['apnbl'] = u_t_a_m["A"]
+        unit_map['cpnes'] = u_t_a_m["C"]
+        unit_map['apnes'] = u_t_a_m["A"]
+        unit_map['cpnblpnes'] = u_t_a_m["C"]
+        unit_map['apnblpnes'] = u_t_a_m["A"]
+        unit_map['wphz'] = u_t_a_m["Hz"]
     return unit_map
 
 complete_unit_map = _build_complete_unit_map(version14_1)
