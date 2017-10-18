@@ -8,7 +8,8 @@ requires = [
         'matplotlib',
         'numpy',
         'h5py',
-        'moviepy'
+        'moviepy',
+        'unittest2'
     ]
 
 import shutil
@@ -19,7 +20,10 @@ def do_cythonize(list_of_modules):
     for file in list_of_modules:
         shutil.copy(file, file[:-3]+"_cython.py")
         list_of_cythons.append(file[:-3]+"_cython.py")
-    return cythonize(list_of_cythons)
+    cytho = cythonize(list_of_cythons)
+    for file in list_of_cythons:
+        os.remove(file)
+    return cytho
 
 
 setup(

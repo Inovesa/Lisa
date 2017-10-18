@@ -1,4 +1,4 @@
-import unittest
+import unittest2 as unittest
 
 def parameterize(cls, parameters):
     def single_parameter(func):
@@ -64,7 +64,6 @@ class CustomTestCase(unittest.TestCase):
             # def nast(test, subtest, err):
             def nast(*args, **kwargs):
                 test_result.testsRun += 1
-                # return oast(test, subtest, err)
                 return oast(*args, **kwargs)
             test_result.addSubTest = nast
         x = super(CustomTestCase, self).run(test_result)

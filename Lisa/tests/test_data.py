@@ -5,7 +5,6 @@ import Lisa
 
 s = Lisa.Axis
 
-
 class TestData(CustomTestCase):
     def setUp(self):
         self.file = Lisa.File(os.path.join(os.path.dirname(__file__), "data", "v15-1.h5"))

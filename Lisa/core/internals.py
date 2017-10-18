@@ -1,5 +1,5 @@
+from __future__ import print_function
 import os
-
 
 class _ConfOptions(object):
     def __init__(self):

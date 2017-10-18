@@ -1,9 +1,11 @@
 import matplotlib.animation as anim
 from matplotlib.backend_bases import key_press_handler
+import matplotlib
 import matplotlib.pyplot as plt
 import numbers
 import inspect
 import numpy as np
+import tqdm
 
 def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False, clear_between=False, save_args=None):
     """
@@ -29,64 +31,32 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
         _frame_gen = frame_generator
         def gen(*args ,**kwargs):
             figure.clf()
+            figure.canvas.draw()
             return _frame_gen(*args, **kwargs)
         frame_generator = gen
 
-    import time
-    first_time = time.time()
-    eta = [0]
-    import sys
-    try:
-        from blhelpers.debug import BeautifulPrinter
-        b = BeautifulPrinter(False)
-        def perc(p):
-            if p != 100:
-                dt = time.time() - first_time
-                if eta[0] == 0:
-                    if p != 0:
-                        eta[0] = 100*dt/p
-                else:
-                    eta[0] = (eta[0] + 100*dt/p)/2
-                b.mPercent(p)
-                sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
-                sys.stdout.flush()
-    except ImportError:
-        def perc(p):
-
-            dt = time.time() - first_time
-            if eta[0] == 0:
-                if p != 0:
-                    eta[0] = 100*dt/p
-            else:
-                eta[0] = (eta[0] + 100*dt/p)/2
-            sys.stdout.write('\r')
-            sys.stdout.write("[{0}{1}] {2:.2f}%".format('='*(int(p)-1)+'>', ' '*(100-int(p)), round(p, 2)))
-            sys.stdout.write(" eta: {:.2f}s/{:.2f}s".format(dt, eta[0]))
-            sys.stdout.flush()
-
-    current_index = 0
+    progress = tqdm.tqdm(total=len(frames), miniters=1)
     def generator(*args, **kwargs):
         has_kwargs = any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
         has_clear = any(x.name == 'clear' for x in params.values())
         if has_clear or has_kwargs:
             kwargs['clear'] = clear_between
-        nonlocal current_index
-        current_index += 1
-        perc(current_index/len(frames)*100)
+        progress.update()
+        if args[0] == frames[-1]:
+            progress.close()
         return frame_generator(*args, **kwargs)
 
     ani = anim.FuncAnimation(figure, generator, frames=frames, interval=interval, blit=blit, repeat=False)
-    pause = False
+    pause = [False]  # list to be mutable to avoid nonlocal to support python2
     def OnKeyPress(event):
         if event.key == 'x' or event.key == ' ':
-            nonlocal pause
-            if pause:
-                print("Resuming")
+            if pause[0]:
+                progress.write("Resuming")
                 ani.event_source.start()
             else:
-                print("Pausing")
+                progress.write("Pausing")
                 ani.event_source.stop()
-            pause ^= True
+            pause[0] ^= True
         else:
             key_press_handler(event, figure.canvas, figure.canvas.toolbar)
     figure.canvas.mpl_connect('key_press_event', OnKeyPress)
@@ -94,8 +64,6 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
         if save_args is None:
             save_args = {}
         ani.save(path, writer, dpi=dpi, savefig_kwargs=save_args)
-    perc(100)
-    print()
     return ani
 
 
@@ -121,24 +89,28 @@ def data_frame_generator(fig, xdata, ydata, label_only_once=False):
         def frame_generator(i, clear=False):
             if clear:
                 ax = fig.add_subplot(111)
-                ln = ax.plot(xdata, ydata[i])
-                return ln,
+                if not fig._cachedRenderer:
+                    fig._cachedRenderer = matplotlib.backends.backend_agg.RendererAgg(640, 480, 100)
+                ax.draw(fig._cachedRenderer)
+                ax.plot(xdata, ydata[i])
+                ax.set_xlim(np.min(xdata), np.max(xdata))
+                ax.set_ylim(np.min(ydata[i]), np.max(ydata[i]))
             else:
-                nonlocal lna, axa
-                lna.set_data(xdata, ydata[i])
-                axa.set_xlim(np.min(xdata), np.max(xdata))
-                axa.set_ylim(np.min(ydata[i]), np.max(ydata[i]))
-                return axa,
+                ax = axa
+                ax.plot(xdata, ydata[i])
+            return ax.lines
     else:
         def frame_generator(i, clear=False):
             if clear:
                 ax = fig.add_subplot(111)
-                ln = ax.plot(xdata[i], ydata[i])
-                return ln,
+                if not fig._cachedRenderer:
+                    fig._cachedRenderer = matplotlib.backends.backend_agg.RendererAgg(640, 480, 100)
+                ax.draw(fig._cachedRenderer)
+                ax.plot(xdata[i], ydata[i])
+                ax.set_xlim(np.min(xdata[i]), np.max(xdata))
+                ax.set_ylim(np.min(ydata[i]), np.max(ydata[i]))
             else:
-                nonlocal lna, axa
-                lna.set_data(xdata[i], ydata[i])
-                axa.set_xlim(np.min(xdata[i]), np.max(xdata[i]))
-                axa.set_ylim(np.min(ydata[i]), np.max(ydata[i]))
-                return axa,
+                ax = axa
+                ax.plot(xdata, ydata[i])
+            return ax.lines
     return frame_generator
