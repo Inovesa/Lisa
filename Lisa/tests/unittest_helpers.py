@@ -64,7 +64,10 @@ class CustomTestCase(unittest.TestCase):
             # def nast(test, subtest, err):
             def nast(*args, **kwargs):
                 test_result.testsRun += 1
-                return oast(*args, **kwargs)
+                try:
+                    return oast(*args, **kwargs)
+                except TypeError:
+                    return oast(test_result, *args, **kwargs)
             test_result.addSubTest = nast
         x = super(CustomTestCase, self).run(test_result)
         # print()
