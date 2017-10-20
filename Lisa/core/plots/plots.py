@@ -431,11 +431,11 @@ class SimplePlotter(object):
         x, xlabel = self._unit_and_label(kwargs, Axis.FAXIS, 'x', 'csr_spectrum', 'Hz', "Frequency")
         y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'csr_spectrum', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'w', "Power")
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'w', "Power", gen_sub=True)
+            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel
 
     @meshPlot

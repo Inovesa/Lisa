@@ -13,7 +13,8 @@ selectors = {'spine': [['top', 'bottom', 'right', 'left'], ['color']],
              'grid': [[], ['color', 'linewidth', 'dashes', 'linestyle', 'visible', 'style']],
              'face': [[], ['color']],
              'legend': [[], ['fontfamily', 'fontsize', 'color']],
-             'marker': [[], ['type', 'edgecolor', 'facecolor', 'size']]}
+             'marker': [[], ['type', 'edgecolor', 'facecolor', 'size']],
+             'line': [[], ['style', 'color', 'width']]}
 
 class Alias:
     """
@@ -51,7 +52,10 @@ methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
            'marker': {'type': lambda ax, w, v: [i.set_marker(v) for i in ax.lines],
                       'edgecolor': lambda ax, w, v: [i.set_markeredgecolor(v) for i in ax.lines],
                       'facecolor': lambda ax, w, v: [i.set_markerfacecolor(v) for i in ax.lines],
-                      'size': lambda ax, w, v: [i.set_markersize(v) for i in ax.lines]}
+                      'size': lambda ax, w, v: [i.set_markersize(v) for i in ax.lines]},
+           'line': {'style': lambda ax, w, v: [i.set_linestyle(v) for i in ax.lines],
+                    'color': lambda ax, w, v: [i.set_color(v) for i in ax.lines],
+                    'width': lambda ax, w, v: [i.set_linewidth(v) for i in ax.lines]}
            }
 
 class StyleError(Exception):
@@ -82,6 +86,17 @@ styles = {
         'face:color': 'white', 'grid:visible': True, 'grid:color': '#DFDFDF', 'grid:style': 'solid', 'label:color': 'black',
         'spine:top:color': 'white', 'spine:right:color': 'white', 'spine:bottom:color': 'black',
         'spine:left:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out'
+    },
+    'vega-lite-dotted': {
+        'face:color': 'white', 'grid:visible': True, 'grid:color': '#DFDFDF', 'grid:style': 'solid', 'label:color': 'black',
+        'spine:top:color': 'white', 'spine:right:color': 'white', 'spine:bottom:color': 'black',
+        'spine:left:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out',
+        'marker:type': '.', 'line:style': ''
+    },
+    'inverse_ggplot-dotted': {
+        'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': (0.5, (1, 4)), 'grid:linewidth': 0.8,
+        'label:color': 'black', 'spine:color': '#D5D5D5', 'ticklabels:color': 'black', 'ticks:color': '#555555',
+        'ticks:direction': 'out', 'grid:visible': True, 'marker:type': '.', 'line:style': ''
     },
     'adefault': {
         'face:color': 'white', 'grid:visible': False, 'label:color': 'black', 'spine:color': 'black',
