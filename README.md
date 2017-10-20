@@ -1,5 +1,7 @@
 ## Lisa - Lisa Inovesa Simulation Analysis
 
+[![Run Status](https://api.shippable.com/projects/59e77145a64bbc0700a423c5/badge?branch=master)](https://app.shippable.com/bitbucket/lycab/lisa)
+
 ### Usage:
 
 This is only short introduction for very basic usage.
