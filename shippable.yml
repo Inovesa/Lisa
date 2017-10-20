@@ -1,0 +1,18 @@
+language: python
+python:
+    - 3.5
+build:
+    cache: false
+
+    ci:
+        - pip install virtualenv
+        - export PYTHON=`which python3`
+        - virtualenv venv --python=$PYTHON
+        - . venv/bin/activate
+        - pip install Cython --upgrade --install-option="--no-cython-compile"
+        - pip install unittest2
+        - pip install pytest
+        - pip install .
+        - mkdir -p $SHIPPABLE_BUILD_DIR/shippable/testresults
+        - export MPLBACKEND=Agg
+        - pytest --junitxml=$SHIPPABLE_BUILD_DIR/shippable/testresults/nosetests.xml
