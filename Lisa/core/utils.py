@@ -65,8 +65,10 @@ unit_to_attr_map = {
     "V": "Factor4Volts"
 }
 
-unit_to_attr_map_v15 = {key: value.split("4")[1].rstrip("s") if isinstance(value, str) else value
-                        for key, value in unit_to_attr_map.items()}
+# unit_to_attr_map_v15 = {key: value.split("4")[1].rstrip("s") if isinstance(value, str) else value
+#                         for key, value in unit_to_attr_map.items()}
+
+unit_to_attr_map_v15 = {}
 for key, value in unit_to_attr_map.items():
     if value is None:
         unit_to_attr_map_v15[key] = None
@@ -126,7 +128,7 @@ def _build_complete_unit_map(version):
         unit_map['apnes'] = u_t_a_m["A"]
         unit_map['cpnblpnes'] = u_t_a_m["C"]
         unit_map['apnblpnes'] = u_t_a_m["A"]
-        unit_map['wphz'] = u_t_a_m["Hz"]
+        unit_map['wphz'] = u_t_a_m["W"]
     return unit_map
 
 complete_unit_map = _build_complete_unit_map(version14_1)
