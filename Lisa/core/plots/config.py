@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from warnings import warn
 
 selectors = {'spine': [['top', 'bottom', 'right', 'left'], ['color']],
+             'figure': [[], ['size']],
              'label': [['x', 'y'], ['color', 'fontsize', 'fontfamily']],
              'ticklabels': [['x', 'y'], ['color', 'fontsize', 'fontfamily']],
              'ticks': [['x', 'y'], ['color', 'below', 'direction']],
@@ -55,7 +56,8 @@ methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
                       'size': lambda ax, w, v: [i.set_markersize(v) for i in ax.lines]},
            'line': {'style': lambda ax, w, v: [i.set_linestyle(v) for i in ax.lines],
                     'color': lambda ax, w, v: [i.set_color(v) for i in ax.lines],
-                    'width': lambda ax, w, v: [i.set_linewidth(v) for i in ax.lines]}
+                    'width': lambda ax, w, v: [i.set_linewidth(v) for i in ax.lines]},
+           'figure': {'size': lambda ax, w, v: ax.get_figure().set_size_inches(v)}
            }
 
 class StyleError(Exception):
@@ -72,22 +74,27 @@ styles = {
         'label:color': 'black', 'spine:color': '#D5D5D5', 'ticklabels:color': 'black', 'ticks:color': '#555555',
         'ticks:direction': 'out', 'grid:visible': True, 'marker:type': '.'
     },
-    'inverse_ggplot_straight': {
+    'inverse_ggplot-sized': {
+        'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': (0.5, (1, 4)), 'grid:linewidth': 0.8,
+        'label:color': 'black', 'spine:color': '#D5D5D5', 'ticklabels:color': 'black', 'ticks:color': '#555555',
+        'ticks:direction': 'out', 'grid:visible': True, 'marker:type': '.', 'figure:size': (16, 9)
+    },
+    'inverse_ggplot-straight': {
         'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': 'solid', 'grid:linewidth': 0.8,
         'label:color': 'black', 'spine:color': '#D5D5D5', 'ticklabels:color': 'black', 'ticks:color': '#555555',
         'ticks:direction': 'out', 'grid:visible': True
     },
-    'inverse_ggplot_straight_solid_border': {
+    'inverse_ggplot-straight_solid_border': {
         'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': 'solid', 'grid:linewidth': 0.8,
         'label:color': 'black', 'spine:color': 'black', 'ticklabels:color': 'black', 'ticks:color': '#555555',
         'ticks:direction': 'out', 'grid:visible': True
     },
-    'vega-lite': {
+    'vega_lite': {
         'face:color': 'white', 'grid:visible': True, 'grid:color': '#DFDFDF', 'grid:style': 'solid', 'label:color': 'black',
         'spine:top:color': 'white', 'spine:right:color': 'white', 'spine:bottom:color': 'black',
         'spine:left:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out'
     },
-    'vega-lite-dotted': {
+    'vega_lite-dotted': {
         'face:color': 'white', 'grid:visible': True, 'grid:color': '#DFDFDF', 'grid:style': 'solid', 'label:color': 'black',
         'spine:top:color': 'white', 'spine:right:color': 'white', 'spine:bottom:color': 'black',
         'spine:left:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out',

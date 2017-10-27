@@ -26,7 +26,8 @@ class Data(object):
     Usage::
 
       d = Lisa.Data("/path/to/file")
-      d.bunch_profile(2, unit="c")  # 2 for data and unit="c" for coulomb
+      d.bunch_profile(Lisa.Axis.DATA, unit="c")  # unit="c" for coulomb
+      d.bunch_profile(Lisa.Axis.XAXIS, unit="s")  # unit="s" for second XAXIS for space axis
 
     .. seealso:: Lisa.File
     """
@@ -44,7 +45,7 @@ class Data(object):
     def __getattr__(self, attr):
         """
         Convert to correct unit.
-        :param idx: the index of the returned list by File objects. If idx is str the h5 objects are searched for a matching name.
+        :param idx: An axis specification from Lisa.Axis
         :param string unit: Use this as second argument or kwarg
         :param sub_idx: (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2] then idx=0 and sub_idx is given will result in Dataset1[sub_idx]) This will speed up if only part of the data is used.
         """

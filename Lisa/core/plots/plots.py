@@ -96,8 +96,10 @@ class SimplePlotter(object):
         :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
         :param fft: (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft
         :param fft_padding: (optional) an integer to specify how much 0 will be padded to the data before fft default fft
-        :param abs: (optional) a bool to select if plot absolute values or direct data
+        :param abs: (optional) a boolean to select if plot absolute values or direct data
         :param plt_args: (optional) dictionary with arguments to the displaying function
+        :param x_log: (optional) a boolean to set the x axis to log scale
+        :param y_log: (optional) a boolean to set the y axis to log scale
         """
         _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
@@ -115,7 +117,11 @@ class SimplePlotter(object):
                 else:
                     fig = plt.figure(tight_layout=True)
                     ax = fig.add_subplot(111)
-            x, y, xlabel, ylabel = func(*args, **kwargs) # arguments contain self object
+            if kwargs.get("x_log"):
+                ax.set_xscale('log')
+            if kwargs.get("y_log"):
+                ax.set_yscale('log')
+            x, y, xlabel, ylabel = func(*args, **kwargs)  # arguments contain self object
             if kwargs.get("fft"):
                 ylabel = "FFT("+ylabel+")"
                 xlabel = "Frequency like (1/("+xlabel+"))"
@@ -188,8 +194,9 @@ class SimplePlotter(object):
         :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
         :param force_exponential_y: (optional) a bool if one wants to force exponential notation on yaxis or not
         :param plt_args: (optional) dictionary with arguments to the displaying function
-        :param period: (optional) the period to use. If not given will plot all data as pcolormesh
+        :param period: (optional) the period to use. If not given will plot all data as pcolormesh (use parameters from plot)
         :param use_index: (optional) Use period as index in data and not synchrotron period (default False)
+        :param mean_range: (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)
         """
         _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
@@ -217,6 +224,16 @@ class SimplePlotter(object):
                         z = z[idx]
                     return(x, z, xlabel, zlabel)
                 return dummy(x, z, xlabel, zlabel, **kwargs)
+
+            if kwargs.get("mean_range", None) is not None:
+                range = kwargs.get("mean_range")
+                z_mean = np.mean(z[range[0]:range[1]], axis=0)
+                zlabel += " (mean over range {})".format(range)
+                @SimplePlotter.plot
+                def dummy(x, z, xlabel, zlabel, *args, **kwargs):
+                    return(x, z, xlabel, zlabel)
+                return dummy(x, z_mean, xlabel, zlabel, **kwargs)
+
 
             if isinstance(kwargs.get("fig", None), plt.Figure):
                 fig = kwargs["fig"]
