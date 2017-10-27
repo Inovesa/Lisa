@@ -2,6 +2,31 @@
 # -*- coding: utf-8 -*-
 """
 :Author: Patrick Schreiber
+How the version handling for attributes works:
+----------------------------------------------
+
+`InovesaVersion` is a object that implements comparators for inovesa versions
+
+`unit_to_attr_map` is a dictionary that maps physical units to inovesa attributes. Since these attributes change
+over different inovesa versions first a dictionary for "older" versions (13 and up, maybe some versions below match too)
+then it is modified into `unit_to_attr_map_v15` for versions 15 and up (until the next change in inovesa is made).
+
+`attr_to_unit_map` and `attr_to_unit_map_v15` are just reversed dictionaries to make it possible to find the corresponding
+readable/printable unit for an attribute
+
+Then `alias_map` is generated that makes it possible to not only use the exact specification used in unit_to_attr_map
+but also the ones specified in `alias_map`. The reason for this is that the user does not have to remember the exact
+unit string.
+
+Then a `complete_unit_map` (and `complete_unit_map_v15`) is generated where all the entries in alias_map are
+mapped to attributes
+
+There are 3 'public' methods that should be used.
+
+    - `attr_from_unit`: Get the h5 attribute from the given unit
+    - `unit_from_attr`: Get the readable/printable unit from a h5 attribute
+    - `unit_from_spec`: Get the readable/printable unit from a unit specifier (an alias)
+
 """
 
 class UnitError(Exception):
@@ -135,6 +160,14 @@ complete_unit_map = _build_complete_unit_map(version14_1)
 complete_unit_map_v15 = _build_complete_unit_map(version15_1)
 
 def attr_from_unit(unit, version):
+    """
+    Get the h5 attribute from a unit specification
+    :param unit: specification to get the attribute for
+    :param version: inovesa version as InovesaVersion Object
+    :return: a string with the h5 attribute for the given unit
+
+    :raises UnitError: when a unit is not known
+    """
     if unit is None:
         return None
     try:
@@ -146,6 +179,14 @@ def attr_from_unit(unit, version):
         raise UnitError("Unit '"+unit+"' is unknown")
 
 def unit_from_attr(attr, version):
+    """
+    Get a printable/readable unit from an h5 attribute
+    :param attr: h5 attribute to get the unit for
+    :param version: inovesa version as InovesaVersion Object
+    :return: a string with the requested unit
+
+    :raises UnitError: when an attribute is not known
+    """
     if attr is None:
         return None
     try:
@@ -157,6 +198,13 @@ def unit_from_attr(attr, version):
         raise UnitError("Attribute '"+attr+"' is unknown")
 
 def unit_from_spec(spec):
+    """
+    Get a printable/readable unit from a unit specification
+    :param spec: the unit specification
+    :return: a string with the requested unit
+
+    :raises UnitError: when the specification is not known
+    """
     unit = inverse_alias_map.get(spec.lower(), False)
     if unit is False:
         raise UnitError("Unit Specification '"+spec+"' is unknown")
