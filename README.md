@@ -35,29 +35,47 @@ mp.energy_spread()  # or any other plot supported by SimplePlotter
 ```
 
 #### File
-File is an object encapsulating the h5 file. To get data use the property named as the Dataset. It
-will return the axis and the data as a list.
 
-Inovesa Parameters are available via File.parameters. It will return a h5.Attribute instance.
+File is an object encapsulating the h5 file. 
 
-Properties are implemented as python properties.
+It has a method for each of the DataGroups in the h5 file.
+
+Each method takes a parameter specifying the dataset to use. This parameter has to be an attribute from
+Lisa.Axis (e.g. Lisa.Axis.XAXIS for spaceaxis, Lisa.Axis.DATA for data etc.)
+
+Inovesa Parameters are available via File.parameters. It will return an h5.Attribute instance if no 
+parameter is specified.
 
 For recurring access to data it is a speed improvement to call File.preload_full("name_of_dataset").
 This will read all the data to memory for faster access.
 
+If one does not specify an axis a DataContainer containing all the data there is in the requested DataGroup 
+will be returned. This object is iterable, subscriptable and has a get method that accepts Lisa.Axis properties.
+
+Usage:
+
+```python    
+import Lisa
+file = Lisa.File("/path/to/h5")
+bunch_profile_axis = file.bunch_profile(Lisa.Axis.XAXIS)
+bunch_profile = file.bunch_profile(Lisa.Axis.DATA)
+```
 
 #### Data
+
 Data is an object encapsulating a File object. The benefit of this is it converts data to the given unit.
 
 ```python
 import Lisa
 data = Lisa.Data("/path/to/h5")
-data.bunch_profile(2, unit="c")  # c for coulomb. 2 for the data (can also use 'data' as first parameter for data or 'axis0' for first axis
-data.bunch_position(1, unit="m")  # m for meter
+data.bunch_profile(Lisa.Axis.DATA, unit="c")  # c for coulomb. 
+data.bunch_position(Lisa.Axis.XAXIS, unit="m")  # m for meter
+data.bunch_position(Lisa.Axis.XAXIS, unit="s")  # s for meter
 ```
+
 To get data as it is saved in the h5 file use unit=None.
 
-It is possible to pass the unit as first parameter without a keyword. (For raw data (unit=None) this is not possible).
+It is possible to pass the unit as second parameter without a keyword. (For raw data (unit=None) this is not possible).
 
 #### PhaseSpace
 PhaseSpace is used to generate PhaseSpace plots or movies.
