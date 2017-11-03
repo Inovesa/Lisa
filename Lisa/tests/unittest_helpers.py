@@ -57,6 +57,8 @@ class CustomTestCase(unittest.TestCase):
             # else:
             #     sprint = lambda *x: print(*x, end='')
             test_result.modded = True
+            if not hasattr(test_result, 'failfast'):
+                test_result.failfast = False
             if not hasattr(test_result, "addSubTest"):
                 test_result.addSubTest = unittest.TestResult.addSubTest
                 test_result.testsRun = 0
@@ -67,6 +69,13 @@ class CustomTestCase(unittest.TestCase):
                 try:
                     return oast(*args, **kwargs)
                 except TypeError:
+                    if not hasattr(test_result, 'errors'):
+                        test_result.errors = []
+                    if not hasattr(test_result, 'failures'):
+                        test_result.failures = []
+
+                    if not hasattr(test_result, '_exc_info_to_string'):
+                        test_result._exc_info_to_string = lambda *args: str(args[1])
                     return oast(test_result, *args, **kwargs)
             test_result.addSubTest = nast
         x = super(CustomTestCase, self).run(test_result)
