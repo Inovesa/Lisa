@@ -14,18 +14,18 @@ class FileTest(CustomTestCase):
     def setUp(self):
         self.file_dir_path = op.join(op.dirname(__file__), "data")
         self.specs = {
-            "BunchLength": [s.TIME, s.DATA],
-            "BunchPopulation": [s.TIME, s.DATA],
-            "BunchPosition": [s.TIME, s.DATA],
-            "BunchProfile": [s.TIME, s.XAXIS, s.DATA],
-            "CSR/Intensity": [s.TIME, s.DATA],
-            "CSR/Spectrum": [s.TIME, s.FAXIS, s.DATA],
-            "EnergyProfile": [s.TIME, s.EAXIS, s.DATA],
-            "EnergySpread": [s.TIME, s.DATA],
-            "Impedance": [s.FAXIS, s.REAL, s.IMAG, "datagroup"],
-            "Particles": [s.TIME, s.DATA],
-            "WakePotential": [s.TIME, s.XAXIS, s.DATA],
-            "PhaseSpace": [s.TIME, s.XAXIS, s.EAXIS, s.DATA]
+            "bunch_length": [s.TIME, s.DATA],
+            "bunch_population": [s.TIME, s.DATA],
+            "bunch_position": [s.TIME, s.DATA],
+            "bunch_profile": [s.TIME, s.XAXIS, s.DATA],
+            "csr_intensity": [s.TIME, s.DATA],
+            "csr_spectrum": [s.TIME, s.FAXIS, s.DATA],
+            "energy_profile": [s.TIME, s.EAXIS, s.DATA],
+            "energy_spread": [s.TIME, s.DATA],
+            "impedance": [s.FAXIS, s.REAL, s.IMAG, "datagroup"],
+            "particles": [s.TIME, s.DATA],
+            "wake_potential": [s.TIME, s.XAXIS, s.DATA],
+            "phase_space": [s.TIME, s.XAXIS, s.EAXIS, s.DATA]
         }
         self._axis_datasets = {
             s.TIME: "/Info/AxisValues_t",
@@ -58,18 +58,18 @@ class FileTest(CustomTestCase):
                         if spec in self._axis_datasets:
                             self.assertEqual(obj, f.file.get(self._axis_datasets[spec]))
                         elif spec in self._data_datasets:
-                            self.assertEqual(obj, f.file.get(par).get(self._data_datasets[spec]))
+                            self.assertEqual(obj, f.file.get(f._met2gr[par]).get(self._data_datasets[spec]))
                         else:
                             raise Exception("Error")
 
     def test_version_15(self):
         f = Lisa.File(op.join(self.file_dir_path, "v15-1.h5"))
-        self.specs["SourceMap"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
+        self.specs["source_map"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
         self.do_test(f)
 
     def test_version_14(self):
         f = Lisa.File(op.join(self.file_dir_path, "v14-1.h5"))
-        self.specs["SourceMap"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
+        self.specs["source_map"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
         self.do_test(f)
 
     def test_version_13(self):

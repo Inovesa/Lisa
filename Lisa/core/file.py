@@ -72,8 +72,7 @@ class AxisSelector(object):
         }
 
         if version > version13_0:
-            self._specs["source_map"] = [self.XAXIS, self.EAXIS, self.XDATA,
-                                         self.YDATA]
+            self._specs["source_map"] = [self.XAXIS, self.EAXIS, self.XDATA, self.YDATA]
 
         self._axis_datasets = {
             self.TIME: "/Info/AxisValues_t",
@@ -252,7 +251,7 @@ class File(object):
 
     def _get_dict(self, what, list_of_elements):
         """
-        Will get the group "group" from the hdf5 file and save it to self._data[key]
+        Will get the group "group" from the hdf5 file and save it to self._data[what]
         """
         group = self._met2gr.get(what, None)
         if not group:
@@ -297,6 +296,9 @@ class File(object):
             print("Error preloading data")
 
     def __getattr__(self, what):
+        if what not in self._met2gr:
+            raise ValueError("'{}' does not exist in file.".format(what))
+
         def data_getter(*selectors):
             if what == "parameters":
                 if len(selectors) == 0:
