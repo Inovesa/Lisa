@@ -7,7 +7,8 @@ import h5py as h5
 import glob
 import numpy as np
 
-from .utils import InovesaVersion, version14_1, version15_1, version13_0
+from .utils import InovesaVersion, version14_1, version15_1, version13_0, \
+    version9_1
 
 class FileDataRegister():
     registered_properties = []
@@ -235,6 +236,19 @@ class File(object):
         if self.version > version13_0:
             self._met2gr.update({"source_map": "SourceMap"})
 
+        if self.version == version9_1:
+            self._met2gr.update({"csr_intensity": "CSRPower"})
+            self._met2gr.update({"csr_spectrum": "CSRSpectrum"})
+            del self._met2gr["particles"]
+            del self._met2gr["parameters"]
+
+    def _read_from_cfg(self, what):
+        with open(self.filename[:-3] + ".cfg", 'r') as f:
+            for line in f:
+                if line.startswith(what):
+                    return float(line.split("=")[1])
+
+
     def _get_dict(self, what, list_of_elements):
         """
         Will get the group "group" from the hdf5 file and save it to self._data[what]
@@ -245,7 +259,6 @@ class File(object):
                 group = what
             else:
                 raise ValueError("'{}' does not exist in file.".format(what))
-
         dg = self._data.setdefault(group, {})
         # if no elements or None passed get all
         if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
@@ -256,7 +269,17 @@ class File(object):
             gr = self.file.get(group)
             for elem in set_of_new_elements:
                 ax = self.select_axis(elem, what)
-                dg[elem] = gr.get(ax)
+                if self.version == version9_1:
+                    if elem == Axis.TIME:
+                        dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
+                    elif elem == Axis.DATA and Axis.TIME in self.select_axis.all_for(what):
+                        dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
+                    elif elem == Axis.XAXIS or elem == Axis.EAXIS:
+                        dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[0], gr.get(ax).attrs, gr.get(ax).name)
+                    else:
+                        dg[elem] = gr.get(ax)
+                else:
+                    dg[elem] = gr.get(ax)
         return DataContainer(dg, list_of_elements)
 
     def preload_full(self, what, axis=None):
@@ -282,7 +305,13 @@ class File(object):
                     return self.file.get("Info/Parameters").attrs
                 else:
                     try:
-                        return DataContainer(self.file.get("Info/Parameters").attrs, selectors)
+                        data_dict = {}
+                        for sel in selectors:
+                            if self.version == version9_1 and sel in ["BunchCurrent", "RevolutionFrequency"]:
+                                data_dict[sel] = self._read_from_cfg(sel)
+                            else:
+                                data_dict[sel] = self.file.get("Info/Parameters").attrs.get(sel)
+                        return DataContainer(data_dict, selectors)
                     except DataError:
                         raise DataError("One of the parameters is not saved in hdf5 file.")
             else:

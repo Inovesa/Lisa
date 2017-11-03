@@ -38,10 +38,10 @@ class InovesaVersion(object):
     def __init__(self, release, minor, fix):
         self.release = release
         self.minor = minor
-        self.fix = fix
+        self.fix = -fix if fix < 0 else fix
         self._v_tup = (self.release,
                        self.minor,
-                       -self.fix if self.fix < 0 else 100)  # reverse fix because higher negative means "higher" version
+                       self.fix if self.fix > 0 else 100)  # reverse fix because higher negative means "higher" version
                        # use 100 instead 0f 0 because fix of 0 is release and should be higher than any other fix
 
     def __other_tup(self, other):
@@ -76,6 +76,7 @@ class InovesaVersion(object):
 version15_1 = InovesaVersion(0, 15, -1)
 version14_1 = InovesaVersion(0, 14, -1)
 version13_0 = InovesaVersion(0, 13, 0)
+version9_1 = InovesaVersion(0, 9, 1)
 
 unit_to_attr_map = {
     "m": "Factor4Meters",
@@ -88,6 +89,16 @@ unit_to_attr_map = {
     "eV": "Factor4ElectronVolts",
     "Ohm": "Factor4Ohms",
     "V": "Factor4Volts"
+}
+
+unit_to_attr_map_v9 = {
+    "m": "Scale",
+    "s": "Factor4Seconds",
+    "ts": None,
+    "W": "Factor4Watts",
+    "Hz": "Factor4Hertz",
+    "eV": "Scale",
+    "Ohm": None
 }
 
 # unit_to_attr_map_v15 = {key: value.split("4")[1].rstrip("s") if isinstance(value, str) else value
@@ -108,6 +119,7 @@ unit_to_attr_map_v15["WpHz"] = "WattPerHertz"
 
 attr_to_unit_map = {v: k for k, v in unit_to_attr_map.items() if k != "ts"}
 attr_to_unit_map_v15 = {v: k for k, v in unit_to_attr_map_v15.items() if k != "ts"}
+attr_to_unit_map_v9 = {v: k for k, v in unit_to_attr_map_v9.items() if k != "ts"}
 
 alias_map = {
     "m": ["meter", "meters"],
@@ -138,7 +150,12 @@ inverse_alias_map.update({k.lower():k for k in alias_map.keys()})  # also add th
 
 def _build_complete_unit_map(version):
     unit_map = {}
-    u_t_a_m = unit_to_attr_map if version < version15_1 else unit_to_attr_map_v15
+    if version == version9_1:
+        u_t_a_m = unit_to_attr_map_v9
+    elif version < version15_1:
+        u_t_a_m = unit_to_attr_map
+    else:
+        u_t_a_m = unit_to_attr_map_v15
 
     for unit, attr in u_t_a_m.items():
         unit_map[unit.lower()] = attr
@@ -147,17 +164,19 @@ def _build_complete_unit_map(version):
 
     if version < version15_1:  # enable compatibility of new code with old versions
         # could possibly be done without if but is cleaner and more easy to read like that
-        unit_map['cpnbl'] = u_t_a_m["C"]
-        unit_map['apnbl'] = u_t_a_m["A"]
-        unit_map['cpnes'] = u_t_a_m["C"]
-        unit_map['apnes'] = u_t_a_m["A"]
-        unit_map['cpnblpnes'] = u_t_a_m["C"]
-        unit_map['apnblpnes'] = u_t_a_m["A"]
+        if version > version9_1:
+            unit_map['cpnbl'] = u_t_a_m["C"]
+            unit_map['apnbl'] = u_t_a_m["A"]
+            unit_map['cpnes'] = u_t_a_m["C"]
+            unit_map['apnes'] = u_t_a_m["A"]
+            unit_map['cpnblpnes'] = u_t_a_m["C"]
+            unit_map['apnblpnes'] = u_t_a_m["A"]
         unit_map['wphz'] = u_t_a_m["W"]
     return unit_map
 
 complete_unit_map = _build_complete_unit_map(version14_1)
 complete_unit_map_v15 = _build_complete_unit_map(version15_1)
+complete_unit_map_v9 = _build_complete_unit_map(version9_1)
 
 def attr_from_unit(unit, version):
     """
@@ -171,6 +190,8 @@ def attr_from_unit(unit, version):
     if unit is None:
         return None
     try:
+        if version == version9_1:
+            return complete_unit_map_v9[unit.lower()]
         if version < version15_1:
             return complete_unit_map[unit.lower()]
         else:
