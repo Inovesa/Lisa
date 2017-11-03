@@ -56,22 +56,22 @@ class AxisSelector(object):
     def __init__(self, version):
         self._version = version
         self._specs = {
-            "BunchLength": [self.TIME, self.DATA],
-            "BunchPopulation": [self.TIME, self.DATA],
-            "BunchPosition": [self.TIME, self.DATA],
-            "BunchProfile": [self.TIME, self.XAXIS, self.DATA],
-            "CSR/Intensity": [self.TIME, self.DATA],
-            "CSR/Spectrum": [self.TIME, self.FAXIS, self.DATA],
-            "EnergyProfile": [self.TIME, self.EAXIS, self.DATA],
-            "EnergySpread": [self.TIME, self.DATA],
-            "Impedance": [self.FAXIS, self.REAL, self.IMAG, "datagroup"],
-            "Particles": [self.TIME, self.DATA],
-            "WakePotential": [self.TIME, self.XAXIS, self.DATA],
-            "PhaseSpace": [self.TIME, self.XAXIS, self.EAXIS, self.DATA]
+            "bunch_length": [self.TIME, self.DATA],
+            "bunch_population": [self.TIME, self.DATA],
+            "bunch_position": [self.TIME, self.DATA],
+            "bunch_profile": [self.TIME, self.XAXIS, self.DATA],
+            "csr_intensity": [self.TIME, self.DATA],
+            "csr_spectrum": [self.TIME, self.FAXIS, self.DATA],
+            "energy_profile": [self.TIME, self.EAXIS, self.DATA],
+            "energy_spread": [self.TIME, self.DATA],
+            "impedance": [self.FAXIS, self.REAL, self.IMAG, "datagroup"],
+            "particles": [self.TIME, self.DATA],
+            "wake_potential": [self.TIME, self.XAXIS, self.DATA],
+            "phase_space": [self.TIME, self.XAXIS, self.EAXIS, self.DATA]
         }
 
         if version > version13_0:
-            self._specs["SourceMap"] = [self.XAXIS, self.EAXIS, self.XDATA, self.YDATA]
+            self._specs["source_map"] = [self.XAXIS, self.EAXIS, self.XDATA, self.YDATA]
 
         self._axis_datasets = {
             self.TIME: "/Info/AxisValues_t",
@@ -235,20 +235,27 @@ class File(object):
         if self.version > version13_0:
             self._met2gr.update({"source_map": "SourceMap"})
 
-    def _get_dict(self, group, list_of_elements):
+    def _get_dict(self, what, list_of_elements):
         """
-        Will get the group "group" from the hdf5 file and save it to self._data[key]
+        Will get the group "group" from the hdf5 file and save it to self._data[what]
         """
+        group = self._met2gr.get(what, None)
+        if not group:
+            if what in self._met2gr.values():
+                group = what
+            else:
+                raise ValueError("'{}' does not exist in file.".format(what))
+
         dg = self._data.setdefault(group, {})
         # if no elements or None passed get all
         if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
-            list_of_elements = self.select_axis.all_for(group)
+            list_of_elements = self.select_axis.all_for(what)
         # check what elements have to be loaded from disk (no real load)
         set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
         if len(set_of_new_elements) != 0:
             gr = self.file.get(group)
             for elem in set_of_new_elements:
-                ax = self.select_axis(elem, group)
+                ax = self.select_axis(elem, what)
                 dg[elem] = gr.get(ax)
         return DataContainer(dg, list_of_elements)
 
@@ -266,12 +273,8 @@ class File(object):
             print("Error preloading data")
 
     def __getattr__(self, what):
-        group = self._met2gr.get(what, None)
-        if not group:
-            if what in self._met2gr.values():
-                group = what
-            else:
-                raise ValueError("'{}' does not exist in file.".format(what))
+        if what not in self._met2gr:
+            raise ValueError("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
             if what == "parameters":
@@ -283,7 +286,7 @@ class File(object):
                     except DataError:
                         raise DataError("One of the parameters is not saved in hdf5 file.")
             else:
-                return self._get_dict(group, selectors)
+                return self._get_dict(what, selectors)
         return data_getter
 
 
