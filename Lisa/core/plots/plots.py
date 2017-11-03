@@ -596,11 +596,29 @@ class PhaseSpace(object):
             self._file = file
         else:
             self._file = File(file)
+        self._data = Data(self._file)
+        self._ps_data = {}
+        self._eax = None
+        self._xax = None
         #self._figure = plt.figure()
 
+    def eax(self):
+        if self._eax is None:
+            self._eax = self._data.phase_space(Axis.EAXIS, unit='ev')
+        return self._eax
+    def xax(self):
+        if self._xax is None:
+            self._xax = self._data.phase_space(Axis.XAXIS, unit='s')
+        return self._xax
+    def ps_data(self, index):
+        if not index in self._ps_data:
+            self._ps_data[index] = self._x_to_y(self._data.phase_space(Axis.DATA, unit='cpnbl', sub_idx=index))
+        return self._ps_data[index]
+
     def _x_to_y(self, data):
-        return data.T[::-1, :]  # Inovesa phasespace data is in shape [x, y] and imshow needs [y, x]
-        # also y seems to be flipped? TODO: Check with Patrik
+        # return data.T[::-1, :]  # Inovesa phasespace data is in shape [x, y] and imshow needs [y, x]
+        # Transpose is enough
+        return data.T
 
     def clone(self):
         """
@@ -615,10 +633,15 @@ class PhaseSpace(object):
         :param index: the index of the dataset (in timeaxis)
         """
         # data = self._file.phase_space[2][index].T[::-1, :] # Transpose because is 90deg wrong
-        data = self._x_to_y(self._file.phase_space(Axis.DATA)[index])
+        # data = self._x_to_y(self._file.phase_space(Axis.DATA)[index])
         fig, ax = plt.subplots(1)
-        im = ax.imshow(data)
+        # im = ax.imshow(data)
+        xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
+                                   np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
+        im = ax.pcolormesh(xmesh, ymesh, self.ps_data(index))
         im.set_cmap('inferno')
+        ax.set_xlabel("Position in s")
+        ax.set_ylabel("Energy in eV")
         return fig, ax, im
 
     def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off', fr_idx=-1, to_idx=-1, autorescale=False, percentile=None):
@@ -650,9 +673,14 @@ class PhaseSpace(object):
         ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
 
         #index = [0 if fr_idx==-1 else fr_idx]
-        im = [plt.imshow(self._x_to_y(self._file.phase_space(Axis.DATA)[lb]), animated=True, aspect='auto')]
+
+        xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
+                                   np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
+        im = [plt.pcolormesh(xmesh, ymesh, self.ps_data(lb))]
         im[0].set_cmap('inferno')
         plt.axis(axis)
+        plt.gca().set_xlabel("Position in s")
+        plt.gca().set_ylabel("Energy in eV")
 
 #        im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.max(self._file.phase_space[2]))
         if not autorescale and percentile is not None:
@@ -660,10 +688,10 @@ class PhaseSpace(object):
 
         def gen_data(i):
             idx = i + lb
-            return self._x_to_y(self._file.phase_space(Axis.DATA)[idx])
+            return self.ps_data(idx).reshape((self.ps_data(idx).shape[0]*self.ps_data(idx).shape[1], ))
 
         def gen_image(i):
-            im[0].set_data(gen_data(i))
+            im[0].set_array(gen_data(i))
             if autorescale:
                 im[0].autoscale()
             return im
