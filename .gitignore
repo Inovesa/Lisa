@@ -7,3 +7,4 @@ Lisa/doc/build
 .tox
 .cache
 *.egg-info
+*.so
