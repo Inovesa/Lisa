@@ -6,6 +6,7 @@
 import h5py as h5
 import glob
 import numpy as np
+import os
 
 from .utils import InovesaVersion, version14_1, version15_1, version13_0, \
     version9_1
@@ -243,10 +244,13 @@ class File(object):
             del self._met2gr["parameters"]
 
     def _read_from_cfg(self, what):
-        with open(self.filename[:-3] + ".cfg", 'r') as f:
-            for line in f:
-                if line.startswith(what):
-                    return float(line.split("=")[1])
+        try:
+            with open(self.filename[:-3] + ".cfg", 'r') as f:
+                for line in f:
+                    if line.startswith(what):
+                        return float(line.split("=")[1].strip())
+        except FileNotFoundError:
+            return None
 
 
     def _get_dict(self, what, list_of_elements):
@@ -307,7 +311,12 @@ class File(object):
                     try:
                         data_dict = {}
                         for sel in selectors:
-                            if self.version == version9_1 and sel in ["BunchCurrent", "RevolutionFrequency"]:
+                            if self.version == version9_1 and sel == "BunchCurrent":
+                                value = self._read_from_cfg(sel)
+                                if value is None:
+                                    value = self.file.get("BunchCurrent/data")[0]
+                                data_dict[sel] = value
+                            elif self.version == version9_1 and sel == "RevolutionFrequency":
                                 data_dict[sel] = self._read_from_cfg(sel)
                             else:
                                 data_dict[sel] = self.file.get("Info/Parameters").attrs.get(sel)
