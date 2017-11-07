@@ -300,7 +300,7 @@ class File(object):
             print("Error preloading data")
 
     def __getattr__(self, what):
-        if what not in self._met2gr:
+        if what not in self._met2gr and what != "parameters":
             raise ValueError("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
