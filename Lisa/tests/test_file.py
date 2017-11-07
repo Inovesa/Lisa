@@ -75,27 +75,46 @@ class FileTest(CustomTestCase):
                         else:
                             raise Exception("Error")
 
-    def test_version_15(self):
+    def test_data_version_15(self):
         f = Lisa.File(op.join(self.file_dir_path, "v15-1.h5"))
         self.specs["source_map"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
         self.do_test(f)
 
-    def test_version_14(self):
+    def test_parameters_version_15(self):
+        f = Lisa.File(op.join(self.file_dir_path, "v15-1.h5"))
+        self.assertEqual(f.parameters("BunchCurrent"), 0.003)
+
+    def test_data_version_14(self):
         f = Lisa.File(op.join(self.file_dir_path, "v14-1.h5"))
         self.specs["source_map"] = [s.XAXIS, s.EAXIS, s.XDATA, s.YDATA]
         self.do_test(f)
 
-    def test_version_13(self):
+    def test_parameters_version_14(self):
+        f = Lisa.File(op.join(self.file_dir_path, "v14-1.h5"))
+        self.assertEqual(f.parameters("BunchCurrent"), 5.0E-4)
+
+    def test_data_version_13(self):
         f = Lisa.File(op.join(self.file_dir_path, "v13-2.h5"))
         self.do_test(f)
-        with self.assertRaises(ValueError):
-            getattr(f, "source_map")
+        with self.subTest(msg="Raises", what="source_map"):
+            with self.assertRaises(ValueError):
+                getattr(f, "source_map")
 
-    def test_version_9(self):
+    def test_parameters_version_13(self):
+        f = Lisa.File(op.join(self.file_dir_path, "v13-2.h5"))
+        self.assertEqual(f.parameters("BunchCurrent"), 1.0E-4)
+
+    def test_data_version_9(self):
         f = Lisa.File(op.join(self.file_dir_path, "v9-1.h5"))
         del self.specs["bunch_population"]
         del self.specs["energy_profile"]
         del self.specs["particles"]
         self.do_test(f)
-        with self.assertRaises(ValueError):
-            getattr(f, "source_map")
+        with self.subTest(msg="Raises", what="source_map"):
+            with self.assertRaises(ValueError):
+                getattr(f, "source_map")
+
+    def test_parameters_version_9(self):
+        f = Lisa.File(op.join(self.file_dir_path, "v9-1.h5"))
+        self.assertEqual(f.parameters("BunchCurrent"), 9.0E-4)
+
