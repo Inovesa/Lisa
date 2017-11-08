@@ -1,10 +1,12 @@
 from setuptools import setup, find_packages
-from Cython.Build import cythonize
 import os
+import shutil
+import subprocess
 
 VERSION=open("Lisa/VERSION", 'r').read().strip()
 
 requires = [
+        'cython',
         'matplotlib',
         'numpy',
         'h5py',
@@ -12,13 +14,15 @@ requires = [
         'unittest2'
     ]
 
-import shutil
-
 
 def do_cythonize(list_of_modules):
+    from Cython.Build import cythonize
     list_of_cythons = []
     for file in list_of_modules:
         shutil.copy(file, file[:-3]+"_cython.py")
+        hash = subprocess.check_output(["md5sum", file]).split()[0].strip().decode('utf-8')
+        with open(file[:-3]+"_cython.py", 'a') as f:
+            f.write("\ncython_compile_hash = '"+hash+"'\n")
         list_of_cythons.append(file[:-3]+"_cython.py")
     cytho = cythonize(list_of_cythons)
     for file in list_of_cythons:

@@ -42,6 +42,7 @@ _simple_plotter_plot_methods = []
 
 warn = lambda x: sys.stderr.write("Warning: "+str(x)+"\n")
 
+
 class Deprecated(Exception):
     msg = ("This is deprecated",)
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 cd core
 echo "Making file_cython"
 ./make.sh file

@@ -8,10 +8,12 @@ import glob
 import numpy as np
 import os
 
+
 from .utils import InovesaVersion, version14_1, version15_1, version13_0, \
     version9_1
 
-class FileDataRegister():
+
+class FileDataRegister(object):
     registered_properties = []
 
 
@@ -22,11 +24,11 @@ class AttributedNPArray(np.ndarray):
         obj.attrs = attrs
         obj.name = name
         return obj
+
     def __array_finalize__(self, obj):
         if obj is None: return
         self.attrs = getattr(obj, 'attrs', None)
         self.name = getattr(obj, 'name', None)
-
 
 
 def registered(cls):
@@ -39,6 +41,7 @@ def registered(cls):
                 raise AttributeError(cls.__name__+" has attribute registered_properties of wrong type.")
         else:
             cls.registered_properties = []
+
     def wrapper(func):
         cls.registered_properties.append(func.__name__)
         return func
@@ -55,6 +58,7 @@ class AxisSelector(object):
     IMAG = "imag"
     XDATA = "xdata"
     YDATA = "ydata"
+
     def __init__(self, version):
         self._version = version
         self._specs = {
@@ -99,6 +103,7 @@ class AxisSelector(object):
         if axis not in self._specs[group]:
             raise ValueError("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
         return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
+
 
 Axis = AxisSelector
 
@@ -252,7 +257,6 @@ class File(object):
         except FileNotFoundError:
             return None
 
-
     def _get_dict(self, what, list_of_elements):
         """
         Will get the group "group" from the hdf5 file and save it to self._data[what]
@@ -326,7 +330,6 @@ class File(object):
             else:
                 return self._get_dict(what, selectors)
         return data_getter
-
 
 
 class File_dep(object):
@@ -548,7 +551,6 @@ class MultiFile(object):
         """
         self.sorter = sorter
         self._sort_changed = True
-
 
     def strlst(self, sorted=True):
         """
