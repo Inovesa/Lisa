@@ -17,6 +17,7 @@ import sys
 
 import textwrap
 from ..internals import config_options
+from .animation import create_animation
 
 if config_options.get("use_cython"):
     try:
@@ -79,7 +80,7 @@ class SimplePlotter(object):
         else:
             self._file = File(filef)
         self._data = Data(self._file)
-        self.current = self._file.parameters()["BunchCurrent"]
+        self.current = self._file.parameters("BunchCurrent")
         self.unit_connector = unit_connector
 
     def plot(func):
@@ -613,7 +614,7 @@ class PhaseSpace(object):
         return self._xax
     def ps_data(self, index):
         if not index in self._ps_data:
-            self._ps_data[index] = self._x_to_y(self._data.phase_space(Axis.DATA, unit='cpnbl', sub_idx=index))
+            self._ps_data[index] = self._x_to_y(self._data.phase_space(Axis.DATA, unit='cpnblpnes', sub_idx=index))
         return self._ps_data[index]
 
     def _x_to_y(self, data):
@@ -645,63 +646,68 @@ class PhaseSpace(object):
         ax.set_ylabel("Energy in eV")
         return fig, ax, im
 
-    def ps_movie(self, path, fps=None, bitrate=18000, interval=200, axis='off', fr_idx=-1, to_idx=-1, autorescale=False, percentile=None):
-        """
-        Create a movie from the phasespace information
-        :param path: the file to write the movie to if None: do not save
-        :param fps: the framerate of the movie If fps is None will use the inverval parameter
-        :param bitrate: the bitrate of the movie
-        :param interval: the time between each phasespace
-        :param axis: 'off' to hide 'on' to show
-        :param fr_idx: the index of the first phasespace (-1 for first in file)
-        :param to_idx: the index of the last phasespace (-1 for the last in file)
-        :param autorescale: if True will autorescale each frame (will not make sense if you want to compare)
-        :param percentile: if autorescale is True this won't have any effect. Will set the max of the colorrange to this percentile
-
-        HINT: If the video looks black discard the first frame. the initial
-            Phase space might be too intensive
-        """
-        plt.ioff()
-        if fps is not None:
-            writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), fps=fps, bitrate=bitrate)
-        else:
-            writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), bitrate=bitrate)
-        fig = plt.figure(frameon=False)
-        fig.set_size_inches(5,5)
-        fig.subplots_adjust(left=0, bottom=0, right=1,top=1, wspace=None, hspace=None)
-
+    def phase_space_movie(self, path, fr_idx=-1, to_idx=-1, mean_range=(None, None), fps=20):
         lb = 0 if fr_idx == -1 else fr_idx
         ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
 
-        #index = [0 if fr_idx==-1 else fr_idx]
-
+        lbm = 0 if mean_range[0] is None else mean_range[0]
+        ubm = -1 if mean_range[1] is None else mean_range[1]
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")
+        fig = plt.figure()
+        fig.subplots_adjust(left=0.17, bottom=0.09, right=0.98, top=0.98, wspace=None, hspace=None)
+        vmin = np.min(ps)
+        vmax = np.max(ps)
         xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
-                                   np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
-        im = [plt.pcolormesh(xmesh, ymesh, self.ps_data(lb))]
-        im[0].set_cmap('inferno')
-        plt.axis(axis)
-        plt.gca().set_xlabel("Position in s")
-        plt.gca().set_ylabel("Energy in eV")
+                           np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
 
-#        im[0].set_clim(vmin=np.min(self._file.phase_space[2]), vmax=np.max(self._file.phase_space[2]))
-        if not autorescale and percentile is not None:
-            im[0].set_clim(vmin=np.min(self._file.phase_space(Axis.DATA)), vmax=np.percentile(self._file.phase_space(Axis.DATA), percentile))
+        def do(i):
+            ax = fig.add_subplot(111)
+            ax.set_xlabel("Position in s")
+            ax.set_ylabel("Energy in eV")
 
-        def gen_data(i):
-            idx = i + lb
-            return self.ps_data(idx).reshape((self.ps_data(idx).shape[0]*self.ps_data(idx).shape[1], ))
+            im = ax.pcolormesh(xmesh, ymesh, ps[i].T, cmap="inferno")
+            im.set_clim((vmin, vmax))
+            return im,
 
-        def gen_image(i):
-            im[0].set_array(gen_data(i))
-            if autorescale:
-                im[0].autoscale()
-            return im
-
-        #ani = anim.FuncAnimation(fig, gen_image, gen_data, init, interval=interval, blit=True, repeat=False)
-        ani = anim.FuncAnimation(fig, gen_image, frames=ub-lb, interval=interval, blit=True, repeat=False)
-        if path is not None:
-            ani.save(path, writer)
+        if path:
+            ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=200, path=path)
+        else:
+            ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=200)
+            plt.show()
         return ani
+
+    def microstructure_movie(self, path, fr_idx=-1, to_idx=-1, mean_range=(None, None), fps=20):
+        lb = 0 if fr_idx == -1 else fr_idx
+        ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
+
+        lbm = 0 if mean_range[0] is None else mean_range[0]
+        ubm = -1 if mean_range[1] is None else mean_range[1]
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")
+        mean = np.mean(ps[lbm:ubm], axis=0)
+        diffs = (ps[lb:ub] - mean)
+        fig = plt.figure()
+        fig.subplots_adjust(left=0.17, bottom=0.09, right=0.98, top=0.98, wspace=None, hspace=None)
+        m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
+        xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
+                           np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
+
+        def do(i):
+            ax = fig.add_subplot(111)
+            ax.set_xlabel("Position in s")
+            ax.set_ylabel("Energy in eV")
+
+            im = ax.pcolormesh(xmesh, ymesh, diffs[i].T, cmap="seismic")
+            im.set_clim((-m, m))
+            return im,
+
+        if path:  # range(len(diffs)) is correct since diffs is only from lb to ub
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=200, path=path)
+        else:
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=200)
+            plt.show()
+        return ani
+
+
 
 class MultiPhaseSpaceMovie(object):
     """

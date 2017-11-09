@@ -226,6 +226,8 @@ def unit_from_spec(spec):
 
     :raises UnitError: when the specification is not known
     """
+    if spec is None:
+        return "Inovesa units"
     unit = inverse_alias_map.get(spec.lower(), False)
     if unit is False:
         raise UnitError("Unit Specification '"+spec+"' is unknown")
