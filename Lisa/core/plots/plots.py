@@ -646,19 +646,46 @@ class PhaseSpace(object):
         ax.set_ylabel("Energy in eV")
         return fig, ax, im
 
-    def phase_space_movie(self, path, fr_idx=-1, to_idx=-1, mean_range=(None, None), fps=20):
+    def center_of_mass(self, xax, yax):
+        return np.average(xax, weights=yax)
+
+    def phase_space_movie(self, path, fr_idx=-1, to_idx=-1, fps=20, plot_area_width=None):
+        """
+        Plot a movie of the evolving phasespace
+        :param path: Path to a movie file to save to
+        :param fr_idx: Index in the phasespace data to start video
+        :param to_idx: Index in the phasespace data to stop video
+        :param fps: Frames per second of the output video
+        :param plot_area_width: The width in pixel to plot around com. If None will plot full phasespace.
+                                (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
+        :return: animation object
+        """
         lb = 0 if fr_idx == -1 else fr_idx
         ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
 
-        lbm = 0 if mean_range[0] is None else mean_range[0]
-        ubm = -1 if mean_range[1] is None else mean_range[1]
-        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")
+        if plot_area_width:
+            mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lb:ub], axis=0)
+            meprof = np.mean(self._file.energy_profile(Axis.DATA)[lb:ub], axis=0)
+            com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
+            min_px_space = int(com_space-plot_area_width/2)
+            max_px_space = int(com_space+plot_area_width/2)
+            com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
+            min_px_energy = int(com_energy-plot_area_width/2)
+            max_px_energy = int(com_energy+plot_area_width/2)
+        else:
+            min_px_space = 0
+            max_px_space = self.xax().shape[0]
+            min_px_energy = 0
+            max_px_energy = self.eax().shape[0]
+
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
         fig = plt.figure()
         fig.subplots_adjust(left=0.17, bottom=0.09, right=0.98, top=0.98, wspace=None, hspace=None)
         vmin = np.min(ps)
         vmax = np.max(ps)
-        xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
-                           np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
+        xmesh, ymesh = np.meshgrid(
+            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1],
+            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1])
 
         def do(i):
             ax = fig.add_subplot(111)
@@ -673,23 +700,49 @@ class PhaseSpace(object):
             ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=200, path=path)
         else:
             ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=200)
-            plt.show()
         return ani
 
-    def microstructure_movie(self, path, fr_idx=-1, to_idx=-1, mean_range=(None, None), fps=20):
+    def microstructure_movie(self, path, fr_idx=-1, to_idx=-1, mean_range=(None, None), fps=20, plot_area_width=None):
+        """
+        Plot the difference between the mean phasespace and the current snapshot as video.
+        :param path: Path to a movie file to save to
+        :param fr_idx: Index in the phasespace data to start video
+        :param to_idx: Index in the phasespace data to stop video
+        :param mean_range: The min index and max index to use when calculating the mean of the phasespace
+        :param fps: Frames per second of the output video
+        :param plot_area_width: The width in pixel to plot around com. If None will plot full phasespace.
+                                (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
+        :return: animation object
+        """
         lb = 0 if fr_idx == -1 else fr_idx
         ub = len(self._file.phase_space(Axis.DATA)) if to_idx == -1 else to_idx
-
         lbm = 0 if mean_range[0] is None else mean_range[0]
         ubm = -1 if mean_range[1] is None else mean_range[1]
-        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")
+
+        if plot_area_width:
+            mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lbm:ubm], axis=0)
+            meprof = np.mean(self._file.energy_profile(Axis.DATA)[lbm:ubm], axis=0)
+            com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
+            min_px_space = int(com_space-plot_area_width/2)
+            max_px_space = int(com_space+plot_area_width/2)
+            com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
+            min_px_energy = int(com_energy-plot_area_width/2)
+            max_px_energy = int(com_energy+plot_area_width/2)
+        else:
+            min_px_space = 0
+            max_px_space = self.xax().shape[0]
+            min_px_energy = 0
+            max_px_energy = self.eax().shape[0]
+
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
         mean = np.mean(ps[lbm:ubm], axis=0)
         diffs = (ps[lb:ub] - mean)
         fig = plt.figure()
         fig.subplots_adjust(left=0.17, bottom=0.09, right=0.98, top=0.98, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
-        xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
-                           np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
+        xmesh, ymesh = np.meshgrid(
+            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1],
+            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1])
 
         def do(i):
             ax = fig.add_subplot(111)
@@ -704,9 +757,7 @@ class PhaseSpace(object):
             ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=200, path=path)
         else:
             ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=200)
-            plt.show()
         return ani
-
 
 
 class MultiPhaseSpaceMovie(object):
