@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plot Configuration &mdash; Lisa 0.01 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+        <link rel="next" title="Helpers" href="helpers.html"/>
+        <link rel="prev" title="Data with Units" href="data.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Lisa
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.01
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="availability.html">Availability of Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simpleusage.html">Simple Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Inovesa Data Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lisa</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Plot Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-config"></span><div class="section" id="plot-configuration">
+<h1>Plot Configuration<a class="headerlink" href="#plot-configuration" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Patrick Schreiber</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="config.Alias">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">Alias</code><a class="headerlink" href="#config.Alias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to another method</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="config.StyleError">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">StyleError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#config.StyleError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="config.Style">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">Style</code><span class="sig-paren">(</span><em>dict</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Style for Matplotlib axes.  
+It is essentially a dictionary with overriden methods.</p>
+<p>Usage (assume ax is an matplotlib axes object):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="n">Style</span><span class="p">()</span>  
+<span class="n">style</span><span class="o">.</span><span class="n">apply_to_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>  
+<span class="n">style</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">selector</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>  <span class="c1"># or use style.update_style  </span>
+<span class="n">style</span><span class="p">[</span><span class="s1">&#39;selector&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>  <span class="c1"># this also updates the axes object  </span>
+<span class="c1"># if you have done some modifications to the plot yourself and want to update the style again use  </span>
+<span class="n">style</span><span class="o">.</span><span class="n">reapply</span><span class="p">()</span>  
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">instead of working with the Style object directly you can use ax.current_style after you applied a style</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can apply one Style object to more than one axes object. Just call apply_to_ax multiple times or with a list of axes  
+If you applied one Style to multiple axes objects and you use axes.current_style instead of the style object  
+directly the updates/changes will nonetheless be applied to all applied axes objects</p>
+</div>
+<dl class="method">
+<dt id="config.Style.apply_to_ax">
+<code class="descname">apply_to_ax</code><span class="sig-paren">(</span><em>self</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.apply_to_ax" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Apply this style to the given axes object  </div>
+<div class="line">You can apply to multiple axes objects by calling this multiple times or with a list of objects  </div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> – matplotlib axes object or list of those</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="config.Style.apply_to_fig">
+<code class="descname">apply_to_fig</code><span class="sig-paren">(</span><em>self</em>, <em>fig</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.apply_to_fig" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Apply this style to the given figure and its axes (and new axes)  </div>
+<div class="line">You can apply to multiple figures by calling this multiple times or with a list of figures  </div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fig</strong> – matplotlib figure or list of those</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="config.Style.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>self</em>, <em>E=None</em>, <em>**F</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the value in the internal dictionary and update the axes object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>E</strong> – dictionary with key/value pairs to update or name of a predefined style</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="config.Style.update_style">
+<code class="descname">update_style</code><span class="sig-paren">(</span><em>self</em>, <em>E</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.update_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>more explicit alias to <code class="docutils literal"><span class="pre">update</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="config.Style.reapply">
+<code class="descname">reapply</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.reapply" title="Permalink to this definition">¶</a></dt>
+<dd><p>reapply this style to the axes object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="config.Style.selectors">
+<code class="descname">selectors</code><span class="sig-paren">(</span><em>self</em>, <em>print_out=True</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.selectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print or Get a list of possible selectors</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="helpers.html" class="btn btn-neutral float-right" title="Helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data.html" class="btn btn-neutral" title="Data with Units" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Patrick Schreiber.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.01',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

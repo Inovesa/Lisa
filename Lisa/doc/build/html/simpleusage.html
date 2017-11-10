@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simple Usage &mdash; Lisa 0.01 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+        <link rel="next" title="Inovesa Data Plots" href="plots.html"/>
+        <link rel="prev" title="Availability of Classes" href="availability.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Lisa
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.01
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="availability.html">Availability of Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simple Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simpleplotter">SimplePlotter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiplot">MultiPlot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#phasespace">PhaseSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiphasespacemovie">MultiPhaseSpaceMovie</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Inovesa Data Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lisa</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Simple Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/simpleusage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="simple-usage">
+<h1>Simple Usage<a class="headerlink" href="#simple-usage" title="Permalink to this headline">¶</a></h1>
+<p>This is intended for someone who simply wants to plot something quickly for example.</p>
+<div class="section" id="simpleplotter">
+<h2>SimplePlotter<a class="headerlink" href="#simpleplotter" title="Permalink to this headline">¶</a></h2>
+<p>Each Dataset in the Inovesa generated h5 files is a possible plot. Just call the corresponding function.</p>
+<p>Plots for data with multiple axes expect a period as parameter. If this is omitted a meshplot is done.
+The period is used to generate a slice in the time axis.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">SimplePlotter</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">xunit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">energy_spread</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiplot">
+<h2>MultiPlot<a class="headerlink" href="#multiplot" title="Permalink to this headline">¶</a></h2>
+<p>MultiPlot is the same as SimplePlotter except it works on multiple files.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
+<span class="n">mp</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">MultiPlot</span><span class="p">()</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s2">&quot;/path/to/second/h5&quot;</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">energy_spread</span><span class="p">()</span>  <span class="c1"># or any other plot supported by SimplePlotter</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="file">
+<h2>File<a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h2>
+<p>File is an object encapsulating the h5 file.</p>
+<p>It has a method for each of the DataGroups in the h5 file.</p>
+<p>Each method takes a parameter specifying the dataset to use. This parameter has to be an attribute from
+Lisa.Axis (e.g. Lisa.Axis.XAXIS for spaceaxis, Lisa.Axis.DATA for data etc.)</p>
+<p>Inovesa Parameters are available via File.parameters. It will return an h5.Attribute instance if no
+parameter is specified.</p>
+<p>For recurring access to data it is a speed improvement to call File.preload_full(“name_of_dataset”).
+This will read all the data to memory for faster access.</p>
+<p>If one does not specify an axis a DataContainer containing all the data there is in the requested DataGroup
+will be returned. This object is iterable, subscriptable and has a get method that accepts Lisa.Axis properties.</p>
+<p>Usage:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
+<span class="n">bunch_profile_axis</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">)</span>
+<span class="n">bunch_profile</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>Data is an object encapsulating a File object. The benefit of this is it converts data to the given unit.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>  <span class="c1"># c for coulomb.</span>
+<span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>  <span class="c1"># m for meter</span>
+<span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>  <span class="c1"># s for meter</span>
+</pre></div>
+</div>
+<p>To get data as it is saved in the h5 file use unit=None.</p>
+<p>It is possible to pass the unit as second parameter without a keyword. (For raw data (unit=None) this is not possible).</p>
+</div>
+<div class="section" id="phasespace">
+<h2>PhaseSpace<a class="headerlink" href="#phasespace" title="Permalink to this headline">¶</a></h2>
+<p>PhaseSpace is used to generate PhaseSpace plots or movies.</p>
+<p>Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.ps_movie to generate a PhaseSpace Movie</p>
+</div>
+<div class="section" id="multiphasespacemovie">
+<h2>MultiPhaseSpaceMovie<a class="headerlink" href="#multiphasespacemovie" title="Permalink to this headline">¶</a></h2>
+<p>This is used to generate PhaseSpace movies from phase spaces in multiple files.</p>
+<p>The method to generate the movie is MultiPhaseSpaceMovie.create_movie</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plots.html" class="btn btn-neutral float-right" title="Inovesa Data Plots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="availability.html" class="btn btn-neutral" title="Availability of Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Patrick Schreiber.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.01',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

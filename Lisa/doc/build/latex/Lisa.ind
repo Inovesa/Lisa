@@ -1,0 +1,151 @@
+\begin{sphinxtheindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter {Symbols}
+  \item \_\_getattr\_\_() (data.Data method), \hyperpage{13}
+  \item \_\_init\_\_() (data.Data method), \hyperpage{13}
+  \item \_\_init\_\_() (file.AxisSelector method), \hyperpage{10}
+  \item \_\_init\_\_() (file.DataContainer method), \hyperpage{10}
+  \item \_\_init\_\_() (file.File method), \hyperpage{11}
+  \item \_\_init\_\_() (file.File\_dep method), \hyperpage{11}
+  \item \_\_init\_\_() (file.MultiFile method), \hyperpage{12}
+  \item \_\_init\_\_() (plots.MultiPhaseSpaceMovie method), \hyperpage{9}
+  \item \_\_init\_\_() (plots.MultiPlot method), \hyperpage{8}
+  \item \_\_init\_\_() (plots.PhaseSpace method), \hyperpage{8}
+  \item \_\_init\_\_() (plots.SimplePlotter method), \hyperpage{5}
+
+  \indexspace
+  \bigletter A
+  \item add\_file() (plots.MultiPlot method), \hyperpage{8}
+  \item Alias (class in config), \hyperpage{14}
+  \item all\_for() (file.AxisSelector method), \hyperpage{10}
+  \item animation (module), \hyperpage{16}
+  \item apply\_to\_ax() (config.Style method), \hyperpage{14}
+  \item apply\_to\_fig() (config.Style method), \hyperpage{14}
+  \item attr\_from\_unit() (in module utils), \hyperpage{18}
+  \item AttributedNPArray (class in file), \hyperpage{10}
+  \item AxisSelector (class in file), \hyperpage{10}
+
+  \indexspace
+  \bigletter B
+  \item bunch\_length() (file.File\_dep method), \hyperpage{11}
+  \item bunch\_length() (plots.SimplePlotter method), \hyperpage{7}
+  \item bunch\_population() (file.File\_dep method), \hyperpage{11}
+  \item bunch\_population() (plots.SimplePlotter method), \hyperpage{7}
+  \item bunch\_position() (file.File\_dep method), \hyperpage{11}
+  \item bunch\_position() (plots.SimplePlotter method), \hyperpage{7}
+  \item bunch\_profile() (file.File\_dep method), \hyperpage{11}
+  \item bunch\_profile() (plots.SimplePlotter method), \hyperpage{6}
+
+  \indexspace
+  \bigletter C
+  \item center\_of\_mass() (plots.PhaseSpace method), \hyperpage{8}
+  \item clone() (plots.MultiPlot method), \hyperpage{8}
+  \item clone() (plots.PhaseSpace method), \hyperpage{8}
+  \item color\_map\_inferno() (in module utils), \hyperpage{19}
+  \item config (module), \hyperpage{13}
+  \item create\_animation() (in module animation), \hyperpage{17}
+  \item create\_movie() (plots.MultiPhaseSpaceMovie method), \hyperpage{9}
+  \item csr\_intensity() (file.File\_dep method), \hyperpage{12}
+  \item csr\_intensity() (plots.SimplePlotter method), \hyperpage{7}
+  \item csr\_spectrum() (file.File\_dep method), \hyperpage{12}
+  \item csr\_spectrum() (plots.SimplePlotter method), \hyperpage{7}
+
+  \indexspace
+  \bigletter D
+  \item Data (class in data), \hyperpage{13}
+  \item data (module), \hyperpage{12}
+  \item data\_frame\_generator() (in module animation), \hyperpage{17}
+  \item DataContainer (class in file), \hyperpage{10}
+  \item DataError (class in file), \hyperpage{10}
+  \item Deprecated (class in plots), \hyperpage{5}
+  \item display\_video() (in module helpers), \hyperpage{16}
+
+  \indexspace
+  \bigletter E
+  \item eax() (plots.PhaseSpace method), \hyperpage{8}
+  \item energy\_profile() (file.File\_dep method), \hyperpage{12}
+  \item energy\_profile() (plots.SimplePlotter method), \hyperpage{7}
+  \item energy\_spread() (file.File\_dep method), \hyperpage{11}
+  \item energy\_spread() (plots.SimplePlotter method), \hyperpage{6}
+
+  \indexspace
+  \bigletter F
+  \item File (class in file), \hyperpage{10}
+  \item file (module), \hyperpage{9}
+  \item File\_dep (class in file), \hyperpage{11}
+
+  \indexspace
+  \bigletter G
+  \item get() (file.DataContainer method), \hyperpage{10}
+
+  \indexspace
+  \bigletter H
+  \item helpers (module), \hyperpage{15}
+
+  \indexspace
+  \bigletter I
+  \item impedance() (file.File\_dep method), \hyperpage{12}
+  \item impedance() (plots.SimplePlotter method), \hyperpage{8}
+  \item InovesaVersion (class in utils), \hyperpage{18}
+
+  \indexspace
+  \bigletter M
+  \item meshPlot() (plots.SimplePlotter method), \hyperpage{6}
+  \item microstructure\_movie() (plots.PhaseSpace method), \hyperpage{9}
+  \item MultiFile (class in file), \hyperpage{12}
+  \item MultiPhaseSpaceMovie (class in plots), \hyperpage{9}
+  \item MultiPlot (class in plots), \hyperpage{8}
+
+  \indexspace
+  \bigletter O
+  \item objlst() (file.MultiFile method), \hyperpage{12}
+
+  \indexspace
+  \bigletter P
+  \item parameters() (file.File\_dep method), \hyperpage{12}
+  \item particles() (file.File\_dep method), \hyperpage{12}
+  \item phase\_space() (file.File\_dep method), \hyperpage{12}
+  \item phase\_space\_movie() (plots.PhaseSpace method), \hyperpage{8}
+  \item PhaseSpace (class in plots), \hyperpage{8}
+  \item plot() (plots.SimplePlotter method), \hyperpage{5}
+  \item plot\_ps() (plots.PhaseSpace method), \hyperpage{8}
+  \item plots (module), \hyperpage{4}
+  \item possible\_plots() (plots.MultiPlot method), \hyperpage{8}
+  \item preload\_full() (file.File method), \hyperpage{11}
+  \item preload\_full() (file.File\_dep method), \hyperpage{11}
+  \item ps\_data() (plots.PhaseSpace method), \hyperpage{8}
+
+  \indexspace
+  \bigletter R
+  \item reapply() (config.Style method), \hyperpage{15}
+  \item registered() (in module file), \hyperpage{10}
+  \item reset() (plots.MultiPlot method), \hyperpage{8}
+
+  \indexspace
+  \bigletter S
+  \item selectors() (config.Style method), \hyperpage{15}
+  \item set\_sorter() (file.MultiFile method), \hyperpage{12}
+  \item SimplePlotter (class in plots), \hyperpage{5}
+  \item strlst() (file.MultiFile method), \hyperpage{12}
+  \item Style (class in config), \hyperpage{14}
+  \item StyleError (class in config), \hyperpage{14}
+
+  \indexspace
+  \bigletter U
+  \item unit\_from\_attr() (in module utils), \hyperpage{18}
+  \item unit\_from\_spec() (in module utils), \hyperpage{19}
+  \item UnitError (class in utils), \hyperpage{18}
+  \item update() (config.Style method), \hyperpage{14}
+  \item update\_style() (config.Style method), \hyperpage{15}
+  \item utils (module), \hyperpage{17}
+
+  \indexspace
+  \bigletter W
+  \item wake\_potential() (file.File\_dep method), \hyperpage{12}
+
+  \indexspace
+  \bigletter X
+  \item xax() (plots.PhaseSpace method), \hyperpage{8}
+
+\end{sphinxtheindex}

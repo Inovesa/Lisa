@@ -1,0 +1,553 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Inovesa Result Files &mdash; Lisa 0.01 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+        <link rel="next" title="Data with Units" href="data.html"/>
+        <link rel="prev" title="Inovesa Data Plots" href="plots.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Lisa
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.01
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="availability.html">Availability of Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simpleusage.html">Simple Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Inovesa Data Plots</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Inovesa Result Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lisa</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Inovesa Result Files</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/file.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-file"></span><div class="section" id="inovesa-result-files">
+<h1>Inovesa Result Files<a class="headerlink" href="#inovesa-result-files" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Patrick Schreiber</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="file.AttributedNPArray">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">AttributedNPArray</code><span class="sig-paren">(</span><em>np.ndarray</em><span class="sig-paren">)</span><a class="headerlink" href="#file.AttributedNPArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple Wrarpper around numpy.ndarray to include h5 attrs attribute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.registered">
+<code class="descclassname">file.</code><code class="descname">registered</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#file.registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registeres properties of one class into another class.registered_properties</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="file.AxisSelector">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">AxisSelector</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.AxisSelector" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="file.AxisSelector.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>version</em><span class="sig-paren">)</span><a class="headerlink" href="#file.AxisSelector.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="file.AxisSelector.all_for">
+<code class="descname">all_for</code><span class="sig-paren">(</span><em>self</em>, <em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#file.AxisSelector.all_for" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="file.DataError">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">DataError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#file.DataError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="file.DataContainer">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">DataContainer</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.DataContainer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="file.DataContainer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>data_dict</em>, <em>list_of_elements</em><span class="sig-paren">)</span><a class="headerlink" href="#file.DataContainer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="file.DataContainer.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>self</em>, <em>item</em>, <em>default</em><span class="sig-paren">)</span><a class="headerlink" href="#file.DataContainer.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="file.File">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">File</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around a h5 File created by Inovesa</p>
+<p>Each Datagroup is a method of this object. To get a special axis of each group use additional parameters.</p>
+<p>If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded, as AttributedNPArray.</p>
+<p>If no or more than one parameter is supplied the data will be returned as DataContainer object containing  
+the HDF5.Dataset or AttributedNPArray objects.</p>
+<p>This is not completely true for File.parameters.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;path/to/file&quot;</span><span class="p">)</span>  
+<span class="n">tax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>  
+<span class="n">xax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">)</span>  
+<span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">)</span>  
+<span class="nb">all</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">()</span>  
+<span class="n">axes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>Method names are mostly the datagroup-names with underscores instead of camelcase (e.g. bunch_profile for BunchProfile)</p>
+<p>Available Groups:</p>
+<blockquote>
+<div><ul class="simple">
+<li>energy_spread</li>
+<li>bunch_length</li>
+<li>bunch_position</li>
+<li>bunch_population</li>
+<li>bunch_profile</li>
+<li>csr_intensity</li>
+<li>csr_spectrum</li>
+<li>energy_profile</li>
+<li>impedance</li>
+<li>particles</li>
+<li>phase_space</li>
+<li>wake_potential</li>
+<li>source_map (only Inovesa version 0.15 and above)</li>
+<li><ul class="first">
+<li>parameters</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.</li>
+</ul>
+<p>Use File.parameters(param1, param2 …) to get either a single parameter (with the datatype that this parameter is saved  
+in the hdf5 file) or a DataContainer object depending on how much params were passed.</p>
+<dl class="method">
+<dt id="file.File.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create File object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – The filename of the Inovesa result file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File.preload_full">
+<code class="descname">preload_full</code><span class="sig-paren">(</span><em>self</em>, <em>what</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File.preload_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preload Data into memory. This will speed up recurring reads by a lot</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="file.File_dep">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">File_dep</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around an h5 File created by Inovesa</p>
+<dl class="method">
+<dt id="file.File_dep.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create File object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – The filename of the Inovesa result file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.preload_full">
+<code class="descname">preload_full</code><span class="sig-paren">(</span><em>self</em>, <em>what</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.preload_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>DEPRECATED  
+Preload Data into memory. This will speed up recurring reads by a lot</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.energy_spread">
+<code class="descname">energy_spread</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.energy_spread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the EnergySpread</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.bunch_length">
+<code class="descname">bunch_length</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the BunchLength</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.bunch_position">
+<code class="descname">bunch_position</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the BunchPosition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.bunch_population">
+<code class="descname">bunch_population</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the BunchPopulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.bunch_profile">
+<code class="descname">bunch_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the BunchProfile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.csr_intensity">
+<code class="descname">csr_intensity</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.csr_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the CSRIntensity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.csr_spectrum">
+<code class="descname">csr_spectrum</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.csr_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the CSRSpectrum</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.energy_profile">
+<code class="descname">energy_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.energy_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the EnergyProfile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.impedance">
+<code class="descname">impedance</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.impedance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Impedance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.particles">
+<code class="descname">particles</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.particles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Particles</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.phase_space">
+<code class="descname">phase_space</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.phase_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the PhaseSpace</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.wake_potential">
+<code class="descname">wake_potential</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.wake_potential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the WakePotential</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.File_dep.parameters">
+<code class="descname">parameters</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Inovesa Parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">h5py.Attribute Instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="file.MultiFile">
+<em class="property">class </em><code class="descclassname">file.</code><code class="descname">MultiFile</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple File container for whole directories</p>
+<dl class="method">
+<dt id="file.MultiFile.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>pattern=None</em>, <em>sorter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> – The path to search in</li>
+<li><strong>pattern</strong> – The pattern to search for (pattern has to be accepted by glob) (None for no pattern)</li>
+<li><strong>sorter</strong> – The sorting method to use. (None for default)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.MultiFile.set_sorter">
+<code class="descname">set_sorter</code><span class="sig-paren">(</span><em>self</em>, <em>sorter</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile.set_sorter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the sorting method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorter</strong> – A callable that accepts a list of files as strings and returns a sorted list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.MultiFile.strlst">
+<code class="descname">strlst</code><span class="sig-paren">(</span><em>self</em>, <em>sorted=True</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile.strlst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get File list as string list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorted</strong> – True to sort the list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="file.MultiFile.objlst">
+<code class="descname">objlst</code><span class="sig-paren">(</span><em>self</em>, <em>sorted=True</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile.objlst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get File list as Lisa.File object list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorted</strong> – True to sort the list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data.html" class="btn btn-neutral float-right" title="Data with Units" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plots.html" class="btn btn-neutral" title="Inovesa Data Plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Patrick Schreiber.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.01',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

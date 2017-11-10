@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Internal Utilities &mdash; Lisa 0.01 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+        <link rel="prev" title="Create animated plots" href="animation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Lisa
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.01
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="availability.html">Availability of Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simpleusage.html">Simple Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Inovesa Data Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Internal Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-the-version-handling-for-attributes-works">How the version handling for attributes works:</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lisa</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Internal Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-utils"></span><div class="section" id="internal-utilities">
+<h1>Internal Utilities<a class="headerlink" href="#internal-utilities" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Patrick Schreiber</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="how-the-version-handling-for-attributes-works">
+<h2>How the version handling for attributes works:<a class="headerlink" href="#how-the-version-handling-for-attributes-works" title="Permalink to this headline">¶</a></h2>
+<p><cite>InovesaVersion</cite> is a object that implements comparators for inovesa versions</p>
+<p><cite>unit_to_attr_map</cite> is a dictionary that maps physical units to inovesa attributes. Since these attributes change  
+over different inovesa versions first a dictionary for “older” versions (13 and up, maybe some versions below match too)  
+then it is modified into <cite>unit_to_attr_map_v15</cite> for versions 15 and up (until the next change in inovesa is made).</p>
+<p><cite>attr_to_unit_map</cite> and <cite>attr_to_unit_map_v15</cite> are just reversed dictionaries to make it possible to find the corresponding  
+readable/printable unit for an attribute</p>
+<p>Then <cite>alias_map</cite> is generated that makes it possible to not only use the exact specification used in unit_to_attr_map  
+but also the ones specified in <cite>alias_map</cite>. The reason for this is that the user does not have to remember the exact  
+unit string.</p>
+<p>Then a <cite>complete_unit_map</cite> (and <cite>complete_unit_map_v15</cite>) is generated where all the entries in alias_map are  
+mapped to attributes</p>
+<p>There are 3 ‘public’ methods that should be used.</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>attr_from_unit</cite>: Get the h5 attribute from the given unit</li>
+<li><cite>unit_from_attr</cite>: Get the readable/printable unit from a h5 attribute</li>
+<li><cite>unit_from_spec</cite>: Get the readable/printable unit from a unit specifier (an alias)</li>
+</ul>
+</div></blockquote>
+<dl class="class">
+<dt id="utils.UnitError">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">UnitError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UnitError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="utils.InovesaVersion">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">InovesaVersion</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.InovesaVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object to make comparison of versions easier</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.attr_from_unit">
+<code class="descclassname">utils.</code><code class="descname">attr_from_unit</code><span class="sig-paren">(</span><em>unit</em>, <em>version</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.attr_from_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the h5 attribute from a unit specification</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>unit</strong> – specification to get the attribute for</li>
+<li><strong>version</strong> – inovesa version as InovesaVersion Object</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a string with the h5 attribute for the given unit</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#utils.UnitError" title="utils.UnitError"><strong>UnitError</strong></a> – when a unit is not known</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.unit_from_attr">
+<code class="descclassname">utils.</code><code class="descname">unit_from_attr</code><span class="sig-paren">(</span><em>attr</em>, <em>version</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.unit_from_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a printable/readable unit from an h5 attribute</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attr</strong> – h5 attribute to get the unit for</li>
+<li><strong>version</strong> – inovesa version as InovesaVersion Object</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a string with the requested unit</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#utils.UnitError" title="utils.UnitError"><strong>UnitError</strong></a> – when an attribute is not known</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.unit_from_spec">
+<code class="descclassname">utils.</code><code class="descname">unit_from_spec</code><span class="sig-paren">(</span><em>spec</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.unit_from_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a printable/readable unit from a unit specification</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spec</strong> – the unit specification</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a string with the requested unit</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#utils.UnitError" title="utils.UnitError"><strong>UnitError</strong></a> – when the specification is not known</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.color_map_inferno">
+<code class="descclassname">utils.</code><code class="descname">color_map_inferno</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.color_map_inferno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="animation.html" class="btn btn-neutral" title="Create animated plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Patrick Schreiber.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.01',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

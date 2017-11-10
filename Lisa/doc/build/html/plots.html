@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Inovesa Data Plots &mdash; Lisa 0.01 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+        <link rel="next" title="Inovesa Result Files" href="file.html"/>
+        <link rel="prev" title="Simple Usage" href="simpleusage.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Lisa
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.01
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="availability.html">Availability of Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simpleusage.html">Simple Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Inovesa Data Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lisa</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Inovesa Data Plots</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/plots.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-plots"></span><div class="section" id="inovesa-data-plots">
+<h1>Inovesa Data Plots<a class="headerlink" href="#inovesa-data-plots" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Patrick Schreiber</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="plots.Deprecated">
+<em class="property">class </em><code class="descclassname">plots.</code><code class="descname">Deprecated</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.Deprecated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">setup_plots():</code></dt>
+<dd><p>Setup Plots to look native in Latex documents. Subject to change.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plots.SimplePlotter">
+<em class="property">class </em><code class="descclassname">plots.</code><code class="descname">SimplePlotter</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">A Simple Plot Helper Class.  </div>
+<div class="line">It takes a Filename to the Constructor.  </div>
+<div class="line">Each actual plotting function is decorated using plot or meshPlot. See those for additional parameters to each plot function.  </div>
+</div>
+<dl class="method">
+<dt id="plots.SimplePlotter.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>filef</em>, <em>unit_connector='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise a Simple Plotter instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filef</strong> – The file name of this Plotter or a Lisa.File instance</li>
+<li><strong>unit_connector</strong> – The string to use between label and unit.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to reuse plotting methods for different data. Calling one of the actual plot functions will result in calling this.  
+This means the following options are available:</p>
+<p>General Options (always use as keywords):</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fig</strong> – (optional) the figure to plot in</li>
+<li><strong>ax</strong> – (optional) the axis to use to plot</li>
+<li><strong>label</strong> – (optional) the label for this plot (legend)</li>
+<li><strong>scale_factor</strong> – (optional) a scale factor Note: This does not modify the labels</li>
+<li><strong>use_offset</strong> – (optional) a bool if one wants an offset on yaxis or not</li>
+<li><strong>force_exponential_x</strong> – (optional) a bool if one wants to force exponential notation on xaxis or not</li>
+<li><strong>force_exponential_y</strong> – (optional) a bool if one wants to force exponential notation on yaxis or not</li>
+<li><strong>fft</strong> – (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft</li>
+<li><strong>fft_padding</strong> – (optional) an integer to specify how much 0 will be padded to the data before fft default fft</li>
+<li><strong>abs</strong> – (optional) a boolean to select if plot absolute values or direct data</li>
+<li><strong>plt_args</strong> – (optional) dictionary with arguments to the displaying function</li>
+<li><strong>x_log</strong> – (optional) a boolean to set the x axis to log scale</li>
+<li><strong>y_log</strong> – (optional) a boolean to set the y axis to log scale</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.meshPlot">
+<code class="descname">meshPlot</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.meshPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to reuse plotting methods and to unify colormesh plots and normal line plots.  
+Calling one of the actual plot functions will result in calling this.  
+This means the following options are available:</p>
+<p>General Options (always use as keywords):</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fig</strong> – (optional) the figure to plot in</li>
+<li><strong>ax</strong> – (optional) the axis to use to plot</li>
+<li><strong>label</strong> – (optional) the label for this plot (legend) (if line plot)</li>
+<li><strong>norm</strong> – (optional) the norm to use if pcolormesh (default LogNorm)</li>
+<li><strong>colormap</strong> – (optional) the colormap for pcolormesh to use (default PuBu)</li>
+<li><strong>force_bad_to_min</strong> – (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar</li>
+<li><strong>force_exponential_x</strong> – (optional) a bool if one wants to force exponential notation on xaxis or not</li>
+<li><strong>force_exponential_y</strong> – (optional) a bool if one wants to force exponential notation on yaxis or not</li>
+<li><strong>plt_args</strong> – (optional) dictionary with arguments to the displaying function</li>
+<li><strong>period</strong> – (optional) the period to use. If not given will plot all data as pcolormesh (use parameters from plot)</li>
+<li><strong>use_index</strong> – (optional) Use period as index in data and not synchrotron period (default False)</li>
+<li><strong>mean_range</strong> – (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.energy_spread">
+<code class="descname">energy_spread</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.energy_spread" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>kwargs:  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “eV”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.bunch_profile">
+<code class="descname">bunch_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.bunch_profile" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the bunch_profile either as line plot or as pcolormesh  </div>
+<div class="line">to plot as line pass either the period as first argument or a keyword argument period  </div>
+<div class="line">Note: if yunit is passed period is in that unit, else in default value.  </div>
+</div>
+<dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “meters”, “seconds”, “raw”</li>
+<li>yunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>zunit: possible values: “coulomb”, “ampere”, “raw”</li>
+<li>pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.bunch_length">
+<code class="descname">bunch_length</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.bunch_length" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>kwargs:  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “meters”, “secons”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.csr_intensity">
+<code class="descname">csr_intensity</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.csr_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>kwargs:  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “watt”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.bunch_position">
+<code class="descname">bunch_position</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.bunch_position" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “meters”, “seconds”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.bunch_population">
+<code class="descname">bunch_population</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.bunch_population" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “meters”, “seconds”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.csr_spectrum">
+<code class="descname">csr_spectrum</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.csr_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the csr_spectrum either as line plot or as pcolormesh  </div>
+<div class="line">to plot as line pass either the period as first argument or a keyword argument period  </div>
+<div class="line">Note: if yunit is passed period is in that unit, else in default value.  </div>
+</div>
+<dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>yunit: possible values: “hertz”, “raw”</li>
+<li>zunit: possible values: “watt”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.energy_profile">
+<code class="descname">energy_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.energy_profile" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the energy_profile either as line plot or as pcolormesh  </div>
+<div class="line">to plot as line pass either the period as first argument or a keyword argument period  </div>
+</div>
+<dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “eV”, “raw”</li>
+<li>yunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>zunit: possible values: “coulomb”, “ampere”, “raw”</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.impedance">
+<code class="descname">impedance</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.impedance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot Impedance (Fixed units). Real and Imaginary Part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plots.MultiPlot">
+<em class="property">class </em><code class="descclassname">plots.</code><code class="descname">MultiPlot</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine multiple files into one plot</p>
+<dl class="method">
+<dt id="plots.MultiPlot.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Creates MultiPlot Instance  </div>
+<div class="line">No Parameters (to add files use add_file)  </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.MultiPlot.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.MultiPlot.add_file">
+<code class="descname">add_file</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot.add_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a file to this instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> – Path to the file</li>
+<li><strong>label</strong> – (optional) the label for plots with this filename</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.MultiPlot.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset this instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.MultiPlot.possible_plots">
+<code class="descname">possible_plots</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPlot.possible_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all possible plots</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plots.PhaseSpace">
+<em class="property">class </em><code class="descclassname">plots.</code><code class="descname">PhaseSpace</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot PhaseSpaces of a single Inovesa result file</p>
+<dl class="method">
+<dt id="plots.PhaseSpace.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>file</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.eax">
+<code class="descname">eax</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.eax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.xax">
+<code class="descname">xax</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.xax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.ps_data">
+<code class="descname">ps_data</code><span class="sig-paren">(</span><em>self</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.ps_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.clone" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Return a copy of this instance  </div>
+<div class="line">This effectively creates a new object with same file object  </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.plot_ps">
+<code class="descname">plot_ps</code><span class="sig-paren">(</span><em>self</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.plot_ps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the phasespace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – the index of the dataset (in timeaxis)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.center_of_mass">
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>self</em>, <em>xax</em>, <em>yax</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.phase_space_movie">
+<code class="descname">phase_space_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>fr_idx=-1</em>, <em>to_idx=-1</em>, <em>fps=20</em>, <em>plot_area_width=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.phase_space_movie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a movie of the evolving phasespace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – Path to a movie file to save to</li>
+<li><strong>fr_idx</strong> – Index in the phasespace data to start video</li>
+<li><strong>to_idx</strong> – Index in the phasespace data to stop video</li>
+<li><strong>fps</strong> – Frames per second of the output video</li>
+<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full phasespace.  
+(Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">animation object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.PhaseSpace.microstructure_movie">
+<code class="descname">microstructure_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>fr_idx=-1</em>, <em>to_idx=-1</em>, <em>mean_range=(None</em>, <em>None)</em>, <em>fps=20</em>, <em>plot_area_width=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.microstructure_movie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the difference between the mean phasespace and the current snapshot as video.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – Path to a movie file to save to</li>
+<li><strong>fr_idx</strong> – Index in the phasespace data to start video</li>
+<li><strong>to_idx</strong> – Index in the phasespace data to stop video</li>
+<li><strong>mean_range</strong> – The min index and max index to use when calculating the mean of the phasespace</li>
+<li><strong>fps</strong> – Frames per second of the output video</li>
+<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full phasespace.  
+(Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">animation object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plots.MultiPhaseSpaceMovie">
+<em class="property">class </em><code class="descclassname">plots.</code><code class="descname">MultiPhaseSpaceMovie</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPhaseSpaceMovie" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Create Phasespace of multiple Files  </div>
+<div class="line">Useful to check the phasespace over multiple currenst (spectrogram)  </div>
+</div>
+<dl class="method">
+<dt id="plots.MultiPhaseSpaceMovie.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPhaseSpaceMovie.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plots.MultiPhaseSpaceMovie.create_movie">
+<code class="descname">create_movie</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>dpi=200</em>, <em>size_inches=(5.5</em>, <em>5.5)</em>, <em>fps=30</em>, <em>autorescale=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.MultiPhaseSpaceMovie.create_movie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Movie of phasespaces</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – The filename to use for the produces video file  
+(if None, a moviepy video object will be returned)</li>
+<li><strong>dpi</strong><strong>(</strong><strong>=200</strong><strong>)</strong> – the dpi of the produces video</li>
+<li><strong>5.5</strong><strong>)</strong> (<em>size_inches</em><em>(</em><em>=5.5</em><em>,</em>) – tuple used for size in inces of the video</li>
+<li><strong>fps</strong><strong>(</strong><strong>=30</strong><strong>)</strong> – the frames per second to use</li>
+<li><strong>autorescale</strong><strong>(</strong><strong>=False</strong><strong>)</strong> – if True will autorescale each frame (will not make sense if you want to compare)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if file produced, moviepy video instance if None as filename was given</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="file.html" class="btn btn-neutral float-right" title="Inovesa Result Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="simpleusage.html" class="btn btn-neutral" title="Simple Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Patrick Schreiber.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.01',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

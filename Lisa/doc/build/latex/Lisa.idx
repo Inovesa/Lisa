@@ -1,0 +1,94 @@
+\indexentry{plots (module)|hyperpage}{4}
+\indexentry{Deprecated (class in plots)|hyperpage}{5}
+\indexentry{SimplePlotter (class in plots)|hyperpage}{5}
+\indexentry{\_\_init\_\_() (plots.SimplePlotter method)|hyperpage}{5}
+\indexentry{plot() (plots.SimplePlotter method)|hyperpage}{5}
+\indexentry{meshPlot() (plots.SimplePlotter method)|hyperpage}{6}
+\indexentry{energy\_spread() (plots.SimplePlotter method)|hyperpage}{6}
+\indexentry{bunch\_profile() (plots.SimplePlotter method)|hyperpage}{6}
+\indexentry{bunch\_length() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{csr\_intensity() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{bunch\_position() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{bunch\_population() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{csr\_spectrum() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{energy\_profile() (plots.SimplePlotter method)|hyperpage}{7}
+\indexentry{impedance() (plots.SimplePlotter method)|hyperpage}{8}
+\indexentry{MultiPlot (class in plots)|hyperpage}{8}
+\indexentry{\_\_init\_\_() (plots.MultiPlot method)|hyperpage}{8}
+\indexentry{clone() (plots.MultiPlot method)|hyperpage}{8}
+\indexentry{add\_file() (plots.MultiPlot method)|hyperpage}{8}
+\indexentry{reset() (plots.MultiPlot method)|hyperpage}{8}
+\indexentry{possible\_plots() (plots.MultiPlot method)|hyperpage}{8}
+\indexentry{PhaseSpace (class in plots)|hyperpage}{8}
+\indexentry{\_\_init\_\_() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{eax() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{xax() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{ps\_data() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{clone() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{plot\_ps() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{center\_of\_mass() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{phase\_space\_movie() (plots.PhaseSpace method)|hyperpage}{8}
+\indexentry{microstructure\_movie() (plots.PhaseSpace method)|hyperpage}{9}
+\indexentry{MultiPhaseSpaceMovie (class in plots)|hyperpage}{9}
+\indexentry{\_\_init\_\_() (plots.MultiPhaseSpaceMovie method)|hyperpage}{9}
+\indexentry{create\_movie() (plots.MultiPhaseSpaceMovie method)|hyperpage}{9}
+\indexentry{file (module)|hyperpage}{9}
+\indexentry{AttributedNPArray (class in file)|hyperpage}{10}
+\indexentry{registered() (in module file)|hyperpage}{10}
+\indexentry{AxisSelector (class in file)|hyperpage}{10}
+\indexentry{\_\_init\_\_() (file.AxisSelector method)|hyperpage}{10}
+\indexentry{all\_for() (file.AxisSelector method)|hyperpage}{10}
+\indexentry{DataError (class in file)|hyperpage}{10}
+\indexentry{DataContainer (class in file)|hyperpage}{10}
+\indexentry{\_\_init\_\_() (file.DataContainer method)|hyperpage}{10}
+\indexentry{get() (file.DataContainer method)|hyperpage}{10}
+\indexentry{File (class in file)|hyperpage}{10}
+\indexentry{\_\_init\_\_() (file.File method)|hyperpage}{11}
+\indexentry{preload\_full() (file.File method)|hyperpage}{11}
+\indexentry{File\_dep (class in file)|hyperpage}{11}
+\indexentry{\_\_init\_\_() (file.File\_dep method)|hyperpage}{11}
+\indexentry{preload\_full() (file.File\_dep method)|hyperpage}{11}
+\indexentry{energy\_spread() (file.File\_dep method)|hyperpage}{11}
+\indexentry{bunch\_length() (file.File\_dep method)|hyperpage}{11}
+\indexentry{bunch\_position() (file.File\_dep method)|hyperpage}{11}
+\indexentry{bunch\_population() (file.File\_dep method)|hyperpage}{11}
+\indexentry{bunch\_profile() (file.File\_dep method)|hyperpage}{11}
+\indexentry{csr\_intensity() (file.File\_dep method)|hyperpage}{12}
+\indexentry{csr\_spectrum() (file.File\_dep method)|hyperpage}{12}
+\indexentry{energy\_profile() (file.File\_dep method)|hyperpage}{12}
+\indexentry{impedance() (file.File\_dep method)|hyperpage}{12}
+\indexentry{particles() (file.File\_dep method)|hyperpage}{12}
+\indexentry{phase\_space() (file.File\_dep method)|hyperpage}{12}
+\indexentry{wake\_potential() (file.File\_dep method)|hyperpage}{12}
+\indexentry{parameters() (file.File\_dep method)|hyperpage}{12}
+\indexentry{MultiFile (class in file)|hyperpage}{12}
+\indexentry{\_\_init\_\_() (file.MultiFile method)|hyperpage}{12}
+\indexentry{set\_sorter() (file.MultiFile method)|hyperpage}{12}
+\indexentry{strlst() (file.MultiFile method)|hyperpage}{12}
+\indexentry{objlst() (file.MultiFile method)|hyperpage}{12}
+\indexentry{data (module)|hyperpage}{12}
+\indexentry{Data (class in data)|hyperpage}{13}
+\indexentry{\_\_init\_\_() (data.Data method)|hyperpage}{13}
+\indexentry{\_\_getattr\_\_() (data.Data method)|hyperpage}{13}
+\indexentry{config (module)|hyperpage}{13}
+\indexentry{Alias (class in config)|hyperpage}{14}
+\indexentry{StyleError (class in config)|hyperpage}{14}
+\indexentry{Style (class in config)|hyperpage}{14}
+\indexentry{apply\_to\_ax() (config.Style method)|hyperpage}{14}
+\indexentry{apply\_to\_fig() (config.Style method)|hyperpage}{14}
+\indexentry{update() (config.Style method)|hyperpage}{14}
+\indexentry{update\_style() (config.Style method)|hyperpage}{15}
+\indexentry{reapply() (config.Style method)|hyperpage}{15}
+\indexentry{selectors() (config.Style method)|hyperpage}{15}
+\indexentry{helpers (module)|hyperpage}{15}
+\indexentry{display\_video() (in module helpers)|hyperpage}{16}
+\indexentry{animation (module)|hyperpage}{16}
+\indexentry{create\_animation() (in module animation)|hyperpage}{17}
+\indexentry{data\_frame\_generator() (in module animation)|hyperpage}{17}
+\indexentry{utils (module)|hyperpage}{17}
+\indexentry{UnitError (class in utils)|hyperpage}{18}
+\indexentry{InovesaVersion (class in utils)|hyperpage}{18}
+\indexentry{attr\_from\_unit() (in module utils)|hyperpage}{18}
+\indexentry{unit\_from\_attr() (in module utils)|hyperpage}{18}
+\indexentry{unit\_from\_spec() (in module utils)|hyperpage}{19}
+\indexentry{color\_map\_inferno() (in module utils)|hyperpage}{19}
