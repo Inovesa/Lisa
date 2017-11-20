@@ -237,8 +237,8 @@ class Style(dict):
         if len(self._get_list_of_ax()) > 0:
             for a in self._get_list_of_ax():
                 self._style_plot(self, a)
-        else:
-            warn("No axes object was associated to this style. Use apply_to_ax first")
+        # else:
+        #     warn("No axes object was associated to this style. Use apply_to_ax first")
 
     def update_style(self, E):
         """

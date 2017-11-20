@@ -31,7 +31,7 @@ if config_options.get("use_cython"):
 else:
     from ..file import File, Axis
     from ..data import Data
-from .config import Style
+from .config import Style, palettes
 from ..internals import lisa_print
 from ..utils import unit_from_attr, attr_from_unit, unit_from_spec, version15_1
 
@@ -679,29 +679,44 @@ class PhaseSpace(object):
             min_px_energy = 0
             max_px_energy = self.eax().shape[0]
 
-        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[lb:ub, min_px_space:max_px_space, min_px_energy:max_px_energy]
         fig = plt.figure()
-        fig.subplots_adjust(left=0.17, bottom=0.09, right=1, top=0.96, wspace=None, hspace=None)
+        # fig.subplots_adjust(left=0.17, bottom=0.09, right=1, top=0.96, wspace=None, hspace=None)
+        fig.subplots_adjust(left=0.12, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         vmin = np.min(ps)
         vmax = np.max(ps)
         xmesh, ymesh = np.meshgrid(
-            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1],
-            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1])
+            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1]/1e-12,
+            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1]/1e6)
+
+        time_axis = self._data.phase_space(Axis.TIME, unit="ts")[lb:ub]
+
+        style = Style()
+        style.apply_to_fig(fig)
+        style.update("inverse_ggplot")
+
+        ax = fig.add_subplot(111)
+        text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes, color='white')
+        ax.set_xlabel("Position in ps")
+        ax.set_ylabel("Energy in MeV")
+        im = ax.pcolormesh(xmesh, ymesh, ps[0].T, cmap="inferno")
+        im.set_clim((vmin, vmax))
+        cax = plt.axes([0.85, 0.1, 0.03, 0.86])
+        fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
+        if path:
+            text.set_animated(True)
+            im.set_animated(True)
+        style.reapply()
 
         def do(i):
-            ax = fig.add_subplot(111)
-            ax.set_xlabel("Position in s")
-            ax.set_ylabel("Energy in eV")
-
-            im = ax.pcolormesh(xmesh, ymesh, ps[i].T, cmap="inferno")
-            fig.colorbar(im).set_label("Charge density in C/nEs/nBl")
-            im.set_clim((vmin, vmax))
+            text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
+            im.set_array(ps[i].T.flatten())
             return im,
 
         if path:
-            ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=dpi, path=path)
+            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path)
         else:
-            ani = create_animation(fig, do, range(lb, ub), clear_between=True, fps=fps, blit=False, dpi=dpi)
+            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi)
         return ani
 
     def microstructure_movie(self, path, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
@@ -743,52 +758,86 @@ class PhaseSpace(object):
         mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
         diffs = (ps[lb:ub] - mean)
         fig = plt.figure()
-        fig.subplots_adjust(left=0.17, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
+        fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
         xmesh, ymesh = np.meshgrid(
-            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1],
-            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1])
+            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1]/1e-12,
+            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1]/1e6)
 
         time_axis = self._data.phase_space(Axis.TIME, unit="ts")[lb:ub]
+
+        style = Style()
+        style.apply_to_fig(fig)
+        style.update("inverse_ggplot")
+        style["marker:size"] = 2
+        style["line:width"] = 1
+        # vline_color = palettes['tango'][1]
+        cmap = "RdBu_r"
+
+        def do_no_csr(i):
+            text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
+            im.set_array(diffs[i].T.flatten())
+            return [im]
+
+        def do_csr(i):
+            im.set_array(diffs[i].T.flatten())
+            p.vertices = np.array([[time_axis[i], csr_min], [time_axis[i], csr_max]])
+            return [im, csr_line, vline]
+
         if csr_intensity:
             csr = self._data.csr_intensity(Axis.DATA, unit="w")[lb:ub]
-            csr_min = np.min(csr)
-            csr_max= np.max(csr)
+            _csr_min = np.min(csr)
+            _csr_max= np.max(csr)
+            _csr_diff = _csr_max - _csr_min
+            csr_min = _csr_min - _csr_diff*0.05
+            csr_max = _csr_max + _csr_diff*0.05
             from matplotlib.gridspec import GridSpec
             gs = GridSpec(2, 1, height_ratios=[4, 1])
+            _cmap = matplotlib.cm.get_cmap(cmap)
+            down_color = _cmap(35)
 
-        def do(i):
-            if csr_intensity:
-                ax = fig.add_subplot(gs[0, 0])
-                # ax = fig.add_subplot(211)
-            else:
-                ax = fig.add_subplot(111)
-                ax.text(0.6, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]), transform=ax.transAxes)
-            ax.set_xlabel("Position in s")
-            ax.set_ylabel("Energy in eV")
+            ax = fig.add_subplot(gs[0, 0])
+            ax.set_xlabel("Position in ps")
+            ax.set_ylabel("Energy in MeV")
 
-            im = ax.pcolormesh(xmesh, ymesh, diffs[i].T, cmap="seismic")
+            im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
             im.set_clim((-m, m))
             cax = plt.axes([0.85, 0.1, 0.03, 0.86])
             fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
-            if csr_intensity:
-                # ax2 = fig.add_subplot(212)
-                ax2 = fig.add_subplot(gs[1, 0])
-                ax2.plot(time_axis, csr)
-                ax2.set_xlabel("Time in $T_s$")
-                ax2.set_ylabel("CSR Int. in W")
-                ax2.vlines(time_axis[i], csr_min, csr_max)
-                plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.25)
-
-                ret = [im, *ax2.lines]
-            else:
-                ret = [im]
-            return ret
+            ax2 = fig.add_subplot(gs[1, 0])
+            csr_line = ax2.plot(time_axis, csr, c=down_color)
+            ax2.set_xlabel("Time in $T_s$")
+            ax2.set_ylabel("CSR Int. in W")
+            ax2.set_ylim(csr_min, csr_max)
+            ax2.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
+            vline = ax2.vlines(time_axis[0], csr_min, csr_max, zorder=99)
+            p = vline.get_paths()[0]
+            plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.25)
+            if path:
+                im.set_animated(True)
+                vline.set_animated(True)
+                csr_line[0].set_animated(True)
+            do = do_csr
+            style.reapply()
+        else:
+            ax = fig.add_subplot(111)
+            text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes)
+            ax.set_xlabel("Position in ps")
+            ax.set_ylabel("Energy in MeV")
+            im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
+            im.set_clim((-m, m))
+            cax = plt.axes([0.85, 0.1, 0.03, 0.86])
+            fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
+            if path:
+                text.set_animated(True)
+                im.set_animated(True)
+            style.reapply()
+            do = do_no_csr
 
         if path:  # range(len(diffs)) is correct since diffs is only from lb to ub
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=dpi, path=path)
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path)
         else:
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=True, fps=fps, blit=False, dpi=dpi)
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi)
         return ani
 
 
