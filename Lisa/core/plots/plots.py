@@ -649,10 +649,10 @@ class PhaseSpace(object):
     def center_of_mass(self, xax, yax):
         return np.average(xax, weights=yax)
 
-    def phase_space_movie(self, path, fr_idx=None, to_idx=None, fps=20, plot_area_width=None, dpi=200):
+    def phase_space_movie(self, path=None, fr_idx=None, to_idx=None, fps=20, plot_area_width=None, dpi=200):
         """
         Plot a movie of the evolving phasespace
-        :param path: Path to a movie file to save to
+        :param path: Path to a movie file to save to if None: do not save, just return the animation object
         :param fr_idx: Index in the phasespace data to start video
         :param to_idx: Index in the phasespace data to stop video
         :param fps: Frames per second of the output video
@@ -719,11 +719,11 @@ class PhaseSpace(object):
             ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi)
         return ani
 
-    def microstructure_movie(self, path, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
-                             dpi=200, csr_intensity=False):
+    def microstructure_movie(self, path=None, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
+                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None):
         """
         Plot the difference between the mean phasespace and the current snapshot as video.
-        :param path: Path to a movie file to save to
+        :param path: Path to a movie file to save to if None: do not save, just return the animation object
         :param fr_idx: Index in the phasespace data to start video
         :param to_idx: Index in the phasespace data to stop video
         :param mean_range: The min index and max index to use when calculating the mean of the phasespace
@@ -732,6 +732,8 @@ class PhaseSpace(object):
                                 (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
         :param dpi: Dots per inch of output video
         :param csr_intensity: Also plot CSR intensity and marker of current position
+        :param cmap: Colormap to use
+        :param clim: Maximum in fraction of global min/max to use as colormap limits
         :return: animation object
         """
         lb = 0 if fr_idx == None else fr_idx
@@ -760,6 +762,8 @@ class PhaseSpace(object):
         fig = plt.figure()
         fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
+        if clim:
+            m = clim*m
         xmesh, ymesh = np.meshgrid(
             np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1]/1e-12,
             np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1]/1e6)
@@ -772,7 +776,6 @@ class PhaseSpace(object):
         style["marker:size"] = 2
         style["line:width"] = 1
         # vline_color = palettes['tango'][1]
-        cmap = "RdBu_r"
 
         def do_no_csr(i):
             text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
