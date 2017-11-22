@@ -720,7 +720,7 @@ class PhaseSpace(object):
         return ani
 
     def microstructure_movie(self, path=None, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
-                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None):
+                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None, **kwargs):
         """
         Plot the difference between the mean phasespace and the current snapshot as video.
         :param path: Path to a movie file to save to if None: do not save, just return the animation object
@@ -734,6 +734,7 @@ class PhaseSpace(object):
         :param csr_intensity: Also plot CSR intensity and marker of current position
         :param cmap: Colormap to use
         :param clim: Maximum in fraction of global min/max to use as colormap limits
+        :param **kwargs: Keyword arguments passed to create_animation
         :return: animation object
         """
         lb = 0 if fr_idx == None else fr_idx
@@ -838,9 +839,11 @@ class PhaseSpace(object):
             do = do_no_csr
 
         if path:  # range(len(diffs)) is correct since diffs is only from lb to ub
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path)
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi,
+                                   path=path, **kwargs)
         else:
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi)
+            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi,
+                                   **kwargs)
         return ani
 
 

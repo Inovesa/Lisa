@@ -7,7 +7,8 @@ import inspect
 import numpy as np
 import tqdm
 
-def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False, clear_between=False, save_args=None):
+def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False,
+                     clear_between=False, save_args=None, progress=True):
     """
     Create an animation.
     :param figure: The figure to use.
@@ -17,6 +18,7 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
     :param bitrate: Bitrate of video
     :param dpi: Dpi of video
     :param path: Path to save the video to. If None does not save.
+    :param progress: Show progress bar. If False do not show, if True show one, if integer use as offset for this bar
     """
     plt.ioff()
     if fps is not None:
@@ -35,7 +37,10 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
             return _frame_gen(*args, **kwargs)
         frame_generator = gen
 
-    progress = tqdm.tqdm(total=len(frames), miniters=1)
+    prog_disable = True if progress is False else False  # test with "is" to ensure it is a boolean
+    prog_offset = 0 if not isinstance(progress, int) else progress
+    prog_desc = path if path is not None else ""
+    progress = tqdm.tqdm(total=len(frames), miniters=1, disable=prog_disable, position=prog_offset, desc=prog_desc)
     def generator(*args, **kwargs):
         has_kwargs = any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
         has_clear = any(x.name == 'clear' for x in params.values())
