@@ -3,6 +3,7 @@ import numpy as np
 import h5py
 # rethink importing it
 import Lisa
+from Lisa.core.utils import DataNotInFile
 
 
 
@@ -11,8 +12,9 @@ s = Lisa.Axis
 import time
 import os.path as op
 
+import unittest
 
-class FileTest(CustomTestCase):
+class FileTest(unittest.TestCase):
     def setUp(self):
         self.file_dir_path = op.join(op.dirname(__file__), "data")
         self.specs = {
@@ -97,7 +99,7 @@ class FileTest(CustomTestCase):
         f = Lisa.File(op.join(self.file_dir_path, "v13-2.h5"))
         self.do_test(f)
         with self.subTest(msg="Raises", what="source_map"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(DataNotInFile):
                 getattr(f, "source_map")
 
     def test_parameters_version_13(self):
@@ -111,7 +113,7 @@ class FileTest(CustomTestCase):
         del self.specs["particles"]
         self.do_test(f)
         with self.subTest(msg="Raises", what="source_map"):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(DataNotInFile):
                 getattr(f, "source_map")
 
     def test_parameters_version_9(self):

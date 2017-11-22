@@ -32,6 +32,9 @@ There are 3 'public' methods that should be used.
 class UnitError(Exception):
     pass
 
+class DataNotInFile(Exception):
+    pass
+
 
 class InovesaVersion(object):
     """Object to make comparison of versions easier"""

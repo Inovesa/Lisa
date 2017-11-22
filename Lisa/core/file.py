@@ -10,7 +10,7 @@ import os
 
 
 from .utils import InovesaVersion, version14_1, version15_1, version13_0, \
-    version9_1
+    version9_1, DataNotInFile
 
 
 class FileDataRegister(object):
@@ -99,9 +99,9 @@ class AxisSelector(object):
 
     def __call__(self, axis, group):
         if group not in self._specs:
-            raise ValueError("'{gr}' is not in a valid dataset".format(gr=group))
+            raise DataNotInFile("'{gr}' is not in a valid dataset".format(gr=group))
         if axis not in self._specs[group]:
-            raise ValueError("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
+            raise DataNotInFile("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
         return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
 
 
@@ -134,7 +134,7 @@ class DataContainer(object):
         if name in self._data_dict:
             return self._data_dict[name]
         else:
-            raise ValueError("'"+name+"' not in this Container")
+            raise DataError("'"+name+"' not in this Container")
 
     def __contains__(self, item):
         return item in self._list_of_elements
@@ -266,7 +266,7 @@ class File(object):
             if what in self._met2gr.values():
                 group = what
             else:
-                raise ValueError("'{}' does not exist in file.".format(what))
+                raise DataNotInFile("'{}' does not exist in file.".format(what))
         dg = self._data.setdefault(group, {})
         # if no elements or None passed get all
         if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
@@ -305,7 +305,7 @@ class File(object):
 
     def __getattr__(self, what):
         if what not in self._met2gr and what != "parameters":
-            raise ValueError("'{}' does not exist in file.".format(what))
+            raise DataNotInFile("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
             if what == "parameters":
@@ -326,7 +326,7 @@ class File(object):
                                 data_dict[sel] = self.file.get("Info/Parameters").attrs.get(sel)
                         return DataContainer(data_dict, selectors)
                     except DataError:
-                        raise DataError("One of the parameters is not saved in hdf5 file.")
+                        raise DataNotInFile("One of the parameters is not saved in hdf5 file.")
             else:
                 return self._get_dict(what, selectors)
         return data_getter

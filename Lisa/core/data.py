@@ -14,7 +14,7 @@ if config_options.get("use_cython"):
 else:
     from .file import File
 from .internals import lisa_print
-from .utils import attr_from_unit, UnitError
+from .utils import attr_from_unit, UnitError, DataNotInFile
 import numpy as np
 
 class Data(object):
@@ -55,7 +55,7 @@ class Data(object):
             """
             return getattr(self._file, attr[:-4])
         if attr not in self._file._met2gr:
-            raise AttributeError("Data object (and File object) does not have an attribute "+attr)
+            raise DataNotInFile("Data object (and File object) does not have an attribute "+attr)
         if attr == 'parameters':
             def inner(what):
                 if what == 'all':

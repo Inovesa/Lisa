@@ -1,11 +1,12 @@
-from unittest_helpers import CustomTestCase
+# from unittest_helpers import CustomTestCase
 import os
+import unittest
 
 import Lisa
 
 s = Lisa.Axis
 
-class TestData(CustomTestCase):
+class TestData(unittest.TestCase):
     def setUp(self):
         self.file = Lisa.File(os.path.join(os.path.dirname(__file__), "data", "v15-1.h5"))
         self.data = Lisa.Data(self.file)
