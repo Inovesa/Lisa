@@ -1,5 +1,6 @@
-from unittest_helpers import CustomTestCase
+# from unittest_helpers import CustomTestCase
 import numpy as np
+from numpy.testing import assert_array_equal
 import h5py
 # rethink importing it
 import Lisa
@@ -61,19 +62,22 @@ class FileTest(unittest.TestCase):
                             self.assertEqual(getattr(obj, spec), obj[idx])
                         else:
                             self.assertListEqual(np.array(getattr(obj, spec)).tolist(), np.array(obj[idx]).tolist())
-                for spec in self.specs[par]:
+                for spec in self.specs[par]:  # test for axis and data
                     with self.subTest(msg=par, spec_type=spec):
                         obj = getattr(f, par)(spec)
-                        if spec in self._axis_datasets:
+                        if spec in self._axis_datasets:  # Check for Axis data
                             if isinstance(obj, h5py.Dataset):  # if it is a h5py dataset we can compare them directly
                                 self.assertEqual(obj, f.file.get(self._axis_datasets[spec]))
                             else:
-                                self.assertListEqual(np.array(obj).tolist(), np.array(f.file.get(self._axis_datasets[spec])).tolist())
-                        elif spec in self._data_datasets:
+                                self.assertListEqual(np.array(obj).tolist(),
+                                                     np.array(f.file.get(self._axis_datasets[spec])).tolist())
+                        elif spec in self._data_datasets:  # Check for Data data
                             if isinstance(obj, h5py.Dataset):  # if it is a h5py dataset we can compare them directly
                                 self.assertEqual(obj, f.file.get(f._met2gr[par]).get(self._data_datasets[spec]))
                             else:
-                                self.assertListEqual(np.array(obj).tolist(), np.array(f.file.get(f._met2gr[par]).get(self._data_datasets[spec])).tolist())
+                                self.assertListEqual(np.array(obj).tolist(),
+                                                     np.array(f.file.get(f._met2gr[par]).
+                                                              get(self._data_datasets[spec])).tolist())
                         else:
                             raise Exception("Error")
 
@@ -111,7 +115,37 @@ class FileTest(unittest.TestCase):
         del self.specs["bunch_population"]
         del self.specs["energy_profile"]
         del self.specs["particles"]
-        self.do_test(f)
+        for par in self.specs:
+            with self.subTest(msg=par):
+                obj = getattr(f, par)()
+                self.assertIsInstance(obj, Lisa.core.file.DataContainer)
+                self.assertEqual(len(obj), len(self.specs[par]))
+                for idx, spec in enumerate(self.specs[par]):  # test order in DataContainer
+                    with self.subTest(msg=par, spec=spec):
+                        self.assertListEqual(np.array(getattr(obj, spec)).tolist(), np.array(obj[idx]).tolist())
+                for spec in self.specs[par]:  # test for axis and data
+                    with self.subTest(msg=par, spec_type=spec):
+                        obj = getattr(f, par)(spec)
+                        if spec in self._axis_datasets:  # Check for Axis data
+                            if spec == s.TIME:
+                                assert_array_equal(np.array(obj).tolist(),
+                                                   np.array(f.file.get(self._axis_datasets[spec]))[1:].tolist())
+                            else:
+                                assert_array_equal(np.array(obj).tolist(),
+                                                   np.array(f.file.get(self._axis_datasets[spec]))[0].tolist())
+
+                        elif spec in self._data_datasets:  # Check for Data data
+                            if s.TIME in self.specs[par]:
+                                assert_array_equal(np.array(obj).tolist(),
+                                                   np.array(f.file.get(f._met2gr[par]).
+                                                            get(self._data_datasets[spec]))[1:].tolist())
+                            else:
+                                assert_array_equal(np.array(obj).tolist(),
+                                                   np.array(f.file.get(f._met2gr[par]).
+                                                            get(self._data_datasets[spec])).tolist())
+                        else:
+                            raise Exception("Error")
+
         with self.subTest(msg="Raises", what="source_map"):
             with self.assertRaises(DataNotInFile):
                 getattr(f, "source_map")
