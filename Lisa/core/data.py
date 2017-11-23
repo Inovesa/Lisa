@@ -122,7 +122,7 @@ class Data(object):
                 return coa/ev
             except KeyError as e:
                 raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
-        if unit == "cpspev" or unit == "apspev":
+        if unit == "cpspev" or unit == "apspev" or unit == "cpevps" or unit == "apevps":
             try:
                 coa = attr_from_unit(unit[0]+"pnblpnes", self.version)
                 coa = self._file.bunch_profile(Axis.DATA).attrs[coa]
@@ -146,6 +146,13 @@ class Data(object):
             raise UnitError(unit+" is not a valid unit for this data.")
 
     def unit_factor(self, data, axis, unit):
+        """
+        Get the factor to calculate values in the correct physical unit
+        :param data: The data to get the factor for (e.g. bunch_profile)
+        :param axis: The Axis object to select what axis to get the factor for
+        :param unit: The actual unit
+        :return: Factor to get the data in physical units (physical=data*factor)
+        """
         if not isinstance(unit, str):
             raise UnitError("Unit has to be string object")
         unit = unit.lower()
