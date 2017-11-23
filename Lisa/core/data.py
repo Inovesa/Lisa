@@ -78,7 +78,7 @@ class Data(object):
 
             sub_index = kwargs.get("sub_index", kwargs.get("sub_idx", None))
 
-            factor = self.conversion_factor(unit, attr, data)
+            factor = self._conversion_factor(unit, attr, data)
 
             if factor is None:
                 if sub_index is None:
@@ -94,7 +94,7 @@ class Data(object):
         inner.__name__ = attr
         return inner
 
-    def conversion_factor(self, unit, attr, data):
+    def _conversion_factor(self, unit, attr, data):
         """
         Get the conversion factor for unit for attr from data
         :param unit: The physical unit to use (lowercase!)
@@ -145,3 +145,9 @@ class Data(object):
             lisa_print("units for this data", list(attrs))
             raise UnitError(unit+" is not a valid unit for this data.")
 
+    def unit_factor(self, data, axis, unit):
+        if not isinstance(unit, str):
+            raise UnitError("Unit has to be string object")
+        unit = unit.lower()
+        data_object = getattr(self._file, data)(axis)
+        return self._conversion_factor(unit, data, data_object)
