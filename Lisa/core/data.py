@@ -135,6 +135,8 @@ class Data(object):
                 raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
 
         conversion_attribute = attr_from_unit(unit, self.version)
+        if conversion_attribute is None:
+            return None
         if attr == "impedance" and conversion_attribute not in data.attrs:
             attrs = self._file.impedance("datagroup").attrs
         else:
