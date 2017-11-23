@@ -6,7 +6,7 @@ from .internals import config_options, lisa_print
 
 if config_options.get("use_cython"):
     try:
-        from .file_cython import File
+        from .file_cython import File, Axis
     except ImportError as e:
         print(e)
         print("Fallback to python version")
@@ -125,7 +125,7 @@ class Data(object):
         if unit == "cpspev" or unit == "apspev" or unit == "cpevps" or unit == "apevps":
             try:
                 coa = attr_from_unit(unit[0]+"pnblpnes", self.version)
-                coa = self._file.bunch_profile(Axis.DATA).attrs[coa]
+                coa = self._file.phase_space(Axis.DATA).attrs[coa]
                 ev = attr_from_unit("eV", self.version)
                 ev = self._file.energy_profile(Axis.EAXIS).attrs[ev]
                 s = attr_from_unit("s", self.version)

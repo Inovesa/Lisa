@@ -41,4 +41,13 @@ class TestData(unittest.TestCase):
                             else getattr(self.file, data)('datagroup').attrs[self.units[unit]]
                         mandata = getattr(self.file, data)(axis) * factor
                         self.assertListEqual(getattr(self.data, data)(axis, unit=unit).tolist(), mandata.tolist())
-
+        for u in [("cps", 49.613132772442022), ("aps", 446518194.95197827)]:
+            with self.subTest(msg="Checking cps aps", unit=u[0]):
+                self.assertEqual(self.data.unit_factor("bunch_profile", Lisa.Axis.DATA, unit=u[0]), u[1])
+        for u in [("cpev", 5.4555373704309874e-16), ("apev", 4.9099836333878885e-09)]:
+            with self.subTest(msg="Checking cpev apev", unit=u[0]):
+                self.assertEqual(self.data.unit_factor("energy_profile", Lisa.Axis.DATA, unit=u[0]), u[1])
+        for u in [("cpevps", 8.1199889971263548e-05), ("apevps", 730.79900974137183),
+                  ("cpspev", 8.1199889971263548e-05), ("apspev", 730.79900974137183)]:
+            with self.subTest(msg="Checking cpevps apevps", unit=u[0]):
+                self.assertEqual(self.data.unit_factor("phase_space", Lisa.Axis.DATA, unit=u[0]), u[1])
