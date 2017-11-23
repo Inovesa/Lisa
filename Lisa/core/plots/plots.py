@@ -760,6 +760,10 @@ class PhaseSpace(object):
         ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
         mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
         diffs = (ps[lb:ub] - mean)
+        # fig = plt.figure(figsize=(7*(0.61/0.76 * 4/5), 7))
+        def forceAspect(ax, im, aspect=1):
+            extent = im.get_extent()
+            ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
         fig = plt.figure()
         fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
@@ -796,7 +800,7 @@ class PhaseSpace(object):
             csr_min = _csr_min - _csr_diff*0.05
             csr_max = _csr_max + _csr_diff*0.05
             from matplotlib.gridspec import GridSpec
-            gs = GridSpec(2, 1, height_ratios=[4, 1])
+            gs = GridSpec(2, 1, height_ratios=[5, 1])
             _cmap = matplotlib.cm.get_cmap(cmap)
             down_color = _cmap(35)
 
@@ -806,6 +810,8 @@ class PhaseSpace(object):
 
             im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
             im.set_clim((-m, m))
+            ax.set_aspect(np.abs(np.max(xmesh)/np.max(ymesh)))
+            fig.set_size_inches(7, 7)
             cax = plt.axes([0.85, 0.1, 0.03, 0.86])
             fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
             ax2 = fig.add_subplot(gs[1, 0])
@@ -816,7 +822,7 @@ class PhaseSpace(object):
             ax2.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
             vline = ax2.vlines(time_axis[0], csr_min, csr_max, zorder=99)
             p = vline.get_paths()[0]
-            plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.25)
+            plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.18)
             if path:
                 im.set_animated(True)
                 vline.set_animated(True)
