@@ -746,11 +746,11 @@ class PhaseSpace(object):
             mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lbm:ubm], axis=0)
             meprof = np.mean(self._file.energy_profile(Axis.DATA)[lbm:ubm], axis=0)
             com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
-            min_px_space = int(com_space-plot_area_width/2)
-            max_px_space = int(com_space+plot_area_width/2)
+            min_px_space = max(int(com_space-plot_area_width/2), 0)
+            max_px_space = min(int(com_space+plot_area_width/2), mbprof.shape[0])
             com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
-            min_px_energy = int(com_energy-plot_area_width/2)
-            max_px_energy = int(com_energy+plot_area_width/2)
+            min_px_energy = max(int(com_energy-plot_area_width/2), 0)
+            max_px_energy = min(int(com_energy+plot_area_width/2), meprof.shape[0])
         else:
             min_px_space = 0
             max_px_space = self.xax().shape[0]
