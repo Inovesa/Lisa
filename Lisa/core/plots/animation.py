@@ -38,9 +38,11 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
         frame_generator = gen
 
     prog_disable = True if progress is False else False  # test with "is" to ensure it is a boolean
-    prog_offset = 0 if not isinstance(progress, int) else progress
+    prog_offset = -1 if not isinstance(progress, int) else progress
     prog_desc = path if path is not None else ""
     progress = tqdm.tqdm(total=len(frames), miniters=1, disable=prog_disable, position=prog_offset, desc=prog_desc)
+    if not prog_disable:
+        print("\r", end="")  # remove initial print of progressbar
     def generator(*args, **kwargs):
         has_kwargs = any(x.kind == inspect.Parameter.VAR_KEYWORD for x in params.values())
         has_clear = any(x.name == 'clear' for x in params.values())
