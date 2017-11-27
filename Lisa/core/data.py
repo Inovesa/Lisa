@@ -55,7 +55,12 @@ class Data(object):
             """
             return getattr(self._file, attr[:-4])
         if attr not in self._file._met2gr:
-            raise DataNotInFile("Data object (and File object) does not have an attribute "+attr)
+            try:
+                return self.__getattribute__(attr)
+            except AttributeError:
+                if attr.startswith("__") and attr.endswith("__"):
+                    raise AttributeError("'Data' object has no attribute '"+attr+"'")
+                raise DataNotInFile("Data object (and File object) does not have an attribute "+attr)
         if attr == 'parameters':
             def inner(what):
                 if what == 'all':
@@ -104,7 +109,8 @@ class Data(object):
         """
         if unit is None:
             return None
-        if unit == "cps" or unit == "aps":
+        unit_lst = ["cps", "c/s", "aps", "a/s"]
+        if unit in unit_lst:
             try:
                 coa = attr_from_unit(unit[0]+"pnbl", self.version)
                 coa = self._file.bunch_profile(Axis.DATA).attrs[coa]
@@ -113,7 +119,8 @@ class Data(object):
                 return coa/s
             except KeyError as e:
                 raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
-        if unit == "cpev" or unit == "apev":
+        unit_lst = ["c/ev", "cpev", "a/ev", "apev"]
+        if unit in unit_lst:
             try:
                 coa = attr_from_unit(unit[0]+"pnes", self.version)
                 coa = self._file.energy_profile(Axis.DATA).attrs[coa]
@@ -122,7 +129,8 @@ class Data(object):
                 return coa/ev
             except KeyError as e:
                 raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
-        if unit == "cpspev" or unit == "apspev" or unit == "cpevps" or unit == "apevps":
+        unit_lst = ["cpspev", "c/s/ev", "apspev", "a/s/ev", "cpevps", "c/ev/s", "apevps", "a/ev/s"]
+        if unit in unit_lst:
             try:
                 coa = attr_from_unit(unit[0]+"pnblpnes", self.version)
                 coa = self._file.phase_space(Axis.DATA).attrs[coa]

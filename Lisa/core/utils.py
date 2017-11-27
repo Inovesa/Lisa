@@ -141,7 +141,7 @@ alias_map = {
     "eV": ["electron volts", "electronvolts", "electron volt", "electron volts"],
     "Ohm": ["ohms"],
     "WpHz": ["wattperhertz"],
-    "V": ["volt"]
+    "V": ["volt"],
 }
 # inverse_alias_map = {va: k for va in (v for k, v in alias_map.items())}
 inverse_alias_map = {}
@@ -149,6 +149,12 @@ for k, v in alias_map.items():
     for va in v:
         inverse_alias_map[va.lower()] = k
 inverse_alias_map.update({k.lower():k for k in alias_map.keys()})  # also add the unit it self as alias
+cpsetc = {"cps": "C/s", "aps": "A/s", "cpev": "C/eV", "apev": "A/eV",   # add cps etc for unit look up
+          "cpspev": "C/s/eV", "cpevps": "C/eV/s", "apspev": "A/s/eV", "apevps": "A/eV/s"}
+inverse_alias_map.update(cpsetc)
+inverse_alias_map.update({v.lower():v for k, v in cpsetc.items()})
+# NOTE: cps etc is not handled here but in Data directly as it consists of a calculation other than just reading the
+#       factor from the file
 
 
 def _build_complete_unit_map(version):
