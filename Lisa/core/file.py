@@ -245,8 +245,10 @@ class File(object):
         if self.version == version9_1:
             self._met2gr.update({"csr_intensity": "CSRPower"})
             self._met2gr.update({"csr_spectrum": "CSRSpectrum"})
+            self._met2gr.update({"bunch_population": "BunchCurrent"})
             del self._met2gr["particles"]
             del self._met2gr["parameters"]
+            del self._met2gr["energy_profile"]
 
     def _read_from_cfg(self, what):
         try:
