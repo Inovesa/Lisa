@@ -297,15 +297,22 @@ class File(object):
         try:
             h5data = getattr(self, what)(axis)
             tmp = [np.zeros(i.shape, dtype=i.dtype) for _, i in h5data]
-            sdata = [i.read_direct(tmp[idx]) for idx, (_, i) in enumerate(h5data)]
-            sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name) for idx, (name, i) in enumerate(h5data)}
-            self._data[self._met2gr[what]].update(sdata)
+            for idx, (name, i) in enumerate(h5data):
+                if isinstance(i, h5.Dataset):
+                    i.read_direct(tmp[idx])
+                    sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name)}
+                    self._data[self._met2gr[what]].update(sdata)
         except:
             print("Error preloading data")
 
     def __getattr__(self, what):
         if what not in self._met2gr and what != "parameters":
-            raise DataNotInFile("'{}' does not exist in file.".format(what))
+            try:
+                return self.__getattribute__(what)
+            except AttributeError:
+                if what.startswith("__") and what.endswith("__"):
+                    raise AttributeError("'Data' object has no attribute '"+what+"'")
+                raise DataNotInFile("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
             if what == "parameters":
