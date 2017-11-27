@@ -123,7 +123,7 @@ styles = {
         'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out'
     }
 }
-styles["inverse_ggplot-dotted-tango"] = styles["inverse_ggplot-dotted"]
+styles["inverse_ggplot-dotted-tango"] = dict(**styles["inverse_ggplot-dotted"])
 styles["inverse_ggplot-dotted-tango"].update({"line:color": "palette:tango"})
 
 class Palette(object):
