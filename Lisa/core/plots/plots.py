@@ -69,6 +69,45 @@ class SimplePlotter(object):
     | It takes a Filename to the Constructor.
     | Each actual plotting function is decorated using plot or meshPlot. See those for additional parameters to each plot function.
     """
+    def __new__(cls, *args, **kwargs):
+        # Add video method
+        obj = super(SimplePlotter, cls).__new__(cls)
+        for func in dir(obj):
+            if func.startswith("_"):
+                continue
+            meshfunc = getattr(obj, func)
+            if not hasattr(meshfunc, "mesh"):
+                continue
+            @cls.video
+            def gen_video(self, meshfunc=None, fig=None, ax=None, how_much=None, nice=False, **kwargs):
+                self._file.preload_full(meshfunc.__name__)
+                data_func = getattr(self._data, meshfunc.__name__)
+                y = data_func(Axis.TIME, unit=None)  # time
+                fig.set_size_inches(6.5, 6.5)
+                if not "zunit" in kwargs:
+                    print("Cannot set min/max if not explicitly set zunit")
+                    mi = None
+                    ma = None
+                else:
+                    mi = np.min(data_func(Axis.DATA, unit='cps'))
+                    ma = np.max(data_func(Axis.DATA, unit='cps'))
+                number = y.shape[0]
+                how_much = how_much if how_much is not None else number
+                frames = np.arange(number-how_much, number)
+
+                def up(i):
+                    x = meshfunc(i, use_index=True, fig=fig, zunit='cps',
+                                 label="SyncPeriod: {:0<4}".format(str(y[i]))).axes[0]
+                    if mi is not None:
+                        x.set_ylim(mi-ma*0.01, ma*1.05)
+                    if nice:
+                        fig.current_style.update("inverse_ggplot-dotted")
+                    return x.lines
+                return fig, up, frames
+            setattr(obj, meshfunc.__name__+"_video",
+                    lambda meshfunc=meshfunc, *args, **kwargs: gen_video(obj, meshfunc=meshfunc, **kwargs))
+        return obj
+
     def __init__(self, filef, unit_connector='in'):
         """
         Initialise a Simple Plotter instance
@@ -201,6 +240,8 @@ class SimplePlotter(object):
         :param mean_range: (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)
         """
         _simple_plotter_plot_methods.append(func.__name__)
+
+
         def decorated(*args, **kwargs):
             period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
             if period is not None:
@@ -282,6 +323,7 @@ class SimplePlotter(object):
         decorated.__doc__ = "This method is decorated. See SimplePlotter.plot for additional parameters"
         if func.__doc__ is not None:
             decorated.__doc__ += "\nSpecial Options for this plot:"+textwrap.dedent(func.__doc__)
+        decorated.mesh = True
         return decorated
 
     def _select_label(self, kwargs, key, values, label, unit_for_label):
@@ -345,8 +387,9 @@ class SimplePlotter(object):
     def _unit_and_label(self, kwargs, idx, axis, data, default, label, gen_sub=False):
         if gen_sub:
             d = getattr(self._data, data+"_raw")(idx)
-            unit = unit_from_spec(kwargs.get(axis+"unit", default))
-            d.unit_function = lambda idx, _data=data, _idx=idx, _unit=unit: getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
+            data_unit=kwargs.get(axis+"unit", default)
+            d.unit_function = lambda idx, _data=data, _idx=idx, _unit=data_unit: \
+                                     getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
         else:
             d = getattr(self._data, data)(idx, unit=kwargs.get(axis+"unit", default))
         lab = label + " in " + unit_from_spec(kwargs.get(axis+"unit", default))
@@ -518,6 +561,24 @@ class SimplePlotter(object):
         else:
             ilab = None
         return imag(fig=fig, label=ilab, **kwargs)
+
+    def video(func):
+        def wrapped(self, **kwargs):
+            """
+            Create a video
+            :param kwargs: passed to wrapped function except for "outpath"
+            :return:
+            """
+            fig, ax = plt.subplots()
+            kwargs.setdefault('fig', fig)
+            kwargs.setdefault('ax', ax)
+            outpath = kwargs.pop("outpath", None)
+            fig, update_func, frames = func(self, **kwargs)
+            fig.tight_layout()
+            ani = create_animation(fig, update_func, frames, clear_between=True, fps=kwargs.get("fps", 20),
+                                   blit=False, path=outpath, dpi=kwargs.get("dpi", 200))
+            return ani
+        return wrapped
 
 
 class MultiPlot(object):
