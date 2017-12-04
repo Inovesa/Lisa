@@ -111,36 +111,49 @@ class Data(object):
             return None
         unit_lst = ["cps", "c/s", "aps", "a/s"]
         if unit in unit_lst:
+            if Axis.EAXIS in self._file.select_axis.all_for(attr):
+                raise UnitError("Illegal conversion")
             try:
                 coa = attr_from_unit(unit[0]+"pnbl", self.version)
-                coa = self._file.bunch_profile(Axis.DATA).attrs[coa]
+                coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 s = attr_from_unit("s", self.version)
-                s = self._file.bunch_profile(Axis.XAXIS).attrs[s]
+                s = getattr(self._file, attr)(Axis.XAXIS).attrs[s]
                 return coa/s
-            except KeyError as e:
-                raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+            except (KeyError, DataNotInFile) as e:
+                if isinstance(e, KeyError):
+                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                else:
+                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
         unit_lst = ["c/ev", "cpev", "a/ev", "apev"]
         if unit in unit_lst:
+            if Axis.XAXIS in self._file.select_axis.all_for(attr):
+                raise UnitError("Illegal conversion")
             try:
                 coa = attr_from_unit(unit[0]+"pnes", self.version)
-                coa = self._file.energy_profile(Axis.DATA).attrs[coa]
+                coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 ev = attr_from_unit("eV", self.version)
-                ev = self._file.energy_profile(Axis.EAXIS).attrs[ev]
+                ev = getattr(self._file, attr)(Axis.EAXIS).attrs[ev]
                 return coa/ev
-            except KeyError as e:
-                raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+            except (KeyError, DataNotInFile) as e:
+                if isinstance(e, KeyError):
+                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                else:
+                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
         unit_lst = ["cpspev", "c/s/ev", "apspev", "a/s/ev", "cpevps", "c/ev/s", "apevps", "a/ev/s"]
         if unit in unit_lst:
             try:
                 coa = attr_from_unit(unit[0]+"pnblpnes", self.version)
-                coa = self._file.phase_space(Axis.DATA).attrs[coa]
+                coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 ev = attr_from_unit("eV", self.version)
-                ev = self._file.energy_profile(Axis.EAXIS).attrs[ev]
+                ev = getattr(self._file, attr)(Axis.EAXIS).attrs[ev]
                 s = attr_from_unit("s", self.version)
-                s = self._file.bunch_profile(Axis.XAXIS).attrs[s]
+                s = getattr(self._file, attr)(Axis.XAXIS).attrs[s]
                 return coa/ev/s
-            except KeyError as e:
-                raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+            except (KeyError, DataNotInFile) as e:
+                if isinstance(e, KeyError):
+                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                else:
+                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
 
         conversion_attribute = attr_from_unit(unit, self.version)
         if conversion_attribute is None:
