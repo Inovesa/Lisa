@@ -2,7 +2,7 @@
 :Author: Patrick Schreiber
 """
 
-from .internals import config_options, lisa_print
+from ..internals import config_options
 
 if config_options.get("use_cython"):
     try:
@@ -13,7 +13,7 @@ if config_options.get("use_cython"):
         from .file import File, Axis
 else:
     from .file import File, Axis
-from .internals import lisa_print
+from ..internals import lisa_print
 from .utils import attr_from_unit, UnitError, DataNotInFile
 import numpy as np
 

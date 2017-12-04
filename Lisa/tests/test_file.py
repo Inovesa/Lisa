@@ -1,16 +1,14 @@
 # from unittest_helpers import CustomTestCase
+import h5py
 import numpy as np
 from numpy.testing import assert_array_equal
-import h5py
+
 # rethink importing it
 import Lisa
-from Lisa.core.utils import DataNotInFile
-
-
+from Lisa.data.utils import DataNotInFile
 
 s = Lisa.Axis
 
-import time
 import os.path as op
 
 import unittest
@@ -52,7 +50,7 @@ class FileTest(unittest.TestCase):
         for par in self.specs:
             with self.subTest(msg=par):
                 obj = getattr(f, par)()
-                self.assertIsInstance(obj, Lisa.core.file.DataContainer)
+                self.assertIsInstance(obj, Lisa.data.DataContainer)
                 self.assertEqual(len(obj), len(self.specs[par]))
                 for idx, spec in enumerate(self.specs[par]):
                     with self.subTest(msg=par, spec=spec):
@@ -118,7 +116,7 @@ class FileTest(unittest.TestCase):
         for par in self.specs:
             with self.subTest(msg=par):
                 obj = getattr(f, par)()
-                self.assertIsInstance(obj, Lisa.core.file.DataContainer)
+                self.assertIsInstance(obj, Lisa.data.DataContainer)
                 self.assertEqual(len(obj), len(self.specs[par]))
                 for idx, spec in enumerate(self.specs[par]):  # test order in DataContainer
                     with self.subTest(msg=par, spec=spec):

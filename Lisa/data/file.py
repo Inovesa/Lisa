@@ -3,13 +3,12 @@
 :Author: Patrick Schreiber
 """
 
-import h5py as h5
 import glob
+
+import h5py as h5
 import numpy as np
-import os
 
-
-from .utils import InovesaVersion, version14_1, version15_1, version13_0, \
+from .utils import InovesaVersion, version13_0, \
     version9_1, DataNotInFile
 
 

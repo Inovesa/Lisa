@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess
 
-VERSION=open("Lisa/VERSION", 'r').read().strip()
+VERSION=open("Lisa/VERSION", 'r').readline().strip()
 
 requires = [
         'cython',
@@ -36,7 +36,7 @@ setup(
     author="Patrick Schreiber",
     author_email="patrick.schreiber2@student.kit.edu",
     packages=find_packages(),
-    ext_modules=do_cythonize(["Lisa/core/file.py", "Lisa/core/data.py", "Lisa/core/plots/plots.py"]),
+    ext_modules=do_cythonize(["Lisa/file.py", "Lisa/data.py", "Lisa/plots/plots.py"]),
     install_requires=requires,
     extras_require={"test": requires},
     include_package_data=True

@@ -6,7 +6,6 @@ from __future__ import print_function
 """
 
 import matplotlib.pyplot as plt
-import matplotlib.animation as anim
 import matplotlib
 
 import numpy as np
@@ -26,14 +25,14 @@ if config_options.get("use_cython"):
     except ImportError as e:
         print(e)
         print("Fallback to python version")
-        from ..file import File, Axis
+        from ..data import File, Axis
         from ..data import Data
 else:
-    from ..file import File, Axis
+    from ..data import File, Axis
     from ..data import Data
-from .config import Style, palettes
+from .config import Style
 from ..internals import lisa_print
-from ..utils import unit_from_attr, attr_from_unit, unit_from_spec, version15_1
+from ..data.utils import unit_from_spec, version15_1, attr_from_unit
 
 colors = [(0, 0, 1, 1), (0.8, 0.4, 0, 0.6), (1, 0, 1, 0.6), (0, 1, 1, 0.6), (1, 0, 0, 0.6),
           (0, 1, 0, 0.4)]
@@ -528,7 +527,6 @@ class SimplePlotter(object):
         Plot Impedance (Fixed units). Real and Imaginary Part
         """
         warn("Unit of x-Axis may not be correct")
-        from ..utils import attr_from_unit
         f4h = self._file.impedance(Axis.FAXIS).attrs[attr_from_unit("hz", self._file.version)]
         f4o = self._file.impedance("datagroup").attrs[attr_from_unit("ohm", self._file.version)]
         if f4h == 0:
