@@ -10,12 +10,13 @@ if config_options.get("use_cython"):
         from .data import Data
 
     try:
-        from .file_cython import Axis, File, MultiFile, DataError, DataContainer
+        from .file_cython import Axis, File, MultiFile, DataError, DataContainer, DataNotInFile
         from ..data import file_cython as files
         _check_compiled_version(files)
     except ImportError as e:
         print(e)
         print("Fallback to python version")
-        from .file import Axis, File, MultiFile, DataError, DataContainer
+        from .file import Axis, File, MultiFile, DataError, DataContainer, DataNotInFile
 else:
-    from .file import Axis, File, MultiFile, DataError, Datacontainer
+    from .data import Data
+    from .file import Axis, File, MultiFile, DataError, Datacontainer, DataNotInFile

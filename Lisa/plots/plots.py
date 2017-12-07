@@ -20,8 +20,7 @@ from .animation import create_animation
 
 if config_options.get("use_cython"):
     try:
-        from ..file_cython import File, Axis
-        from ..data_cython import Data
+        from ..data import File, Axis, Data
     except ImportError as e:
         print(e)
         print("Fallback to python version")
