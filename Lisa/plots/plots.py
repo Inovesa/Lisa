@@ -241,7 +241,7 @@ class SimplePlotter(object):
 
 
         def decorated(*args, **kwargs):
-            period, x, y, z, xlabel, ylabel, zlabel = func(*args, **kwargs)
+            period, x, y, z, xlabel, ylabel, zlabel, time_prefix = func(*args, **kwargs)
             if period is not None:
                 print_interpol = False
                 if kwargs.get("use_index", False):
@@ -252,7 +252,7 @@ class SimplePlotter(object):
                         print_interpol = True
                     if period < 0:
                         period = np.max(y)+period
-                    idx = np.argmin(np.abs(np.array(y)-period))
+                    idx = np.argmin(np.abs(np.array(y)-period*1/time_prefix[1]))
                 args[0]._last_interpol_idx = idx
                 # if period not in y and not kwargs.get("use_index", False):
                 if print_interpol:
@@ -386,12 +386,36 @@ class SimplePlotter(object):
         if gen_sub:
             d = getattr(self._data, data+"_raw")(idx)
             data_unit=kwargs.get(axis+"unit", default)
-            d.unit_function = lambda idx, _data=data, _idx=idx, _unit=data_unit: \
-                                     getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
+            if idx in [Axis.DATA, Axis.XDATA, Axis.YDATA, Axis.IMAG, Axis.REAL]:
+                tmp_d = getattr(self._data, data)(idx, unit=data_unit, sub_idx=0)
+            else:
+                tmp_d = getattr(self._data, data)(idx, unit=data_unit)
+            prefix = self._get_metric_prefix(tmp_d)
+            del tmp_d
+            def unit_function(idx, _data=data, _idx=idx, _unit=data_unit):
+                d = getattr(self._data, _data)(_idx, unit=_unit, sub_idx=idx)
+                d *= 1/prefix[1]
+                return d
+            d.unit_function = unit_function
         else:
             d = getattr(self._data, data)(idx, unit=kwargs.get(axis+"unit", default))
-        lab = label + " in " + unit_from_spec(kwargs.get(axis+"unit", default))
-        return d, lab
+            prefix = self._get_metric_prefix(d)
+            d *= 1/prefix[1]
+        lab = label + " in " + prefix[0]+unit_from_spec(kwargs.get(axis+"unit", default))
+        return d, lab, prefix
+
+    def _get_metric_prefix(self, data):
+        metric_prefixes = [("T", 1e12), ("G", 1e9), ("M", 1e6), ("k", 1e3), ("", 1), ("m", 1e-3), ("$\mu$", 1e-6),
+                           ("n", 1e-9), ("p", 1e-12), ("f", 1e-15)]
+        mi = np.min(data)
+        mi = 0 if mi < 0 else mi
+        ma = np.max(data)
+        # mean = np.mean(data)
+        mean = (mi+ma)/2
+        for prefix in metric_prefixes:  # start with small values
+            if prefix[1] < mean:  # as soon as the smalles prefix is bigger than mean use this
+                return prefix
+        return metric_prefixes[0]  # at least return the biggest
 
     @plot
     def energy_spread(self, **kwargs):
@@ -400,8 +424,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "eV", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'energy_spread', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'energy_spread', 'eV', "Energy Spread")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.TIME, 'x', 'energy_spread', 'ts', "T")
+        y, ylabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'y', 'energy_spread', 'eV', "Energy Spread")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -418,16 +442,16 @@ class SimplePlotter(object):
           * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 'm', "x")
-        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'bunch_profile', 'ts', "T")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 'm', "x")
+        y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'bunch_profile', 'ts', "T")
         dataunit = "c" if self._file.version < version15_1 else "cpnbl"
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population")
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population", gen_sub=True)
-        return period, x, y, z, xlabel, ylabel, zlabel
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population", gen_sub=True)
+        return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
 
     @plot
@@ -437,8 +461,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "secons", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_length', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_length', 'm', "Bunch Length")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_length', 'ts', "T")
+        y, ylabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_length', 'm', "Bunch Length")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -448,8 +472,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "watt", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'csr_intensity', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'csr_intensity', 'W', "CSR Intensity")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.TIME, 'x', 'csr_intensity', 'ts', "T")
+        y, ylabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'y', 'csr_intensity', 'W', "CSR Intensity")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -459,8 +483,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_position', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_position', 'm', "Bunch Position")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_position', 'ts', "T")
+        y, ylabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_position', 'm', "Bunch Position")
         return (x, y, xlabel, ylabel)
 
     @plot
@@ -470,8 +494,8 @@ class SimplePlotter(object):
           * xunit: possible values: "ts", "seconds", "raw"
           * yunit: possible values: "meters", "seconds", "raw"
         """
-        x, xlabel = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_population', 'ts', "T")
-        y, ylabel = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_population', 'c', "Bunch Population")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.TIME, 'x', 'bunch_population', 'ts', "T")
+        y, ylabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'y', 'bunch_population', 'c', "Bunch Population")
         return (x, y, xlabel, ylabel)
 
     @meshPlot
@@ -488,15 +512,15 @@ class SimplePlotter(object):
         """
         # NOTE: This does not seem to work
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, Axis.FAXIS, 'x', 'csr_spectrum', 'Hz', "Frequency")
-        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'csr_spectrum', 'ts', "T")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.FAXIS, 'x', 'csr_spectrum', 'Hz', "Frequency")
+        y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'csr_spectrum', 'ts', "T")
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power")
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power", gen_sub=True)
-        return period, x, y, z, xlabel, ylabel, zlabel
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'csr_spectrum', 'wphz', "Power", gen_sub=True)
+        return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
     @meshPlot
     def energy_profile(self, *args, **kwargs):
@@ -510,16 +534,16 @@ class SimplePlotter(object):
           * zunit: possible values: "coulomb", "ampere", "raw"
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy")
-        y, ylabel = self._unit_and_label(kwargs, Axis.TIME, 'y', 'energy_profile', 'ts', "T")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy")
+        y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'energy_profile', 'ts', "T")
         dataunit = "c" if self._file.version < version15_1 else "cpnes"
         if period is None:  # if no period provided
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population")
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population", gen_sub=True)
-        return period, x, y, z, xlabel, ylabel, zlabel
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'energy_profile', dataunit, "Population", gen_sub=True)
+        return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
     def impedance(self, *args, **kwargs):
         """
@@ -778,7 +802,7 @@ class PhaseSpace(object):
         return ani
 
     def microstructure_movie(self, path=None, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
-                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None, **kwargs):
+                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None, extract_slice=None, **kwargs):
         """
         Plot the difference between the mean phasespace and the current snapshot as video.
         :param path: Path to a movie file to save to if None: do not save, just return the animation object
@@ -792,6 +816,9 @@ class PhaseSpace(object):
         :param csr_intensity: Also plot CSR intensity and marker of current position
         :param cmap: Colormap to use
         :param clim: Maximum in fraction of global min/max to use as colormap limits
+        :param extract_slice: Extract a slice and do no movie, just return the plot. This is a string in format
+                              idx:int for an actual slice or ts:float for a specific synchrotron period (or the nearest value).
+                              Or it is an integer for a slice index (same as idx:int)
         :param **kwargs: Keyword arguments passed to create_animation
         :return: animation object
         """
@@ -819,9 +846,10 @@ class PhaseSpace(object):
         mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
         diffs = (ps[lb:ub] - mean)
         # fig = plt.figure(figsize=(7*(0.61/0.76 * 4/5), 7))
-        def forceAspect(ax, im, aspect=1):
-            extent = im.get_extent()
-            ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
+        def forceAspect(ax, aspect=1):
+            # extent = im.get_extent()
+            # ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
+            ax.set_aspect(np.abs((ax.get_xlim()[1]-ax.get_xlim()[0])/(ax.get_ylim()[1]-ax.get_ylim()[0]))/aspect)
         fig = plt.figure()
         fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
@@ -846,6 +874,7 @@ class PhaseSpace(object):
             return [im]
 
         def do_csr(i):
+            text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
             im.set_array(diffs[i].T.flatten())
             p.vertices = np.array([[time_axis[i], csr_min], [time_axis[i], csr_max]])
             return [im, csr_line, vline]
@@ -868,7 +897,7 @@ class PhaseSpace(object):
 
             im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
             im.set_clim((-m, m))
-            ax.set_aspect(np.abs(np.max(xmesh)/np.max(ymesh)))
+            forceAspect(ax)
             fig.set_size_inches(7, 7)
             cax = plt.axes([0.85, 0.1, 0.03, 0.86])
             fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
@@ -881,7 +910,9 @@ class PhaseSpace(object):
             vline = ax2.vlines(time_axis[0], csr_min, csr_max, zorder=99)
             p = vline.get_paths()[0]
             plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.18)
+            text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes)
             if path:
+                text.set_animated(True)
                 im.set_animated(True)
                 vline.set_animated(True)
                 csr_line[0].set_animated(True)
@@ -902,7 +933,19 @@ class PhaseSpace(object):
             style.reapply()
             do = do_no_csr
 
-        if path:  # range(len(diffs)) is correct since diffs is only from lb to ub
+        if extract_slice:
+            if isinstance(extract_slice, str):
+                if extract_slice.startswith("idx:"):
+                    id = range(len(diffs))[int(extract_slice[4:])]
+                elif extract_slice.startswith("ts:"):
+                    id = np.argmin(np.abs(time_axis - float(extract_slice[3:])))
+                else:
+                    raise ValueError("extract_slice in wrong format")
+            else:
+                id = int(extract_slice)
+            do(id)
+            return fig
+        elif path:  # range(len(diffs)) is correct since diffs is only from lb to ub
             ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi,
                                    path=path, **kwargs)
         else:
