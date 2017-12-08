@@ -5,13 +5,14 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from warnings import warn
+import numpy as np
 
 selectors = {'spine': [['top', 'bottom', 'right', 'left'], ['color']],
              'figure': [[], ['size']],
              'label': [['x', 'y'], ['color', 'fontsize', 'fontfamily']],
              'ticklabels': [['x', 'y'], ['color', 'fontsize', 'fontfamily']],
              'ticks': [['x', 'y'], ['color', 'below', 'direction']],
-             'grid': [[], ['color', 'linewidth', 'dashes', 'linestyle', 'visible', 'style']],
+             'grid': [[], ['color', 'alpha', 'linewidth', 'dashes', 'linestyle', 'visible', 'style']],
              'face': [[], ['color']],
              'legend': [[], ['fontfamily', 'fontsize', 'color']],
              'marker': [[], ['type', 'edgecolor', 'facecolor', 'size']],
@@ -30,15 +31,120 @@ class Alias:
     def __call__(self, axes, what, value):
         methods[self.sel][self.attr](axes, what, value)
 
-def update_line_color(ax, w, v):
-    colors = {}
-    for i in ax.lines:
-        colors[i.get_c()] = v.next()  # map from old to new color for legend update
-        i.set_color(colors[i.get_c()])
+class _color():
+    def __init__(self):
+        self.hex_dict = {}
+        self.mpl_colors = dict(mpl.colors.BASE_COLORS, **mpl.colors.CSS4_COLORS)
+
+    # def _to_hex_tup(self, color, alpha):
+    #     if isinstance(color, str):
+    #         if color.startswith("#"):
+    #             return color, alpha
+    #         else:
+    #             return self.mpl_colors[color], alpha
+    #     if isinstance(color, tuple):
+    #         if len(color) == 4:
+                # override alpha parameter as it is already in the color
+                # return '#%02x%02x%02x' % tuple(map(lambda x: int(round(x, 0)), [i*255 for i in color[:-1]])), color[3]
+            # else:
+            #     return '#%02x%02x%02x' % tuple(map(lambda x: int(round(x, 0)), [i*255 for i in color])), alpha
+
+    def _to_alpha_tup(self, color, alpha):
+        alpha = 1 if alpha is None else alpha
+        if isinstance(color, str):
+            if color.startswith("#"):
+                color = color[1:]
+            else:
+                color = self.mpl_colors[color]
+                if isinstance(color, tuple):
+                    return (*color, alpha)
+                color = color[1:]
+            return (*list(map(lambda x: int(x, base=16)/255, [color[0:2], color[2:4], color[4:6]])), alpha)
+        if isinstance(color, tuple):
+            if len(color) == 4:
+                return color
+            else:
+                return color+(alpha,)
+
+    def _color_and_alpha(self, color):
+        if isinstance(color, tuple):
+            if len(color) == 2:
+                if isinstance(color[0], tuple) and len(color[0]) == 4:
+                    return color[0][:-1], color[0][-1]
+                else:
+                    a = color[1] if color[1] is not None else 1
+                    return color[0], a
+            if len(color) == 4:
+                return color[:-1], color[-1]
+        else:
+            return color, 1
+
+    def __setitem__(self, color, value):
+        color, alpha = self._color_and_alpha(color)
+        self.hex_dict[(color, alpha)] = self._to_alpha_tup(value, alpha)
+
+    def __getitem__(self, color):
+        color, alpha = self._color_and_alpha(color)
+        return self.hex_dict[(color, alpha)]
+
+
+def update_line_color(ax, w, v):  # be careful if alpha is set and setting color with alpha could lead to problems
+    colors = _color()
+    delayed_objects = []
+    objects = {}
+    def get_alpha_col_tup(do):
+        alpha = do.get_alpha()
+        alpha = 1 if alpha is None else alpha
+        if isinstance(do, mpl.collections.PolyCollection):
+            if do.get_hatch():
+                return None, None
+            col = do.get_facecolor()
+            if isinstance(col, np.ndarray):
+                if col.shape[0] != 1:
+                    return None, None
+                col = tuple(*do.get_facecolor())
+        elif isinstance(do, mpl.patches.Rectangle):
+            col = do.get_fc()
+        else:
+            col = do.get_c()
+        if isinstance(col, tuple):
+            if len(col) == 3:
+                col += (alpha, )
+        if isinstance(col, str):
+            col = colors._to_alpha_tup(col, alpha)
+        return col, col[-1]
+    objs = ax.lines[:]
+    objs.extend(ax.collections)
+    for i in objs:
+        if isinstance(i, mpl.collections.QuadMesh) or isinstance(i, mpl.collections.LineCollection)\
+                or isinstance(i, mpl.spines.Spine):
+            continue
+        col, alpha = get_alpha_col_tup(i)
+        if col is None:  # do not handle those
+            continue
+        if hasattr(i, "same_as"):
+            delayed_objects.append(i)
+            continue
+        if not hasattr(i, "force_color"):
+            colors[(col, alpha)] = v.next()  # map from old to new color for legend update
+            new_col = colors[(col, alpha)]
+            i.set_c(new_col)
+
+    for do in delayed_objects:
+        col, alpha = get_alpha_col_tup(do)
+        new_col = list(do.same_as.get_c())
+        new_col[-1] = col[-1]
+        new_col = tuple(new_col)
+        do.set_color(new_col)
+        colors[(col, alpha)] = new_col
     legend = ax.legend_
     if legend is not None:
         for line in legend.get_lines():
-            line.set_color(colors[line.get_c()])
+            c, a = get_alpha_col_tup(line)
+            line.set_color(colors[(c, a)])
+        for rect in legend.get_patches():
+            c, a = get_alpha_col_tup(rect)
+            rect.set_fc(colors[(c, a)])
 
 methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
            'ticklabels': {'color': lambda ax, w, v: [i.set_color(v) for i in getattr(ax, ''.join(['get_', w, 'ticklabels']))()],
@@ -51,6 +157,7 @@ methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
                      'below': lambda ax, w, v: ax.set_axisbelow(v),
                      'direction': lambda ax, w, v: [i._apply_params(tickdir=v) for i in getattr(ax, ''.join(['get_', w, 'axis']))().get_major_ticks() + getattr(ax, ''.join(['get_', w, 'axis']))().get_major_ticks()]},
            'grid': {'color': lambda ax, w, v: ax.grid(color=v),
+                    'alpha': lambda ax, w, v: ax.grid(alpha=v),
                     'linewidth': lambda ax, w, v: ax.grid(linewidth=v),
                     'dashes': lambda ax, w, v: ax.grid(dashes=v),
                     'linestyle': lambda ax, w, v: ax.grid(linestyle=v),
@@ -112,6 +219,12 @@ styles = {
         'spine:top:color': 'white', 'spine:right:color': 'white', 'spine:bottom:color': 'black',
         'spine:left:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out',
         'marker:type': '.', 'line:style': ''
+    },
+    'bordered': {
+        'face:color': 'white', 'grid:visible': True, 'grid:color': '#A1A1A1', 'grid:style': (0.4, (1, 4)),
+        'grid:alpha': 1, 'label:color': 'black',
+        'spine:color': 'black', 'ticklabels:color': 'black', 'ticks:color': 'black', 'ticks:direction': 'out',
+        "line:color": "palette:tango"
     },
     'inverse_ggplot-dotted': {
         'face:color': '#F1F1F1', 'grid:color': '#C3C3C3', 'grid:linestyle': (0.5, (1, 4)), 'grid:linewidth': 0.8,
@@ -196,7 +309,7 @@ class Style(dict):
             self.apply_to_ax(f.axes)
             f.current_style = self
         self.fig.extend(fig)
-        self.reapply()
+        # self.reapply()
 
     def _get_list_of_ax(self):
         l = []
