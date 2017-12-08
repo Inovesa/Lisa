@@ -19,4 +19,4 @@ if config_options.get("use_cython"):
         from .file import Axis, File, MultiFile, DataError, DataContainer, DataNotInFile
 else:
     from .data import Data
-    from .file import Axis, File, MultiFile, DataError, Datacontainer, DataNotInFile
+    from .file import Axis, File, MultiFile, DataError, DataContainer, DataNotInFile
