@@ -665,6 +665,7 @@ class MultiPlot(object):
         else:
             raise Exception("MultiPlot does not have attribute " + attr)
 
+
 class PhaseSpace(object):
     """
     Plot PhaseSpaces of a single Inovesa result file
@@ -831,11 +832,11 @@ class PhaseSpace(object):
             mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lbm:ubm], axis=0)
             meprof = np.mean(self._file.energy_profile(Axis.DATA)[lbm:ubm], axis=0)
             com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
-            min_px_space = max(int(com_space-plot_area_width/2), 0)
-            max_px_space = min(int(com_space+plot_area_width/2), mbprof.shape[0])
+            min_px_space = max(int(com_space - plot_area_width / 2), 0)
+            max_px_space = min(int(com_space + plot_area_width / 2), mbprof.shape[0])
             com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
-            min_px_energy = max(int(com_energy-plot_area_width/2), 0)
-            max_px_energy = min(int(com_energy+plot_area_width/2), meprof.shape[0])
+            min_px_energy = max(int(com_energy - plot_area_width / 2), 0)
+            max_px_energy = min(int(com_energy + plot_area_width / 2), meprof.shape[0])
         else:
             min_px_space = 0
             max_px_space = self.xax().shape[0]
@@ -845,19 +846,23 @@ class PhaseSpace(object):
         ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
         mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
         diffs = (ps[lb:ub] - mean)
+
         # fig = plt.figure(figsize=(7*(0.61/0.76 * 4/5), 7))
         def forceAspect(ax, aspect=1):
             # extent = im.get_extent()
             # ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
-            ax.set_aspect(np.abs((ax.get_xlim()[1]-ax.get_xlim()[0])/(ax.get_ylim()[1]-ax.get_ylim()[0]))/aspect)
+            ax.set_aspect(np.abs((ax.get_xlim()[1] - ax.get_xlim()[0]) / (ax.get_ylim()[1] - ax.get_ylim()[0])) / aspect)
+
         fig = plt.figure()
         fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
         m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
         if clim:
-            m = clim*m
+            m = clim * m
         xmesh, ymesh = np.meshgrid(
-            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1]/1e-12,
-            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1]/1e6)
+            np.append(self.xax(), self.xax()[-1] + (self.xax()[-1] - self.xax()[-2]))[
+            min_px_space:max_px_space + 1] / 1e-12,
+            np.append(self.eax(), self.eax()[-1] + (self.eax()[-1] - self.eax()[-2]))[
+            min_px_energy:max_px_energy + 1] / 1e6)
 
         time_axis = self._data.phase_space(Axis.TIME, unit="ts")[lb:ub]
 
@@ -866,6 +871,7 @@ class PhaseSpace(object):
         style.update("inverse_ggplot")
         style["marker:size"] = 2
         style["line:width"] = 1
+
         # vline_color = palettes['tango'][1]
 
         def do_no_csr(i):
@@ -882,10 +888,10 @@ class PhaseSpace(object):
         if csr_intensity:
             csr = self._data.csr_intensity(Axis.DATA, unit="w")[lb:ub]
             _csr_min = np.min(csr)
-            _csr_max= np.max(csr)
+            _csr_max = np.max(csr)
             _csr_diff = _csr_max - _csr_min
-            csr_min = _csr_min - _csr_diff*0.05
-            csr_max = _csr_max + _csr_diff*0.05
+            csr_min = _csr_min - _csr_diff * 0.05
+            csr_max = _csr_max + _csr_diff * 0.05
             from matplotlib.gridspec import GridSpec
             gs = GridSpec(2, 1, height_ratios=[5, 1])
             _cmap = matplotlib.cm.get_cmap(cmap)
