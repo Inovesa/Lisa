@@ -5,7 +5,7 @@ import os
 class _ConfOptions(object):
     def __init__(self):
         self.config = {}
-        self.valid_options = {"print_debug": False, "use_cython": True}
+        self.valid_options = {"print_debug": False, "use_cython": True, "use_latex": False}
         for k, v in self.valid_options.items():
             if k in os.environ:
                 if type(v) == bool:

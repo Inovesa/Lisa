@@ -18,6 +18,10 @@ import textwrap
 from ..internals import config_options
 from .animation import create_animation
 
+if config_options.get("use_latex"):
+    matplotlib.rc('text', usetex = True)
+    matplotlib.rcParams['text.latex.preamble'] = [r'\usepackage{siunitx}']
+
 if config_options.get("use_cython"):
     try:
         from ..data import File, Axis, Data
@@ -405,7 +409,11 @@ class SimplePlotter(object):
         return d, lab, prefix
 
     def _get_metric_prefix(self, data):
-        metric_prefixes = [("T", 1e12), ("G", 1e9), ("M", 1e6), ("k", 1e3), ("", 1), ("m", 1e-3), ("$\mu$", 1e-6),
+        if config_options.get("use_latex"):
+            mu = "$\si{\micro}$"
+        else:
+            mu = "$\mu$"
+        metric_prefixes = [("T", 1e12), ("G", 1e9), ("M", 1e6), ("k", 1e3), ("", 1), ("m", 1e-3), (mu, 1e-6),
                            ("n", 1e-9), ("p", 1e-12), ("f", 1e-15)]
         mi = np.min(data)
         mi = 0 if mi < 0 else mi
