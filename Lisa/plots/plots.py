@@ -22,18 +22,9 @@ if config_options.get("use_latex"):
     matplotlib.rc('text', usetex = True)
     matplotlib.rcParams['text.latex.preamble'] = [r'\usepackage{siunitx}']
 
-if config_options.get("use_cython"):
-    try:
-        from ..data import File, Axis, Data
-    except ImportError as e:
-        print(e)
-        print("Fallback to python version")
-        from ..data import File, Axis
-        from ..data import Data
-else:
-    from ..data import File, Axis
-    from ..data import Data
-from .config import Style
+from ..data import File, Axis
+from ..data import Data
+from ..plots import Style
 from ..internals import lisa_print
 from ..data.utils import unit_from_spec, version15_1, attr_from_unit
 

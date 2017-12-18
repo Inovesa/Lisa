@@ -166,6 +166,8 @@ class Data(object):
             return attrs[conversion_attribute]
         elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:] in attrs:  # for some versions of v14-1
             return attrs[conversion_attribute[7:]]
+        elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:-1] in attrs:  # for some versions of v14-1
+            return attrs[conversion_attribute[7:-1]]
         else:
             lisa_print("units for this data", list(attrs))
             raise UnitError(unit+" is not a valid unit for this data.")

@@ -36,7 +36,7 @@ setup(
     author="Patrick Schreiber",
     author_email="patrick.schreiber2@student.kit.edu",
     packages=find_packages(),
-    ext_modules=do_cythonize(["Lisa/file.py", "Lisa/data.py", "Lisa/plots/plots.py"]),
+    ext_modules=do_cythonize(["Lisa/data/file.py", "Lisa/data/data.py", "Lisa/plots/plots.py", "Lisa/plots/config.py"]),
     install_requires=requires,
     extras_require={"test": requires},
     include_package_data=True

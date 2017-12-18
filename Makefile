@@ -7,7 +7,7 @@ CC_PARAMS = -shared -pthread -fPIC -fwrapv -O2 -Wall -fno-strict-aliasing -I/usr
 
 default: all
 
-all: plots data file
+all: plots data file config
 
 plots: Lisa/plots/plots.py
 	@echo "Compiling plots.py"
@@ -41,4 +41,15 @@ file: Lisa/data/file.py
 	@rm file_cython.py
 	@rm -rf __pycache__
 	@rm -rf file_cython.c
+
+config: Lisa/plots/config.py
+	@echo "Compiling config.py"
+	@cd Lisa/plots
+	@cp config.py config_cython.py  # do this to avoid some problem with init of module or so?
+	@../../add_hash.sh config
+	@$(CYTHON) $(CYTHON_FLAGS) config_cython.py
+	@$(CC) $(CC_PARAMS) -o config_cython.so config_cython.c
+	@rm config_cython.py
+	@rm -rf __pycache__
+	@rm -rf config_cython.c
 
