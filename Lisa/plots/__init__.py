@@ -19,5 +19,5 @@ if config_options.get("use_cython"):
         print("Fallback to python version")
         from .plots import SimplePlotter, MultiPhaseSpaceMovie, MultiPlot, setup_plots, PhaseSpace
 else:
-    from .plots import SimplePlotter, MultiPhaseSpaceMovie, MultiPlot, setup_plots, PhaseSpace
     from .config import Style, Palette, palettes
+    from .plots import SimplePlotter, MultiPhaseSpaceMovie, MultiPlot, setup_plots, PhaseSpace

@@ -82,14 +82,17 @@ class SimplePlotter(object):
                     mi = None
                     ma = None
                 else:
-                    mi = np.min(data_func(Axis.DATA, unit='cps'))
-                    ma = np.max(data_func(Axis.DATA, unit='cps'))
+                    mi = np.min(data_func(Axis.DATA, unit=kwargs.get("zunit")))
+                    ma = np.max(data_func(Axis.DATA, unit=kwargs.get("zunit")))
+                    pref = obj._get_metric_prefix([mi, ma])
+                    mi /= pref[1]
+                    ma /= pref[1]
                 number = y.shape[0]
                 how_much = how_much if how_much is not None else number
                 frames = np.arange(number-how_much, number)
 
                 def up(i):
-                    x = meshfunc(i, use_index=True, fig=fig, zunit='cps',
+                    x = meshfunc(i, use_index=True, fig=fig, zunit=kwargs.get("zunit"),
                                  label="SyncPeriod: {:0<4}".format(str(y[i]))).axes[0]
                     if mi is not None:
                         x.set_ylim(mi-ma*0.01, ma*1.05)
@@ -750,11 +753,11 @@ class PhaseSpace(object):
             mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lb:ub], axis=0)
             meprof = np.mean(self._file.energy_profile(Axis.DATA)[lb:ub], axis=0)
             com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
-            min_px_space = int(com_space-plot_area_width/2)
-            max_px_space = int(com_space+plot_area_width/2)
+            min_px_space = max(int(com_space - plot_area_width / 2), 0)
+            max_px_space = min(int(com_space + plot_area_width / 2), mbprof.shape[0])
             com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
-            min_px_energy = int(com_energy-plot_area_width/2)
-            max_px_energy = int(com_energy+plot_area_width/2)
+            min_px_energy = max(int(com_energy - plot_area_width / 2), 0)
+            max_px_energy = min(int(com_energy + plot_area_width / 2), meprof.shape[0])
         else:
             min_px_space = 0
             max_px_space = self.xax().shape[0]
