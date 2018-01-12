@@ -455,6 +455,29 @@ class SimplePlotter(object):
             z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
+    @meshPlot
+    def wake_potential(self, *args, **kwargs):
+        """
+        | Plot the wake_potential either as line plot or as pcolormesh
+        | to plot as line pass either the period as first argument or a keyword argument period
+        | Note: if yunit is passed period is in that unit, else in default value.
+
+        kwargs: (first value is default)
+          * xunit: possible values: "meters", "seconds", "raw"
+          * yunit: possible values: "ts", "seconds", "raw"
+          * zunit: possible values: "volt", "raw"
+          * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
+        """
+        # TODO: Check in what versions of Inovesa this is available
+        period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'wake_potential', 'm', "x")
+        y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'wake_potential', 'ts', "T")
+        if period is None:  # if no period provided
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'wake_potential', "volt", "Wake Potential")
+        else:
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'wake_potential', "volt", "Wake Potential", gen_sub=True)
+        return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
+
 
     @plot
     def bunch_length(self, **kwargs):
