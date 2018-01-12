@@ -245,6 +245,41 @@ def unit_from_spec(spec):
     else:
         return unit
 
+def calc_stat_mom(axis, profiles):
+    import numpy as np
+    """
+    Calculates and returns the mean, standard deviation, skewness and kurtosis
+    for each of the given profiles and the respective axis. 
+    :param axis: The axis belonging to the given profiles.
+    :param profiles: The profiles for which the listed statistical quantities 
+    shall be calculated.
+    :return: The mean, standard deviation, skewness and kurtosis for the given 
+    profiles, in that order.
+    """
+    # normalize data
+    profiles = np.array(profiles)
+    if len(profiles.shape) < 2:
+        profiles = np.array([profiles])
+    normed_data = profiles / np.sum(profiles, axis=1)[:, None]
+    # calculate mean
+    mean = np.dot(normed_data, axis)
+    # calculate standard deviation
+    m_mean = np.zeros((len(axis), len(mean))) + mean
+    m_axis_z = np.zeros((len(mean), len(axis))) + axis
+    help_var = (m_axis_z.T - m_mean) ** 2
+    var = np.einsum('ij,ji->i', normed_data, help_var)
+    std = np.sqrt(var)
+    # calculate skewness
+    help_skew = (m_axis_z.T - m_mean) ** 3
+    skew = np.einsum('ij,ji->i', normed_data, help_skew) / (std ** 3)
+    # calculate kurtosis
+    help_kurt = (m_axis_z.T - m_mean) ** 4
+    kurt = np.einsum('ij,ji->i', normed_data, help_kurt) / (std ** 4)
+
+    return [mean, std, skew, kurt]
+
+def calc_bl(axis, profiles):
+    return calc_stat_mom(axis, profiles)[1]
 
 def color_map_inferno():
 

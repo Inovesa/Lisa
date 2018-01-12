@@ -9,7 +9,7 @@ import h5py as h5
 import numpy as np
 
 from .utils import InovesaVersion, version13_0, \
-    version9_1, DataNotInFile
+    version9_1, DataNotInFile, version15_1, version14_1, calc_bl
 
 
 class FileDataRegister(object):
@@ -261,23 +261,26 @@ class File(object):
     def _get_dict(self, what, list_of_elements):
         """
         Will get the group "group" from the hdf5 file and save it to self._data[what]
+        :param what: what to get (e.g. bunch_profile)
+        :param list_of_elements: list of axes
         """
-        group = self._met2gr.get(what, None)
+        group = self._met2gr.get(what, None)  # get the h5group name
         if not group:
-            if what in self._met2gr.values():
+            if what in self._met2gr.values():  # if directly the h5group name was specified
                 group = what
+                what = {v:k for k, v in self._met2gr.items()}[group]  # inverse to always have what as correct specifier
             else:
                 raise DataNotInFile("'{}' does not exist in file.".format(what))
-        dg = self._data.setdefault(group, {})
+        dg = self._data.setdefault(group, {})  # data group container dictionary
         # if no elements or None passed get all
         if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
             list_of_elements = self.select_axis.all_for(what)
         # check what elements have to be loaded from disk (no real load)
         set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
-        if len(set_of_new_elements) != 0:
-            gr = self.file.get(group)
+        if len(set_of_new_elements) != 0:  # if new elements are requested
+            gr = self.file.get(group)  # the h5data group
             for elem in set_of_new_elements:
-                ax = self.select_axis(elem, what)
+                ax = self.select_axis(elem, what)  # get the axis name for the specified one
                 if self.version == version9_1:
                     if elem == Axis.TIME:
                         dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
@@ -285,6 +288,16 @@ class File(object):
                         dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
                     elif elem == Axis.XAXIS or elem == Axis.EAXIS or elem == Axis.FAXIS:
                         dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[0], gr.get(ax).attrs, gr.get(ax).name)
+                    else:
+                        dg[elem] = gr.get(ax)
+                elif self.version < version14_1:
+                    if elem == Axis.DATA and what == "bunch_length":  # fix bunch_length sqrt bug: Inovesa bug 24
+                        dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)), gr.get(ax).attrs, gr.get(ax).name)
+                    else:
+                        dg[elem] = gr.get(ax)
+                elif self.version < (0, 15, -2):  # fix bunch_length sqrt bug: Inovesa bug 24
+                    if elem == Axis.DATA and what == "bunch_length":
+                        dg[elem] = AttributedNPArray(calc_bl(self.bunch_profile(Axis.XAXIS), self.bunch_profile(Axis.DATA)), gr.get(ax).attrs, gr.get(ax).name)
                     else:
                         dg[elem] = gr.get(ax)
                 else:
@@ -316,6 +329,10 @@ class File(object):
                 raise DataNotInFile("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
+            """
+            :param selectors: list of axes or list of parameters
+            :return:
+            """
             if what == "parameters":
                 if len(selectors) == 0:
                     return self.file.get("Info/Parameters").attrs
