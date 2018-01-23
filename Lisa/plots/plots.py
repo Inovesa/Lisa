@@ -415,9 +415,14 @@ class SimplePlotter(object):
         # mean = np.mean(data)
         mean = (mi+ma)/2
         for prefix in metric_prefixes:  # start with small values
-            if prefix[1] < mean:  # as soon as the smalles prefix is bigger than mean use this
+            if prefix[1] <= mean:  # as soon as the smalles prefix is bigger than mean use this
                 return prefix
-        return metric_prefixes[0]  # at least return the biggest
+        if mean == 0:
+            return "", 1
+        elif mean > metric_prefixes[0][1]:
+            return metric_prefixes[0]
+        else:
+            return metric_prefixes[-1]
 
     @plot
     def energy_spread(self, **kwargs):
@@ -559,7 +564,7 @@ class SimplePlotter(object):
           * zunit: possible values: "coulomb", "ampere", "raw"
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel, _ = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.EAXIS, 'x', 'energy_profile', 'eV', "Energy Deviation")
         y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'energy_profile', 'ts', "T")
         dataunit = "c" if self._file.version < version15_1 else "cpnes"
         if period is None:  # if no period provided
@@ -587,10 +592,27 @@ class SimplePlotter(object):
             else:
                 label = label + " "
 
+        x = self._file.impedance(Axis.FAXIS)*f4h
+        yreal = self._file.impedance(Axis.REAL)*f4o
+        yimag = self._file.impedance(Axis.IMAG)*f4o
+        xprefix = self._get_metric_prefix(x)
+        # check for one is const 0
+        if np.min(yreal) == np.max(yreal) == 0:
+            prefix_data = yimag
+        elif np.min(yimag) == np.max(yimag) == 0:
+            prefix_data = yreal
+        else:
+            prefix_data = [np.mean(np.min([yreal, yimag])), np.mean(np.max([yreal, yimag]))]
+        yprefix = self._get_metric_prefix(prefix_data)
+
+        x /= xprefix[1]
+        yreal /= yprefix[1]
+        yimag /= yprefix[1]
+
         @SimplePlotter.plot
         def real(*args, **kwargs):
-            return (self._file.impedance(Axis.FAXIS)*f4h,
-                   self._file.impedance(Axis.REAL)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
+            return (x, yreal, "Frequency in "+xprefix[0]+"Hz", "Impedance in "+yprefix[0]+"$\\Omega$")
+
         if label is not None:
             rlab = label + "Real"
         else:
@@ -600,8 +622,8 @@ class SimplePlotter(object):
             del kwargs['fig']
         @SimplePlotter.plot
         def imag(*args, **kwargs):
-            return (self._file.impedance(Axis.FAXIS)*f4h,
-                    self._file.impedance(Axis.IMAG)*f4o, "Frequency in Hz", "Impedance in $\\Omega$")
+            return (x, yimag, "Frequency in "+xprefix[0]+"Hz", "Impedance in "+yprefix[0]+"$\\Omega$")
+
         if label is not None:
             ilab = label + "Imag"
         else:
@@ -612,17 +634,20 @@ class SimplePlotter(object):
         def wrapped(self, **kwargs):
             """
             Create a video
-            :param kwargs: passed to wrapped function except for "outpath"
+            :param kwargs: passed to wrapped function except for "outpath", "anim_writer", "fps", "dpi"
             :return:
             """
             fig, ax = plt.subplots()
             kwargs.setdefault('fig', fig)
             kwargs.setdefault('ax', ax)
             outpath = kwargs.pop("outpath", None)
+            fps = kwargs.pop("fps", 20)
+            dpi = kwargs.pop("dpi", 200)
+            anim_writer = kwargs.pop("anim_writer", None)
             fig, update_func, frames = func(self, **kwargs)
             fig.tight_layout()
-            ani = create_animation(fig, update_func, frames, clear_between=True, fps=kwargs.get("fps", 20),
-                                   blit=False, path=outpath, dpi=kwargs.get("dpi", 200))
+            ani = create_animation(fig, update_func, frames, clear_between=True, fps=fps,
+                                   blit=False, path=outpath, dpi=dpi, anim_writer=anim_writer)
             return ani
         return wrapped
 
@@ -751,13 +776,14 @@ class PhaseSpace(object):
         im = ax.pcolormesh(xmesh, ymesh, self.ps_data(index))
         im.set_cmap('inferno')
         ax.set_xlabel("Position in s")
-        ax.set_ylabel("Energy in eV")
+        ax.set_ylabel("Energy Deviation in eV")
         return fig, ax, im
 
     def center_of_mass(self, xax, yax):
         return np.average(xax, weights=yax)
 
-    def phase_space_movie(self, path=None, fr_idx=None, to_idx=None, fps=20, plot_area_width=None, dpi=200):
+    def phase_space_movie(self, path=None, fr_idx=None, to_idx=None, fps=20, plot_area_width=None, dpi=200,
+                          extract_slice=None, **kwargs):
         """
         Plot a movie of the evolving phasespace
         :param path: Path to a movie file to save to if None: do not save, just return the animation object
@@ -767,6 +793,10 @@ class PhaseSpace(object):
         :param plot_area_width: The width in pixel to plot around com. If None will plot full phasespace.
                                 (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
         :param dpi: Dots per inch of output video
+        :param extract_slice: Extract a slice and do no movie, just return the plot. This is a string in format
+                              idx:int for an actual slice or ts:float for a specific synchrotron period (or the nearest value).
+                              Or it is an integer for a slice index (same as idx:int)
+        :param **kwargs: Keyword arguments passed to create_animation
         :return: animation object
         """
         lb = 0 if fr_idx == None else fr_idx
@@ -806,7 +836,7 @@ class PhaseSpace(object):
         ax = fig.add_subplot(111)
         text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes, color='white')
         ax.set_xlabel("Position in ps")
-        ax.set_ylabel("Energy in MeV")
+        ax.set_ylabel("Energy Deviation in MeV")
         im = ax.pcolormesh(xmesh, ymesh, ps[0].T, cmap="inferno")
         im.set_clim((vmin, vmax))
         cax = plt.axes([0.85, 0.1, 0.03, 0.86])
@@ -821,10 +851,23 @@ class PhaseSpace(object):
             im.set_array(ps[i].T.flatten())
             return im,
 
-        if path:
-            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path)
+        if extract_slice:
+            if isinstance(extract_slice, str):
+                if extract_slice.startswith("idx:"):
+                    id = range(ub-lb)[int(extract_slice[4:])]
+                elif extract_slice.startswith("ts:"):
+                    id = np.argmin(np.abs(time_axis - float(extract_slice[3:])))
+                else:
+                    raise ValueError("extract_slice in wrong format")
+            else:
+                id = int(extract_slice)
+            do(id)
+            return fig
+        elif path:
+            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path,
+                                   **kwargs)
         else:
-            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi)
+            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, **kwargs)
         return ani
 
     def microstructure_movie(self, path=None, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
@@ -924,7 +967,7 @@ class PhaseSpace(object):
 
             ax = fig.add_subplot(gs[0, 0])
             ax.set_xlabel("Position in ps")
-            ax.set_ylabel("Energy in MeV")
+            ax.set_ylabel("Energy Deviation in MeV")
 
             im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
             im.set_clim((-m, m))
@@ -953,7 +996,7 @@ class PhaseSpace(object):
             ax = fig.add_subplot(111)
             text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes)
             ax.set_xlabel("Position in ps")
-            ax.set_ylabel("Energy in MeV")
+            ax.set_ylabel("Energy Deviation in MeV")
             im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
             im.set_clim((-m, m))
             cax = plt.axes([0.85, 0.1, 0.03, 0.86])

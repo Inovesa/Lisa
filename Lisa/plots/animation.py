@@ -8,7 +8,7 @@ import numpy as np
 import tqdm
 
 def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, dpi=100, path=None, blit=False,
-                     clear_between=False, save_args=None, progress=True):
+                     clear_between=False, save_args=None, progress=True, anim_writer="ffmpeg"):
     """
     Create an animation.
     :param figure: The figure to use.
@@ -21,10 +21,12 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
     :param progress: Show progress bar. If False do not show, if True show one, if integer use as offset for this bar
     """
     plt.ioff()
+    if anim_writer is None:
+        anim_writer = 'ffmpeg'
     if fps is not None:
-        writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), fps=fps, bitrate=bitrate)
+        writer = anim.writers[anim_writer](metadata=dict(artist='Lisa'), fps=fps, bitrate=bitrate)
     else:
-        writer = anim.writers['ffmpeg'](metadata=dict(artist='Lisa'), bitrate=bitrate)
+        writer = anim.writers[anim_writer](metadata=dict(artist='Lisa'), bitrate=bitrate)
     interval = 1/float(fps) * 1000
 
     params = inspect.signature(frame_generator).parameters
