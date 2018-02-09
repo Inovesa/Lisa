@@ -3,8 +3,8 @@ from .animation import create_animation, data_frame_generator
 if config_options.get("use_cython"):
     try:
         from .config_cython import Style, Palette, palettes
-        from ..plots import config_cython as configs
-        _check_compiled_version(configs)
+        from ..plots import config_cython as config
+        _check_compiled_version(config)
     except ImportError as e:
         print(e)
         print("Fallback to python version")

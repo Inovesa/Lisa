@@ -141,10 +141,16 @@ def update_line_color(ax, w, v):  # be careful if alpha is set and setting color
     if legend is not None:
         for line in legend.get_lines():
             c, a = get_alpha_col_tup(line)
-            line.set_color(colors[(c, a)])
+            try:
+                line.set_color(colors[(c, a)])
+            except KeyError:
+                print("Color for legend not found")
         for rect in legend.get_patches():
             c, a = get_alpha_col_tup(rect)
-            rect.set_fc(colors[(c, a)])
+            try:
+                rect.set_fc(colors[(c, a)])
+            except KeyError:
+                print("Color for legend not found")
 
 methods = {'spine': {'color': lambda ax, w, v: ax.spines[w].set_color(v)},
            'ticklabels': {'color': lambda ax, w, v: [i.set_color(v) for i in getattr(ax, ''.join(['get_', w, 'ticklabels']))()],
