@@ -806,8 +806,8 @@ class PhaseSpace(object):
     def center_of_mass(self, xax, yax):
         return np.average(xax, weights=yax)
 
-    def phase_space_movie(self, path=None, fr_idx=None, to_idx=None, fps=20, plot_area_width=None, dpi=200,
-                          extract_slice=None, **kwargs):
+    def phase_space_movie(self, path=None, fr_idx=None, to_idx=None, fps=20, plot_area_width=None,
+                         dpi=200, csr_intensity=False, bunch_profile=False, cmap="inferno", clim=None, extract_slice=None, **kwargs):
         """
         Plot a movie of the evolving phasespace
         :param path: Path to a movie file to save to if None: do not save, just return the animation object
@@ -817,85 +817,28 @@ class PhaseSpace(object):
         :param plot_area_width: The width in pixel to plot around com. If None will plot full phasespace.
                                 (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
         :param dpi: Dots per inch of output video
+        :param csr_intensity: Also plot CSR intensity and marker of current position
+        :param bunch_profile: Also plot the bunch profile for current synchrotron period
+        :param cmap: Colormap to use
+        :param clim: Maximum in fraction of global min/max to use as colormap limits
         :param extract_slice: Extract a slice and do no movie, just return the plot. This is a string in format
                               idx:int for an actual slice or ts:float for a specific synchrotron period (or the nearest value).
                               Or it is an integer for a slice index (same as idx:int)
         :param **kwargs: Keyword arguments passed to create_animation
         :return: animation object
         """
-        lb = 0 if fr_idx == None else fr_idx
-        ub = len(self._file.phase_space(Axis.DATA)) if to_idx == None else to_idx
 
-        if plot_area_width:
-            mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lb:ub], axis=0)
-            meprof = np.mean(self._file.energy_profile(Axis.DATA)[lb:ub], axis=0)
-            com_space = self.center_of_mass(range(mbprof.shape[0]), mbprof)
-            min_px_space = max(int(com_space - plot_area_width / 2), 0)
-            max_px_space = min(int(com_space + plot_area_width / 2), mbprof.shape[0])
-            com_energy = self.center_of_mass(range(meprof.shape[0]), meprof)
-            min_px_energy = max(int(com_energy - plot_area_width / 2), 0)
-            max_px_energy = min(int(com_energy + plot_area_width / 2), meprof.shape[0])
-        else:
-            min_px_space = 0
-            max_px_space = self.xax().shape[0]
-            min_px_energy = 0
-            max_px_energy = self.eax().shape[0]
+        lb, ub, lbm, ubm, min_px_space, max_px_space, min_px_energy, max_px_energy = self._gen_bounds(
+            fr_idx, to_idx, plot_area_width
+        )
 
         ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[lb:ub, min_px_space:max_px_space, min_px_energy:max_px_energy]
-        fig = plt.figure()
-        # fig.subplots_adjust(left=0.17, bottom=0.09, right=1, top=0.96, wspace=None, hspace=None)
-        fig.subplots_adjust(left=0.12, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
-        vmin = np.min(ps)
-        vmax = np.max(ps)
-        xmesh, ymesh = np.meshgrid(
-            np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2]))[min_px_space:max_px_space+1]/1e-12,
-            np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2]))[min_px_energy:max_px_energy+1]/1e6)
-
-        time_axis = self._data.phase_space(Axis.TIME, unit="ts")[lb:ub]
-
-        style = Style()
-        style.apply_to_fig(fig)
-        style.update("inverse_ggplot")
-
-        ax = fig.add_subplot(111)
-        text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes, color='white')
-        ax.set_xlabel("Position in ps")
-        ax.set_ylabel("Energy Deviation in MeV")
-        im = ax.pcolormesh(xmesh, ymesh, ps[0].T, cmap="inferno")
-        im.set_clim((vmin, vmax))
-        cax = plt.axes([0.85, 0.1, 0.03, 0.86])
-        fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
-        if path:
-            text.set_animated(True)
-            im.set_animated(True)
-        style.reapply()
-
-        def do(i):
-            text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
-            im.set_array(ps[i].T.flatten())
-            return im,
-
-        if extract_slice:
-            if isinstance(extract_slice, str):
-                if extract_slice.startswith("idx:"):
-                    id = range(ub-lb)[int(extract_slice[4:])]
-                elif extract_slice.startswith("ts:"):
-                    id = np.argmin(np.abs(time_axis - float(extract_slice[3:])))
-                else:
-                    raise ValueError("extract_slice in wrong format")
-            else:
-                id = int(extract_slice)
-            do(id)
-            return fig
-        elif path:
-            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, path=path,
-                                   **kwargs)
-        else:
-            ani = create_animation(fig, do, range(ub-lb), clear_between=False, fps=fps, blit=False, dpi=dpi, **kwargs)
-        return ani
+        return self._gen_ps_movie(ps, min_px_space, max_px_space, min_px_energy, max_px_energy,
+                                  clim, lb, ub, bunch_profile, csr_intensity, cmap, extract_slice, fps, path,
+                                  dpi, **kwargs)
 
     def microstructure_movie(self, path=None, fr_idx=None, to_idx=None, mean_range=(None, None), fps=20, plot_area_width=None,
-                             dpi=200, csr_intensity=False, cmap="RdBu_r", clim=None, extract_slice=None, **kwargs):
+                             dpi=200, csr_intensity=False, bunch_profile=False, cmap="RdBu_r", clim=None, extract_slice=None, **kwargs):
         """
         Plot the difference between the mean phasespace and the current snapshot as video.
         :param path: Path to a movie file to save to if None: do not save, just return the animation object
@@ -907,6 +850,7 @@ class PhaseSpace(object):
                                 (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)
         :param dpi: Dots per inch of output video
         :param csr_intensity: Also plot CSR intensity and marker of current position
+        :param bunch_profile: Also plot the bunch profile for current synchrotron period
         :param cmap: Colormap to use
         :param clim: Maximum in fraction of global min/max to use as colormap limits
         :param extract_slice: Extract a slice and do no movie, just return the plot. This is a string in format
@@ -915,10 +859,26 @@ class PhaseSpace(object):
         :param **kwargs: Keyword arguments passed to create_animation
         :return: animation object
         """
+
+        lb, ub, lbm, ubm, min_px_space, max_px_space, min_px_energy, max_px_energy = self._gen_bounds(
+            fr_idx, to_idx, plot_area_width, mean_range
+        )
+        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
+        mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
+        diffs = (ps[lb:ub] - mean)
+        return self._gen_ps_movie(diffs, min_px_space, max_px_space, min_px_energy, max_px_energy,
+                                  clim, lb, ub, bunch_profile, csr_intensity, cmap, extract_slice, fps, path,
+                                  dpi, symmetric=True, **kwargs)
+
+    def _gen_bounds(self, fr_idx, to_idx, plot_area_width, mean_range=None):
         lb = 0 if fr_idx == None else fr_idx
         ub = len(self._file.phase_space(Axis.DATA)) if to_idx == None else to_idx
-        lbm = 0 if mean_range[0] is None else mean_range[0]
-        ubm = -1 if mean_range[1] is None else mean_range[1]
+        if mean_range is not None:
+            lbm = 0 if mean_range[0] is None else mean_range[0]
+            ubm = -1 if mean_range[1] is None else mean_range[1]
+        else:
+            lbm = lb
+            ubm = ub
 
         if plot_area_width:
             mbprof = np.mean(self._file.bunch_profile(Axis.DATA)[lbm:ubm], axis=0)
@@ -934,11 +894,13 @@ class PhaseSpace(object):
             max_px_space = self.xax().shape[0]
             min_px_energy = 0
             max_px_energy = self.eax().shape[0]
+        return lb, ub, lbm, ubm, min_px_space, max_px_space, min_px_energy, max_px_energy
 
-        ps = self._data.phase_space(Axis.DATA, unit="cpnblpnes")[:, min_px_space:max_px_space, min_px_energy:max_px_energy]
-        mean = np.mean(ps[lbm:ubm], axis=0, dtype=np.float64)
-        diffs = (ps[lb:ub] - mean)
 
+    def _gen_ps_movie(self, data, min_px_space, max_px_space,
+                                  min_px_energy, max_px_energy,
+                                  clim, lb, ub, bunch_profile, csr_intensity, cmap, extract_slice,
+                                  fps, path, dpi, symmetric=False, **kwargs):
         # fig = plt.figure(figsize=(7*(0.61/0.76 * 4/5), 7))
         def forceAspect(ax, aspect=1):
             # extent = im.get_extent()
@@ -946,10 +908,11 @@ class PhaseSpace(object):
             ax.set_aspect(np.abs((ax.get_xlim()[1] - ax.get_xlim()[0]) / (ax.get_ylim()[1] - ax.get_ylim()[0])) / aspect)
 
         fig = plt.figure()
-        fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
-        m = np.max(np.abs([np.min(diffs), np.max(diffs)]))
+        fig.set_size_inches(7, 7)
+        ma = np.max(np.abs([np.min(data), np.max(data)]))
         if clim:
-            m = clim * m
+            ma = clim * ma
+        mi = -ma if symmetric else 0
         xmesh, ymesh = np.meshgrid(
             np.append(self.xax(), self.xax()[-1] + (self.xax()[-1] - self.xax()[-2]))[
             min_px_space:max_px_space + 1] / 1e-12,
@@ -966,16 +929,47 @@ class PhaseSpace(object):
 
         # vline_color = palettes['tango'][1]
 
-        def do_no_csr(i):
+        def do_ms(i):
             text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
-            im.set_array(diffs[i].T.flatten())
+            im.set_array(data[i].T.flatten())
             return [im]
 
+        dos = [do_ms]
+
         def do_csr(i):
-            text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
-            im.set_array(diffs[i].T.flatten())
-            p.vertices = np.array([[time_axis[i], csr_min], [time_axis[i], csr_max]])
-            return [im, csr_line, vline]
+            if bunch_profile and csr_intensity:
+                p.vertices = np.array([[csr_min, time_axis[i]], [csr_max, time_axis[i]]])
+            else:
+                p.vertices = np.array([[time_axis[i], csr_min], [time_axis[i], csr_max]])
+            return [csr_line, vline]
+
+        def do_bp(i):
+            bp_line.set_ydata(bp[i])
+            return [bp_line]
+
+        def do(i):
+            r = []
+            for d in dos:
+                r.extend(d(i))
+            return r
+
+        if csr_intensity or bunch_profile and not (csr_intensity and bunch_profile):
+            from matplotlib.gridspec import GridSpec
+            gs = GridSpec(2, 1, height_ratios=[5, 1])
+            gs_csr = gs_bl = gs[1, 0]
+            plt.subplots_adjust(bottom=0.1, right=0.75, top=0.96, hspace=0.18)
+
+        if csr_intensity and bunch_profile:
+            left = 0.08
+            right = 0.8
+            bottom = 0.07
+            top = 0.92
+            plt.subplots_adjust(left=left, bottom=bottom, right=right, top=top, hspace=0.03, wspace=0.03)
+            from matplotlib.gridspec import GridSpec
+            gs = GridSpec(2, 2, height_ratios=[5, 1], width_ratios=[5, 1])
+            gs_csr = gs[0, 1]
+            gs_bl = gs[1, 0]
+            fig.set_size_inches(7*(top-bottom)/(right-left), 7)
 
         if csr_intensity:
             csr = self._data.csr_intensity(Axis.DATA, unit="w")[lb:ub]
@@ -984,57 +978,96 @@ class PhaseSpace(object):
             _csr_diff = _csr_max - _csr_min
             csr_min = _csr_min - _csr_diff * 0.05
             csr_max = _csr_max + _csr_diff * 0.05
-            from matplotlib.gridspec import GridSpec
-            gs = GridSpec(2, 1, height_ratios=[5, 1])
+
             _cmap = matplotlib.cm.get_cmap(cmap)
             down_color = _cmap(35)
+            ax2 = fig.add_subplot(gs_csr)
+            if bunch_profile:
+                csr_line = ax2.plot(csr, time_axis, c=down_color)
+                ax2.set_ylabel("Time in $T_s$", rotation=270, va='top', ha='left', labelpad=12)
+                ax2.set_xlabel("CSR Int. in W")
+                ax2.set_xlim(csr_min, csr_max)
+                ax2.get_xaxis().get_major_formatter().set_powerlimits((-2, 2))
+                vline = ax2.hlines(time_axis[0], csr_min, csr_max, zorder=99)
+                p = vline.get_paths()[0]
+                ax2.yaxis.tick_right()
+                ax2.yaxis.set_label_position('right')
+            else:
+                csr_line = ax2.plot(time_axis, csr, c=down_color)
+                ax2.set_xlabel("Time in $T_s$")
+                ax2.set_ylabel("CSR Int. in W")
+                ax2.set_ylim(csr_min, csr_max)
+                ax2.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
+                vline = ax2.vlines(time_axis[0], csr_min, csr_max, zorder=99)
+                p = vline.get_paths()[0]
+            dos.append(do_csr)
+            if path:
+                vline.set_animated(True)
+                csr_line[0].set_animated(True)
 
+        if bunch_profile:
+            bp = self._data.bunch_profile(Axis.DATA, unit="c/s")[lb:ub]
+            bpax = self._data.bunch_profile(Axis.XAXIS, unit='m')/1000
+            _bp_min = np.min(bp)
+            _bp_max = np.max(bp)
+            _bp_diff = _bp_max - _bp_min
+            bp_min = _bp_min - _bp_diff * 0.05
+            bp_max = _bp_max + _bp_diff * 0.05
+            _cmap = matplotlib.cm.get_cmap(cmap)
+            down_color = _cmap(35)
+            ax3 = fig.add_subplot(gs_bl)  # hm is 1 if only bunch_profile else 2
+            bp_line, = ax3.plot(bpax, bp[0], c=down_color)
+            ax3.set_xlabel("x mm")
+            ax3.set_ylabel("CSR Int. in W")
+            ax3.set_ylim(bp_min, bp_max)
+            ax3.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
+            dos.append(do_bp)
+            if path:
+                bp_line.set_animated(True)
+
+        if bunch_profile or csr_intensity:
             ax = fig.add_subplot(gs[0, 0])
             ax.set_xlabel("Position in ps")
             ax.set_ylabel("Energy Deviation in MeV")
-
-            im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
-            im.set_clim((-m, m))
+            bb = ax.get_position()
+            if bunch_profile and csr_intensity:
+                ax.xaxis.tick_top()
+                ax.xaxis.set_label_position('top')
+                cax = plt.axes([0.88, bb.min[1], 0.03, bb.height])
+            else:
+                cax = plt.axes([0.84, bb.min[1], 0.03, bb.height])
+            im = ax.pcolormesh(xmesh, ymesh, data[0].T, cmap=cmap)
+            im.set_clim((mi, ma))
             forceAspect(ax)
-            fig.set_size_inches(7, 7)
-            cax = plt.axes([0.85, 0.1, 0.03, 0.86])
-            fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
-            ax2 = fig.add_subplot(gs[1, 0])
-            csr_line = ax2.plot(time_axis, csr, c=down_color)
-            ax2.set_xlabel("Time in $T_s$")
-            ax2.set_ylabel("CSR Int. in W")
-            ax2.set_ylim(csr_min, csr_max)
-            ax2.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
-            vline = ax2.vlines(time_axis[0], csr_min, csr_max, zorder=99)
-            p = vline.get_paths()[0]
-            plt.subplots_adjust(bottom=0.1, right=0.8, top=0.96, hspace=0.18)
+            fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl",
+                                                rotation=270, labelpad=12)
+
             text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes)
             if path:
                 text.set_animated(True)
                 im.set_animated(True)
-                vline.set_animated(True)
-                csr_line[0].set_animated(True)
-            do = do_csr
+
             style.reapply()
         else:
+            fig.subplots_adjust(left=0.13, bottom=0.09, right=0.8, top=0.96, wspace=None, hspace=None)
             ax = fig.add_subplot(111)
             text = ax.text(0.5, 0.95, "Synchrotron Period: {:.3f} $T_s$".format(time_axis[0]), transform=ax.transAxes)
             ax.set_xlabel("Position in ps")
             ax.set_ylabel("Energy Deviation in MeV")
-            im = ax.pcolormesh(xmesh, ymesh, diffs[0].T, cmap=cmap)
-            im.set_clim((-m, m))
+            im = ax.pcolormesh(xmesh, ymesh, data[0].T, cmap=cmap)
+            im.set_clim((mi, ma))
             cax = plt.axes([0.85, 0.1, 0.03, 0.86])
             fig.colorbar(im, cax=cax).set_label("Difference of charge density to mean phase space in C/nEs/nBl")
+            fig.set_size_inches(7*1/0.85, 7)
             if path:
                 text.set_animated(True)
                 im.set_animated(True)
             style.reapply()
-            do = do_no_csr
 
         if extract_slice:
             if isinstance(extract_slice, str):
                 if extract_slice.startswith("idx:"):
-                    id = range(len(diffs))[int(extract_slice[4:])]
+                    id = range(len(data))[int(extract_slice[4:])]
                 elif extract_slice.startswith("ts:"):
                     id = np.argmin(np.abs(time_axis - float(extract_slice[3:])))
                 else:
@@ -1043,11 +1076,14 @@ class PhaseSpace(object):
                 id = int(extract_slice)
             do(id)
             return fig
-        elif path:  # range(len(diffs)) is correct since diffs is only from lb to ub
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi,
+        elif path:  # range(len(data)) is correct since data is only from lb to ub
+            sa = kwargs.setdefault("save_args", {})
+            from matplotlib.transforms import Bbox
+            sa['pad_inches'] = 0
+            ani = create_animation(fig, do, range(len(data)), clear_between=False, fps=fps, blit=False, dpi=dpi,
                                    path=path, **kwargs)
         else:
-            ani = create_animation(fig, do, range(len(diffs)), clear_between=False, fps=fps, blit=False, dpi=dpi,
+            ani = create_animation(fig, do, range(len(data)), clear_between=False, fps=fps, blit=False, dpi=dpi,
                                    **kwargs)
         return ani
 
