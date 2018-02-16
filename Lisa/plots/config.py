@@ -128,7 +128,11 @@ def update_line_color(ax, w, v):  # be careful if alpha is set and setting color
         if not hasattr(i, "force_color"):
             colors[(col, alpha)] = v.next()  # map from old to new color for legend update
             new_col = colors[(col, alpha)]
-            i.set_c(new_col)
+            attr = "set_color" if isinstance(i, mpl.collections.PolyCollection) else "set_c"
+            try:
+                getattr(i, attr)(new_col)
+            except AttributeError:
+                print("WARNING: Failed to set color "+str(new_col)+" for "+str(i))
 
     for do in delayed_objects:
         col, alpha = get_alpha_col_tup(do)

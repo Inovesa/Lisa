@@ -92,8 +92,8 @@ class SimplePlotter(object):
                 frames = np.arange(number-how_much, number)
 
                 def up(i):
-                    x = meshfunc(i, use_index=True, fig=fig, zunit=kwargs.get("zunit"),
-                                 label="SyncPeriod: {:0<4}".format(str(y[i]))).axes[0]
+                    x = meshfunc(i, use_index=True, fig=fig,
+                                 label="SyncPeriod: {:0<4}".format(str(y[i])), **kwargs).axes[0]
                     if mi is not None:
                         x.set_ylim(mi-ma*0.01, ma*1.05)
                     if nice:
@@ -137,6 +137,7 @@ class SimplePlotter(object):
         :param plt_args: (optional) dictionary with arguments to the displaying function
         :param x_log: (optional) a boolean to set the x axis to log scale
         :param y_log: (optional) a boolean to set the y axis to log scale
+        :param idx_range: (optional) a tuple with minimum and maximum index to plot
         """
         _simple_plotter_plot_methods.append(func.__name__)
         def decorated(*args, **kwargs):
@@ -175,7 +176,7 @@ class SimplePlotter(object):
                 y = np.abs(y)
             alpha = None
             if 'alpha' in kwargs.get("plt_args", {}):
-                warn("'alpha' in plt_args will override auto generated alpha values for multiple plots.")
+                # warn("'alpha' in plt_args will override auto generated alpha values for multiple plots.")
                 alpha = kwargs.get("plt_args").get("alpha")
                 del kwargs.get("plt_args")['alpha']
             if 'label' in kwargs.get("plt_args", {}):
@@ -187,6 +188,11 @@ class SimplePlotter(object):
             else:
                 nop = 0
                 fig.num_of_plots = 1
+            if isinstance(kwargs.get("idx_range"), (tuple, list)):
+                if len(kwargs.get("idx_range")) != 2:
+                    raise ValueError("idx_range has to be a 2-tuple")
+                x = x[kwargs.get("idx_range")[0]: kwargs.get("idx_range")[1]]
+                y = y[kwargs.get("idx_range")[0]: kwargs.get("idx_range")[1]]
             if "label" in kwargs:
                 alpha = ((trans_value if nop > 0 else 1) if alpha is None else alpha)
                 ax.plot(x, np.array(y)*scale_factor, label=kwargs["label"], alpha=alpha, **kwargs.get("plt_args", {}))
@@ -225,7 +231,7 @@ class SimplePlotter(object):
         :param fig: (optional) the figure to plot in
         :param ax: (optional) the axis to use to plot
         :param label: (optional) the label for this plot (legend) (if line plot)
-        :param norm: (optional) the norm to use if pcolormesh (default LogNorm)
+        :param norm: (optional) mpl Norm object or one of ["linear", "log"] to use for pcolormesh (default linear)
         :param colormap: (optional) the colormap for pcolormesh to use (default PuBu)
         :param force_bad_to_min: (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
         :param force_exponential_x: (optional) a bool if one wants to force exponential notation on xaxis or not
@@ -234,6 +240,7 @@ class SimplePlotter(object):
         :param period: (optional) the period to use. If not given will plot all data as pcolormesh (use parameters from plot)
         :param use_index: (optional) Use period as index in data and not synchrotron period (default False)
         :param mean_range: (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)
+        :param transpose: (optional) Transpose the 2d Plot (x-axis is time instead of y-axis)
         """
         _simple_plotter_plot_methods.append(func.__name__)
 
@@ -289,9 +296,20 @@ class SimplePlotter(object):
                     ax = fig.add_subplot(111)
 
             if 'norm' in kwargs:
-                norm = kwargs['norm']
+                if isinstance(kwargs['norm'], matplotlib.colors.Normalize):
+                    norm = kwargs['norm']
+                    print("used")
+                else:
+                    if kwargs['norm'].lower() == "linear":
+                        norm = matplotlib.colors.Normalize()
+                    elif kwargs['norm'].lower() == "log":
+                        norm = matplotlib.colors.LogNorm()
+                    else:
+                        print("Unknown norm specification, using linear")
+                        norm = matplotlib.colors.Normalize()
             else:
-                norm = matplotlib.colors.LogNorm()
+                norm = matplotlib.colors.Normalize()
+                #norm = matplotlib.colors.LogNorm()
             # warn if values in kwargs and plt_args
             if 'norm' in kwargs.get("plt_args", {}):
                 warn("'norm' is already in arguments, duplicate in plt_args, will not use norm in plt_args")
@@ -300,6 +318,10 @@ class SimplePlotter(object):
                 warn("'cmap' will be set by this method. use colormap argument instead of cmap in plt_args.\n"+\
                      "will ignore cmap in plt_args.")
                 del kwargs.get("plt_args")['cmap']
+            if kwargs.get("transpose", False):
+                x, y = y, x
+                xlabel, ylabel = ylabel, xlabel
+                z = z.T
             pm = ax.pcolormesh(x, y, z, norm=norm, cmap=kwargs.get("colormap", "PuBu"), **kwargs.get("plt_args", {}))
             ax.set_xlabel(xlabel)  # TODO: What?
             ax.set_ylabel(ylabel)
@@ -310,7 +332,9 @@ class SimplePlotter(object):
                 ax.get_xaxis().get_major_formatter().set_powerlimits((0, 0))
             if kwargs.get("force_exponential_y", False):
                 ax.get_yaxis().get_major_formatter().set_powerlimits((0, 0))
-            fig.colorbar(pm).set_label(zlabel)
+            colorbar = fig.colorbar(pm)
+            colorbar.set_label(zlabel)
+            fig.cbar = colorbar
             s = Style()
             s.apply_to_fig(fig)
             return fig
