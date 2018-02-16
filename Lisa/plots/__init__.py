@@ -8,7 +8,6 @@ if config_options.get("use_cython"):
     except ImportError as e:
         print(e)
         print("Fallback to python version")
-        from .plots import SimplePlotter, MultiPhaseSpaceMovie, MultiPlot, setup_plots, PhaseSpace
         from .config import Style, Palette, palettes
     try:
         from .plots_cython import SimplePlotter, MultiPhaseSpaceMovie, MultiPlot, setup_plots, PhaseSpace

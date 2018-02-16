@@ -18,6 +18,7 @@ def create_animation(figure, frame_generator, frames, fps=None, bitrate=18000, d
     :param bitrate: Bitrate of video
     :param dpi: Dpi of video
     :param path: Path to save the video to. If None does not save.
+    :param save_args: Keyword arguments for savefig
     :param progress: Show progress bar. If False do not show, if True show one, if integer use as offset for this bar
     """
     plt.ioff()
