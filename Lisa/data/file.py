@@ -285,7 +285,10 @@ class File(object):
                     if elem == Axis.TIME:
                         dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
                     elif elem == Axis.DATA and Axis.TIME in self.select_axis.all_for(what):
-                        dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
+                        if what == "bunch_length":
+                            dg[elem] = dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)[1:]), gr.get(ax).attrs, gr.get(ax).name)
+                        else:
+                            dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
                     elif elem == Axis.XAXIS or elem == Axis.EAXIS or elem == Axis.FAXIS:
                         dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[0], gr.get(ax).attrs, gr.get(ax).name)
                     else:
