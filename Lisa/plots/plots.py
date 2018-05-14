@@ -244,7 +244,6 @@ class SimplePlotter(object):
         """
         _simple_plotter_plot_methods.append(func.__name__)
 
-
         def decorated(*args, **kwargs):
             period, x, y, z, xlabel, ylabel, zlabel, time_prefix = func(*args, **kwargs)
             if period is not None:
@@ -298,7 +297,6 @@ class SimplePlotter(object):
             if 'norm' in kwargs:
                 if isinstance(kwargs['norm'], matplotlib.colors.Normalize):
                     norm = kwargs['norm']
-                    print("used")
                 else:
                     if kwargs['norm'].lower() == "linear":
                         norm = matplotlib.colors.Normalize()
@@ -407,7 +405,7 @@ class SimplePlotter(object):
     def _unit_and_label(self, kwargs, idx, axis, data, default, label, gen_sub=False):
         if gen_sub:
             d = getattr(self._data, data+"_raw")(idx)
-            data_unit=kwargs.get(axis+"unit", default)
+            data_unit = kwargs.get(axis+"unit", default)
             if idx in [Axis.DATA, Axis.XDATA, Axis.YDATA, Axis.IMAG, Axis.REAL]:
                 tmp_d = getattr(self._data, data)(idx, unit=data_unit, sub_idx=0)
             else:
@@ -436,7 +434,6 @@ class SimplePlotter(object):
         mi = np.min(data)
         mi = 0 if mi < 0 else mi
         ma = np.max(data)
-        # mean = np.mean(data)
         mean = (mi+ma)/2
         for prefix in metric_prefixes:  # start with small values
             if prefix[1] <= mean:  # as soon as the smalles prefix is bigger than mean use this
@@ -473,15 +470,17 @@ class SimplePlotter(object):
           * pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
         """
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 'm', "x")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'bunch_profile', 's', "Position")
         y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'bunch_profile', 'ts', "T")
-        dataunit = "c" if self._file.version < version15_1 else "cpnbl"
+        # dataunit = "c" if self._file.version < version15_1 else "c/s"
+        dataunit = kwargs.get("zunit", 'c/s')
         if period is None:  # if no period provided
-            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population")
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Ch. Dens.")
             if kwargs.get("pad_zero", False):
                 z[np.where(z<np.float64(0.0))] = np.float64(1e-100)
         else:
-            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Population", gen_sub=True)
+            z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'bunch_profile', dataunit, "Ch. Dens.", gen_sub=True)
+
         return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
     @meshPlot
@@ -499,7 +498,7 @@ class SimplePlotter(object):
         """
         # TODO: Check in what versions of Inovesa this is available
         period = args[0] if len(args) > 0 and isinstance(args[0], Number) else kwargs.get('period', None)
-        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'wake_potential', 'm', "x")
+        x, xlabel, _ = self._unit_and_label(kwargs, Axis.XAXIS, 'x', 'wake_potential', 's', "x")
         y, ylabel, time_prefix = self._unit_and_label(kwargs, Axis.TIME, 'y', 'wake_potential', 'ts', "T")
         if period is None:  # if no period provided
             z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'wake_potential', "volt", "Wake Potential")
@@ -1007,7 +1006,7 @@ class PhaseSpace(object):
 
         if bunch_profile:
             bp = self._data.bunch_profile(Axis.DATA, unit="c/s")[lb:ub]
-            bpax = self._data.bunch_profile(Axis.XAXIS, unit='m')/1000
+            bpax = self._data.bunch_profile(Axis.XAXIS, unit='s')*1e12
             _bp_min = np.min(bp)
             _bp_max = np.max(bp)
             _bp_diff = _bp_max - _bp_min
@@ -1017,8 +1016,8 @@ class PhaseSpace(object):
             down_color = _cmap(35)
             ax3 = fig.add_subplot(gs_bl)  # hm is 1 if only bunch_profile else 2
             bp_line, = ax3.plot(bpax, bp[0], c=down_color)
-            ax3.set_xlabel("x mm")
-            ax3.set_ylabel("CSR Int. in W")
+            ax3.set_xlabel("Position in ps")
+            ax3.set_ylabel("Ch. Dens. in c/s")
             ax3.set_ylim(bp_min, bp_max)
             ax3.get_yaxis().get_major_formatter().set_powerlimits((-2, 2))
             dos.append(do_bp)
