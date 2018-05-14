@@ -25,7 +25,8 @@ class AttributedNPArray(np.ndarray):
         return obj
 
     def __array_finalize__(self, obj):
-        if obj is None: return
+        if obj is None:
+            return
         self.attrs = getattr(obj, 'attrs', None)
         self.name = getattr(obj, 'name', None)
 
@@ -37,7 +38,8 @@ def registered(cls):
     if hasattr(cls, 'registered_properties'):
         if hasattr(cls, 'registered_properties'):
             if not isinstance(cls.registered_properties, list):
-                raise AttributeError(cls.__name__+" has attribute registered_properties of wrong type.")
+                raise AttributeError(cls.__name__ +
+                                     " has attribute registered_properties of wrong type.")
         else:
             cls.registered_properties = []
 
@@ -101,7 +103,8 @@ class AxisSelector(object):
             raise DataNotInFile("'{gr}' is not in a valid dataset".format(gr=group))
         if axis not in self._specs[group]:
             raise DataNotInFile("'{ax}' is not in group '{gr}'".format(ax=axis, gr=group))
-        return self._axis_datasets.get(axis, self._data_datasets.get(axis))  # if nto in axis_datasets get it from _data_datasets
+        # if nto in axis_datasets get it from _data_datasets
+        return self._axis_datasets.get(axis, self._data_datasets.get(axis))
 
 
 Axis = AxisSelector
@@ -113,10 +116,11 @@ class DataError(Exception):
 
 class DataContainer(object):
     def __new__(cls, data_dict, list_of_elements):
-        if len(list_of_elements) == 1:  # if only one element then do not bother with DataContainer but return h5 object
+        # if only one element then do not bother with DataContainer but return h5 object
+        if len(list_of_elements) == 1:
             try:
                 return data_dict[list_of_elements[0]]
-            except:
+            except Exception:
                 raise DataError("Tried to access unavailable elements.")
         else:
             return super(DataContainer, cls).__new__(cls)
@@ -133,7 +137,7 @@ class DataContainer(object):
         if name in self._data_dict:
             return self._data_dict[name]
         else:
-            raise DataError("'"+name+"' not in this Container")
+            raise DataError("'" + name + "' not in this Container")
 
     def __contains__(self, item):
         return item in self._list_of_elements
@@ -158,19 +162,22 @@ class DataContainer(object):
         self.idx += 1
         if self.idx == len(self._list_of_elements):
             raise StopIteration
-        return self._list_of_elements[self.idx-1], self._data_dict[self._list_of_elements[self.idx-1]]
+        return self._list_of_elements[self.idx - 1], \
+            self._data_dict[self._list_of_elements[self.idx - 1]]
 
 
 class File(object):
     """
     Wrapper around a h5 File created by Inovesa
 
-    Each Datagroup is a method of this object. To get a special axis of each group use additional parameters.
+    Each Datagroup is a method of this object. To get a special axis of each group
+    use additional parameters.
 
-    If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded, as AttributedNPArray.
+    If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded,
+    as AttributedNPArray.
 
-    If no or more than one parameter is supplied the data will be returned as DataContainer object containing
-    the HDF5.Dataset or AttributedNPArray objects.
+    If no or more than one parameter is supplied the data will be returned as DataContainer
+    object containing the HDF5.Dataset or AttributedNPArray objects.
 
     This is not completely true for File.parameters.
 
@@ -183,7 +190,8 @@ class File(object):
         all = f.bunch_profile()
         axes = f.bunch_profile(Axis.TIME, Axis.XAXIS)
 
-    Method names are mostly the datagroup-names with underscores instead of camelcase (e.g. bunch_profile for BunchProfile)
+    Method names are mostly the datagroup-names with underscores instead of camelcase
+    (e.g. bunch_profile for BunchProfile)
 
     Available Groups:
 
@@ -202,9 +210,10 @@ class File(object):
         - source_map (only Inovesa version 0.15 and above)
         - * parameters
 
-    * parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.
-    Use File.parameters(param1, param2 ...) to get either a single parameter (with the datatype that this parameter is saved
-    in the hdf5 file) or a DataContainer object depending on how much params were passed.
+    * parameters does not expose the exact same interface. Use File.parameters() to get the
+    HDF5 Attribute Object. Use File.parameters(param1, param2 ...) to get either a single parameter
+    (with the datatype that this parameter is saved in the hdf5 file) or a DataContainer object
+    depending on how much params were passed.
 
     """
     def __init__(self, filename):
@@ -268,12 +277,14 @@ class File(object):
         if not group:
             if what in self._met2gr.values():  # if directly the h5group name was specified
                 group = what
-                what = {v:k for k, v in self._met2gr.items()}[group]  # inverse to always have what as correct specifier
+                # inverse to always have what as correct specifier
+                what = {v: k for k, v in self._met2gr.items()}[group]
             else:
                 raise DataNotInFile("'{}' does not exist in file.".format(what))
         dg = self._data.setdefault(group, {})  # data group container dictionary
         # if no elements or None passed get all
-        if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
+        if len(list_of_elements) == 0 or \
+                (len(list_of_elements) == 1 and list_of_elements[0] is None):
             list_of_elements = self.select_axis.all_for(what)
         # check what elements have to be loaded from disk (no real load)
         set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
@@ -283,24 +294,34 @@ class File(object):
                 ax = self.select_axis(elem, what)  # get the axis name for the specified one
                 if self.version == version9_1:
                     if elem == Axis.TIME:
-                        dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
+                        dg[elem] = AttributedNPArray(gr.get(ax)[1:],
+                                                     gr.get(ax).attrs, gr.get(ax).name)
                     elif elem == Axis.DATA and Axis.TIME in self.select_axis.all_for(what):
                         if what == "bunch_length":
-                            dg[elem] = dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)[1:]), gr.get(ax).attrs, gr.get(ax).name)
+                            dg[elem] = dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)[1:]),
+                                                                    gr.get(ax).attrs,
+                                                                    gr.get(ax).name)
                         else:
-                            dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:], gr.get(ax).attrs, gr.get(ax).name)
+                            dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[1:],
+                                                                    gr.get(ax).attrs,
+                                                                    gr.get(ax).name)
                     elif elem == Axis.XAXIS or elem == Axis.EAXIS or elem == Axis.FAXIS:
-                        dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[0], gr.get(ax).attrs, gr.get(ax).name)
+                        dg[elem] = dg[elem] = AttributedNPArray(gr.get(ax)[0], gr.get(ax).attrs,
+                                                                gr.get(ax).name)
                     else:
                         dg[elem] = gr.get(ax)
                 elif self.version < version14_1:
-                    if elem == Axis.DATA and what == "bunch_length":  # fix bunch_length sqrt bug: Inovesa bug 24
-                        dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)), gr.get(ax).attrs, gr.get(ax).name)
+                    # fix bunch_length sqrt bug: Inovesa bug 24
+                    if elem == Axis.DATA and what == "bunch_length":
+                        dg[elem] = AttributedNPArray(np.sqrt(gr.get(ax)), gr.get(ax).attrs,
+                                                     gr.get(ax).name)
                     else:
                         dg[elem] = gr.get(ax)
                 elif self.version < (0, 15, -2):  # fix bunch_length sqrt bug: Inovesa bug 24
                     if elem == Axis.DATA and what == "bunch_length":
-                        dg[elem] = AttributedNPArray(calc_bl(self.bunch_profile(Axis.XAXIS), self.bunch_profile(Axis.DATA)), gr.get(ax).attrs, gr.get(ax).name)
+                        dg[elem] = AttributedNPArray(calc_bl(self.bunch_profile(Axis.XAXIS),
+                                                             self.bunch_profile(Axis.DATA)),
+                                                     gr.get(ax).attrs, gr.get(ax).name)
                     else:
                         dg[elem] = gr.get(ax)
                 else:
@@ -319,7 +340,7 @@ class File(object):
                     i.read_direct(tmp[idx])
                     sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name)}
                     self._data[self._met2gr[what]].update(sdata)
-        except:
+        except Exception:
             print("Error preloading data")
 
     def __getattr__(self, what):
@@ -328,7 +349,7 @@ class File(object):
                 return self.__getattribute__(what)
             except AttributeError:
                 if what.startswith("__") and what.endswith("__"):
-                    raise AttributeError("'Data' object has no attribute '"+what+"'")
+                    raise AttributeError("'Data' object has no attribute '" + what + "'")
                 raise DataNotInFile("'{}' does not exist in file.".format(what))
 
         def data_getter(*selectors):
@@ -360,178 +381,6 @@ class File(object):
         return data_getter
 
 
-class File_dep(object):
-    """
-    Wrapper around an h5 File created by Inovesa
-    """
-    def __init__(self, filename):
-        """
-        Create File object
-        :param filename: The filename of the Inovesa result file
-        """
-        self.filename = filename
-        self.file = h5.File(filename, 'r')
-        self._data = {}
-
-        try:
-            self.version = InovesaVersion(*self.file.get("Info").get("Inovesa_v"))
-        except TypeError:
-            self.version = InovesaVersion(*self.file.get("Info").get("INOVESA_v"))
-
-        self.select_axis = AxisSelector()
-
-    def _get_list(self, group, list_of_elements):
-        """
-        Will get the group "group" from the hdf5 file and return the children
-        of that group given in "list_of_elements" in that order as list
-        """
-        ret = []
-        gr = self.file.get(group)
-        for elem in list_of_elements:
-            ret.append(gr.get(elem))
-        return ret
-
-    def _get_dict(self, group, list_of_elements):
-        """
-        Will get the group "group" from the hdf5 file and save it to self._data[key]
-        """
-        dg = self._data.setdefault(group, {})
-        if len(list_of_elements) == 0 or (len(list_of_elements) == 1 and list_of_elements[0] is None):
-            list_of_elements = self.select_axis.all_for(group)
-        set_of_new_elements = set(list_of_elements) - set(dg.keys())  # filter might be faster
-        if len(set_of_new_elements) != 0:
-            gr = self.file.get(group)
-            for elem in set_of_new_elements:
-                ax = self.select_axis(elem, group)
-                dg[elem] = gr.get(ax)
-        return DataContainer(dg, list_of_elements)
-
-    def preload_full(self, what, axis=None):
-        """
-        DEPRECATED
-        Preload Data into memory. This will speed up recurring reads by a lot
-        """
-        print("Not fully implemented. Use new version of File")
-        return
-        try:
-            h5data = getattr(self, what)(axis)
-            tmp = [np.zeros(i.shape, dtype=i.dtype) for _, i in h5data]
-            sdata = [i.read_direct(tmp[idx]) for idx, (_, i) in enumerate(h5data)]
-            sdata = {name: AttributedNPArray(tmp[idx], i.attrs, i.name) for idx, (name, i) in enumerate(h5data)}
-            # NOTE: This does not work at the moment
-            # self._data[self._met2gr[what]].update(sdata)
-        except:
-            print("Error preloading data")
-
-    def _sub_element(self, what, sub):
-        if isinstance(sub, int):
-            return self._data[what][sub]
-        elif isinstance(sub, str):
-            if sub in self._data[what]:
-                return self._data[what][sub]
-            else:
-                pd = list(filter(lambda x: sub in x.name, self._data[what].values()))
-                if len(pd) > 1:
-                    raise IndexError("'%s' was not found or was found multiple times."%str(sub))
-                else:
-                    return pd[0]
-        else:
-            raise IndexError("'%s' is not a valid index and no matching element was found."%str(sub))
-
-    @registered(FileDataRegister)
-    def energy_spread(self, *selectors):
-        """
-        Return the EnergySpread
-        """
-        return self._get_dict("EnergySpread", selectors)
-
-    @registered(FileDataRegister)
-    def bunch_length(self, *selectors):
-        """
-        Return the BunchLength
-        """
-        return self._get_dict("BunchLength", selectors)
-
-    @registered(FileDataRegister)
-    def bunch_position(self, *selectors):
-        """
-        Return the BunchPosition
-        """
-        return self._get_dict("BunchPosition", selectors)
-
-    @registered(FileDataRegister)
-    def bunch_population(self, *selectors):
-        """
-        Return the BunchPopulation
-        """
-        return self._get_dict("BunchPopulation", selectors)
-
-    @registered(FileDataRegister)
-    def bunch_profile(self, *selectors):
-        """
-        Return the BunchProfile
-        :return: [BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data]
-        """
-        return self._get_dict("BunchProfile", selectors)
-
-    @registered(FileDataRegister)
-    def csr_intensity(self, *selectors):
-        """
-        Return the CSRIntensity
-        """
-        return self._get_dict("CSR/Intensity", selectors)
-
-    @registered(FileDataRegister)
-    def csr_spectrum(self, *selectors):
-        """
-        Return the CSRSpectrum
-        """
-        return self._get_dict("CSR/Spectrum", selectors)
-
-    @registered(FileDataRegister)
-    def energy_profile(self, *selectors):
-        """
-        Return the EnergyProfile
-        """
-        return self._get_dict("EnergyProfile", selectors)
-
-    @registered(FileDataRegister)
-    def impedance(self, *selectors):
-        """
-        Return the Impedance
-        """
-        return self._get_dict("Impedance", selectors)
-
-    @registered(FileDataRegister)
-    def particles(self, *selectors):
-        """
-        Return the Particles
-        """
-        return self._get_dict("Particles", selectors)
-
-    @registered(FileDataRegister)
-    def phase_space(self, *selectors):
-        """
-        Return the PhaseSpace
-        """
-        return self._get_dict("PhaseSpace", selectors)
-
-    @registered(FileDataRegister)
-    def wake_potential(self, *selectors):
-        """
-        Return the WakePotential
-        """
-        return self._get_dict("WakePotential", selectors)
-
-    @registered(FileDataRegister)
-    def parameters(self):
-        """
-        Return the Inovesa Parameters
-        :return: h5py.Attribute Instance
-        """
-        return self.file.get("Info/Parameters").attrs
-
-
 class MultiFile(object):
     """
     Multiple File container for whole directories
@@ -539,7 +388,7 @@ class MultiFile(object):
     def __init__(self, path, pattern=None, sorter=None):
         """
         :param path: The path to search in
-        :param pattern: The pattern to search for (pattern has to be accepted by glob) (None for no pattern)
+        :param pattern: The pattern to search for (has to be accepted by glob) (None for no pattern)
         :param sorter: The sorting method to use. (None for default)
         """
         self.path = path
@@ -553,13 +402,14 @@ class MultiFile(object):
 
     @classmethod
     def _get_current_from_cfg(cls, filename):
-        with open(filename+".cfg", 'r') as f:
+        with open(filename + ".cfg", 'r') as f:
             for line in f:
                 if line.startswith("BunchCurrent"):
                     return float(line.split("=")[1])
 
     def _generate_file_list_(self):
-        self._filelist = glob.glob(self.path+"/"+(self.pattern if self.pattern is not None else "*"))
+        self._filelist = glob.glob(self.path + "/" +
+                                   (self.pattern if self.pattern is not None else "*"))
         self._sorted_filelist = self._filelist  # put files in sorted_filelist even if not sorted
 
     def _sort_file_list(self):
@@ -569,13 +419,14 @@ class MultiFile(object):
             tmp_list = []
             for file in self._filelist:
                 tmp_list.append((MultiFile._get_current_from_cfg(file), file))
-            tmp_list.sort(key=lambda f: f[0], reverse=True)  # make sure it is sorted by the first entry
+            # make sure it is sorted by the first entry
+            tmp_list.sort(key=lambda f: f[0], reverse=True)
             self._sorted_filelist = [i[1] for i in tmp_list]
 
     def set_sorter(self, sorter):
         """
         Set the sorting method
-        :param sorter: A callable that accepts a list of files as strings and returns a sorted list of strings
+        :param sorter: A callable that accepts a list of files as strings and returns a sorted list
         """
         self.sorter = sorter
         self._sort_changed = True

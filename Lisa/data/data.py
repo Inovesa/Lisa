@@ -17,6 +17,7 @@ from ..internals import lisa_print
 from .utils import attr_from_unit, UnitError, DataNotInFile
 import numpy as np
 
+
 class Data(object):
     """
     Get Data from Inovesa Result Datafiles with specified unit.
@@ -47,7 +48,9 @@ class Data(object):
         Convert to correct unit.
         :param idx: An axis specification from Lisa.Axis
         :param string unit: Use this as second argument or kwarg
-        :param sub_idx: (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2] then idx=0 and sub_idx is given will result in Dataset1[sub_idx]) This will speed up if only part of the data is used.
+        :param sub_idx: (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2]
+        then idx=0 and sub_idx is given will result in Dataset1[sub_idx])
+        This will speed up if only part of the data is used.
         """
         if attr.endswith("_raw"):
             """
@@ -59,8 +62,9 @@ class Data(object):
                 return self.__getattribute__(attr)
             except AttributeError:
                 if attr.startswith("__") and attr.endswith("__"):
-                    raise AttributeError("'Data' object has no attribute '"+attr+"'")
-                raise DataNotInFile("Data object (and File object) does not have an attribute "+attr)
+                    raise AttributeError("'Data' object has no attribute '" + attr + "'")
+                raise DataNotInFile("Data object (and File object) does not have an attribute " +
+                                    attr)
         if attr == 'parameters':
             def inner(what):
                 if what == 'all':
@@ -91,7 +95,7 @@ class Data(object):
                 else:
                     return data[sub_index] * np.float64(1.0)
             if sub_index is None:
-                return data*factor
+                return data * factor
             else:
                 return data[sub_index] * factor
 
@@ -114,46 +118,52 @@ class Data(object):
             if Axis.EAXIS in self._file.select_axis.all_for(attr):
                 raise UnitError("Illegal conversion")
             try:
-                coa = attr_from_unit(unit[0]+"pnbl", self.version)
+                coa = attr_from_unit(unit[0] + "pnbl", self.version)
                 coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 s = attr_from_unit("s", self.version)
                 s = getattr(self._file, attr)(Axis.XAXIS).attrs[s]
-                return coa/s
+                return coa / s
             except (KeyError, DataNotInFile) as e:
                 if isinstance(e, KeyError):
-                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                    raise UnitError("Conversion failure, cannot find attribute for " +
+                                    str(e).split("'")[-2])
                 else:
-                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
+                    raise UnitError("Illegal conversion, "
+                                    "corresponding data objects not found in h5. " + str(e))
         unit_lst = ["c/ev", "cpev", "a/ev", "apev"]
         if unit in unit_lst:
             if Axis.XAXIS in self._file.select_axis.all_for(attr):
                 raise UnitError("Illegal conversion")
             try:
-                coa = attr_from_unit(unit[0]+"pnes", self.version)
+                coa = attr_from_unit(unit[0] + "pnes", self.version)
                 coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 ev = attr_from_unit("eV", self.version)
                 ev = getattr(self._file, attr)(Axis.EAXIS).attrs[ev]
-                return coa/ev
+                return coa / ev
             except (KeyError, DataNotInFile) as e:
                 if isinstance(e, KeyError):
-                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                    raise UnitError("Conversion failure, cannot find attribute for " +
+                                    str(e).split("'")[-2])
                 else:
-                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
+                    raise UnitError("Illegal conversion, "
+                                    "corresponding data objects not found in h5. " + str(e))
         unit_lst = ["cpspev", "c/s/ev", "apspev", "a/s/ev", "cpevps", "c/ev/s", "apevps", "a/ev/s"]
         if unit in unit_lst:
             try:
-                coa = attr_from_unit(unit[0]+"pnblpnes", self.version)
+                coa = attr_from_unit(unit[0] + "pnblpnes", self.version)
                 coa = getattr(self._file, attr)(Axis.DATA).attrs[coa]
                 ev = attr_from_unit("eV", self.version)
                 ev = getattr(self._file, attr)(Axis.EAXIS).attrs[ev]
                 s = attr_from_unit("s", self.version)
                 s = getattr(self._file, attr)(Axis.XAXIS).attrs[s]
-                return coa/ev/s
+                return coa / ev / s
             except (KeyError, DataNotInFile) as e:
                 if isinstance(e, KeyError):
-                    raise UnitError("Conversion failure, cannot find attribute for "+str(e).split("'")[-2])
+                    raise UnitError("Conversion failure, cannot find attribute for " +
+                                    str(e).split("'")[-2])
                 else:
-                    raise UnitError("Illegal conversion, corresponding data objects not found in h5. "+str(e))
+                    raise UnitError("Illegal conversion, "
+                                    "corresponding data objects not found in h5. " + str(e))
 
         conversion_attribute = attr_from_unit(unit, self.version)
         if conversion_attribute is None:
@@ -164,13 +174,15 @@ class Data(object):
             attrs = data.attrs
         if conversion_attribute in attrs:
             return attrs[conversion_attribute]
-        elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:] in attrs:  # for some versions of v14-1
+        elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:] in attrs:
+            # for some versions of v14-1
             return attrs[conversion_attribute[7:]]
-        elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:-1] in attrs:  # for some versions of v14-1
+        elif conversion_attribute.startswith("Factor4") and conversion_attribute[7:-1] in attrs:
+            # for some versions of v14-1
             return attrs[conversion_attribute[7:-1]]
         else:
             lisa_print("units for this data", list(attrs))
-            raise UnitError(unit+" is not a valid unit for this data.")
+            raise UnitError(unit + " is not a valid unit for this data.")
 
     def unit_factor(self, data, axis, unit):
         """

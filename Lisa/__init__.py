@@ -1,4 +1,5 @@
-from .plots import SimplePlotter, MultiPlot, setup_plots, PhaseSpace, MultiPhaseSpaceMovie, create_animation, data_frame_generator
+from .plots import SimplePlotter, MultiPlot, setup_plots, PhaseSpace, MultiPhaseSpaceMovie, \
+                   create_animation, data_frame_generator
 from .data import File, MultiFile, Axis
 from .data import Data
 
