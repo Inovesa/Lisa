@@ -1,4 +1,4 @@
-.. parsedoc:: ../core/plots/animation.py
+.. parsedoc:: ../plots/animation.py
     :module: True
     :wo_docstr: True
     :heading: Create animated plots

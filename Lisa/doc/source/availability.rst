@@ -2,12 +2,12 @@ Availability of Classes
 =======================
 
 The following Classes are available at top Level (using Lisa.<CLS>):
- * core.file.File
- * core.file.MultiFile
- * core.data.Data
- * core.plots.plots.SimplePlotter
- * core.plots.plots.MultiPlot
- * core.plots.plots.PhaseSpace
+ * data.file.File
+ * data.file.MultiFile
+ * data.data.Data
+ * plots.plots.SimplePlotter
+ * plots.plots.MultiPlot
+ * plots.plots.PhaseSpace
  * core.plots.plots.MultiPhaseSpaceMovie
 
 Style is available through Lisa.plots.Style

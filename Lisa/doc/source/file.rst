@@ -1,4 +1,4 @@
-.. parsedoc:: ../core/file.py
+.. parsedoc:: ../data/file.py
     :module: True
     :wo_docstr: True
     :heading: Inovesa Result Files
