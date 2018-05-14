@@ -19,7 +19,7 @@ from ..internals import config_options
 from .animation import create_animation
 
 if config_options.get("use_latex"):
-    matplotlib.rc('text', usetex = True)
+    matplotlib.rc('text', usetex=True)
     matplotlib.rcParams['text.latex.preamble'] = [r'\usepackage{siunitx}']
 
 from ..data import File, Axis
@@ -34,11 +34,14 @@ trans_value = 0.8
 
 _simple_plotter_plot_methods = []
 
-warn = lambda x: sys.stderr.write("Warning: "+str(x)+"\n")
+
+def warn(x):
+    sys.stderr.write("Warning: "+str(x)+"\n")
 
 
 class Deprecated(Exception):
     msg = ("This is deprecated",)
+
 
 def setup_plots():  # todo arguments for latexify
     """
@@ -47,8 +50,10 @@ def setup_plots():  # todo arguments for latexify
     from blhelpers.plot_helpers import latexify
     latexify()
 
+
 try:
     import matplotlib2tikz as m2t
+
     def save_pgfplot(*args, **kwargs):
         """Wrapper around matplotlib2tikz.save"""
         m2t.save(*args, **kwargs)
@@ -176,13 +181,12 @@ class SimplePlotter(object):
                 y = np.abs(y)
             alpha = None
             if 'alpha' in kwargs.get("plt_args", {}):
-                # warn("'alpha' in plt_args will override auto generated alpha values for multiple plots.")
                 alpha = kwargs.get("plt_args").get("alpha")
                 del kwargs.get("plt_args")['alpha']
             if 'label' in kwargs.get("plt_args", {}):
                 warn("'label' in plt_args is invalid. Use label in arguments. Will ignore.")
                 del kwargs.get("plt_args")['labemporl']
-            if(hasattr(fig, "num_of_plots")):
+            if hasattr(fig, "num_of_plots"):
                 nop = fig.num_of_plots
                 fig.num_of_plots += 1
             else:
@@ -200,9 +204,9 @@ class SimplePlotter(object):
             else:
                 alpha = ((trans_value if nop > 0 else 1) if alpha is None else alpha)
                 ax.plot(x, np.array(y)*scale_factor, alpha=alpha, **kwargs.get("plt_args", {}))
-            if(xlabel != "" and ax.get_xlabel()!="" and xlabel!=ax.get_xlabel()):
+            if xlabel != "" and ax.get_xlabel()!="" and xlabel!=ax.get_xlabel():
                 xlabel = ax.get_xlabel()+"\n"+xlabel
-            if(ylabel != "" and ax.get_ylabel()!="" and ylabel!=ax.get_ylabel()):
+            if ylabel != "" and ax.get_ylabel()!="" and ylabel!=ax.get_ylabel():
                 ylabel = ax.get_ylabel()+"\n"+ylabel
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
@@ -506,7 +510,6 @@ class SimplePlotter(object):
             z, zlabel, _ = self._unit_and_label(kwargs, Axis.DATA, 'z', 'wake_potential', "volt", "Wake Potential", gen_sub=True)
         return period, x, y, z, xlabel, ylabel, zlabel, time_prefix
 
-
     @plot
     def bunch_length(self, **kwargs):
         """
@@ -719,9 +722,8 @@ class MultiPlot(object):
             warn_no_file.__name__ = attr
             return warn_no_file
         if hasattr(self._simple_plotters[0][0], attr):
-            # self._figure.clear()
             def inner(*args, **kwargs):
-                self._figure = plt.figure(tight_layout=True)  # make shure it is only created when actual plotting is wanted
+                self._figure = plt.figure(tight_layout=True)
                 kwargs["fig"] = self._figure
                 for sp in self._simple_plotters:
                     if sp[1] != None:
@@ -758,24 +760,23 @@ class PhaseSpace(object):
         self._ps_data = {}
         self._eax = None
         self._xax = None
-        #self._figure = plt.figure()
 
     def eax(self):
         if self._eax is None:
             self._eax = self._data.phase_space(Axis.EAXIS, unit='ev')
         return self._eax
+
     def xax(self):
         if self._xax is None:
             self._xax = self._data.phase_space(Axis.XAXIS, unit='s')
         return self._xax
+
     def ps_data(self, index):
         if not index in self._ps_data:
             self._ps_data[index] = self._x_to_y(self._data.phase_space(Axis.DATA, unit='cpnblpnes', sub_idx=index))
         return self._ps_data[index]
 
     def _x_to_y(self, data):
-        # return data.T[::-1, :]  # Inovesa phasespace data is in shape [x, y] and imshow needs [y, x]
-        # Transpose is enough
         return data.T
 
     def clone(self):
@@ -790,10 +791,7 @@ class PhaseSpace(object):
         Plot the phasespace.
         :param index: the index of the dataset (in timeaxis)
         """
-        # data = self._file.phase_space[2][index].T[::-1, :] # Transpose because is 90deg wrong
-        # data = self._x_to_y(self._file.phase_space(Axis.DATA)[index])
         fig, ax = plt.subplots(1)
-        # im = ax.imshow(data)
         xmesh, ymesh = np.meshgrid(np.append(self.xax(), self.xax()[-1]+(self.xax()[-1]-self.xax()[-2])),
                                    np.append(self.eax(), self.eax()[-1]+(self.eax()[-1]-self.eax()[-2])))
         im = ax.pcolormesh(xmesh, ymesh, self.ps_data(index))
@@ -900,10 +898,7 @@ class PhaseSpace(object):
                                   min_px_energy, max_px_energy,
                                   clim, lb, ub, bunch_profile, csr_intensity, cmap, extract_slice,
                                   fps, path, dpi, symmetric=False, **kwargs):
-        # fig = plt.figure(figsize=(7*(0.61/0.76 * 4/5), 7))
         def forceAspect(ax, aspect=1):
-            # extent = im.get_extent()
-            # ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
             ax.set_aspect(np.abs((ax.get_xlim()[1] - ax.get_xlim()[0]) / (ax.get_ylim()[1] - ax.get_ylim()[0])) / aspect)
 
         fig = plt.figure()
@@ -925,8 +920,6 @@ class PhaseSpace(object):
         style.update("inverse_ggplot")
         style["marker:size"] = 2
         style["line:width"] = 1
-
-        # vline_color = palettes['tango'][1]
 
         def do_ms(i):
             text.set_text("Synchrotron Period: {:.3f} $T_s$".format(time_axis[i]))
@@ -1077,7 +1070,6 @@ class PhaseSpace(object):
             return fig
         elif path:  # range(len(data)) is correct since data is only from lb to ub
             sa = kwargs.setdefault("save_args", {})
-            from matplotlib.transforms import Bbox
             sa['pad_inches'] = 0
             ani = create_animation(fig, do, range(len(data)), clear_between=False, fps=fps, blit=False, dpi=dpi,
                                    path=path, **kwargs)
