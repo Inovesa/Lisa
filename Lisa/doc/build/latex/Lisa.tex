@@ -54,8 +54,8 @@
 
 
 \title{Lisa Documentation}
-\date{Nov 10, 2017}
-\release{0.01}
+\date{Jun 08, 2018}
+\release{0.4.0.2}
 \author{Patrick Schreiber}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
@@ -72,25 +72,25 @@ Lisa is a Python module to easily plot and interact with Data from Inovesa resul
 
 
 \chapter{Availability of Classes}
-\label{\detokenize{availability::doc}}\label{\detokenize{availability:availability-of-classes}}\label{\detokenize{availability:welcome-to-lisa-s-documentation}}\begin{description}
+\label{\detokenize{availability:welcome-to-lisa-s-documentation}}\label{\detokenize{availability::doc}}\label{\detokenize{availability:availability-of-classes}}\begin{description}
 \item[{The following Classes are available at top Level (using Lisa.\textless{}CLS\textgreater{}):}] \leavevmode\begin{itemize}
 \item {} 
-core.file.File
+data.file.File
 
 \item {} 
-core.file.MultiFile
+data.file.MultiFile
 
 \item {} 
-core.data.Data
+data.data.Data
 
 \item {} 
-core.plots.plots.SimplePlotter
+plots.plots.SimplePlotter
 
 \item {} 
-core.plots.plots.MultiPlot
+plots.plots.MultiPlot
 
 \item {} 
-core.plots.plots.PhaseSpace
+plots.plots.PhaseSpace
 
 \item {} 
 core.plots.plots.MultiPhaseSpaceMovie
@@ -103,7 +103,7 @@ Style is available through Lisa.plots.Style
 
 
 \chapter{Simple Usage}
-\label{\detokenize{simpleusage::doc}}\label{\detokenize{simpleusage:simple-usage}}
+\label{\detokenize{simpleusage:simple-usage}}\label{\detokenize{simpleusage::doc}}
 This is intended for someone who simply wants to plot something quickly for example.
 
 
@@ -173,7 +173,7 @@ Data is an object encapsulating a File object. The benefit of this is it convert
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import} \PYG{n+nn}{Lisa}
 \PYG{n}{data} \PYG{o}{=} \PYG{n}{Lisa}\PYG{o}{.}\PYG{n}{Data}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/path/to/h5}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
-\PYG{n}{data}\PYG{o}{.}\PYG{n}{bunch\PYGZus{}profile}\PYG{p}{(}\PYG{n}{Lisa}\PYG{o}{.}\PYG{n}{Axis}\PYG{o}{.}\PYG{n}{DATA}\PYG{p}{,} \PYG{n}{unit}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{c}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} c for coulomb.}
+\PYG{n}{data}\PYG{o}{.}\PYG{n}{bunch\PYGZus{}profile}\PYG{p}{(}\PYG{n}{Lisa}\PYG{o}{.}\PYG{n}{Axis}\PYG{o}{.}\PYG{n}{DATA}\PYG{p}{,} \PYG{n}{unit}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{c/s}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} c/s for coulomb per second.}
 \PYG{n}{data}\PYG{o}{.}\PYG{n}{bunch\PYGZus{}position}\PYG{p}{(}\PYG{n}{Lisa}\PYG{o}{.}\PYG{n}{Axis}\PYG{o}{.}\PYG{n}{XAXIS}\PYG{p}{,} \PYG{n}{unit}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{m}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} m for meter}
 \PYG{n}{data}\PYG{o}{.}\PYG{n}{bunch\PYGZus{}position}\PYG{p}{(}\PYG{n}{Lisa}\PYG{o}{.}\PYG{n}{Axis}\PYG{o}{.}\PYG{n}{XAXIS}\PYG{p}{,} \PYG{n}{unit}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{s}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} s for meter}
 \end{sphinxVerbatim}
@@ -187,7 +187,11 @@ It is possible to pass the unit as second parameter without a keyword. (For raw 
 \label{\detokenize{simpleusage:phasespace}}
 PhaseSpace is used to generate PhaseSpace plots or movies.
 
-Use PhaseSpace.plot\_ps to plot a phasespace or use PhaseSpace.ps\_movie to generate a PhaseSpace Movie
+Use PhaseSpace.plot\_ps to plot a phasespace or use PhaseSpace.phase\_space\_movie to generate a PhaseSpace Movie.
+
+It is also possible to generate a movie with subtracted mean phase space using PhaseSpace.microstructure\_movie.
+
+Furthermore is it possible to extract “screenshots” from those movies by passing “extract\_slice” (see
 
 
 \section{MultiPhaseSpaceMovie}
@@ -203,6 +207,12 @@ The method to generate the movie is MultiPhaseSpaceMovie.create\_movie
 Patrick Schreiber
 
 \end{description}\end{quote}
+\index{warn() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{plots:plots.warn}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{warn}}{\emph{x}}{}
+\end{fulllineitems}
+
 \index{Deprecated (class in plots)}
 
 \begin{fulllineitems}
@@ -224,7 +234,8 @@ Setup Plots to look native in Latex documents. Subject to change.
 \begin{DUlineblock}{0em}
 \item[] A Simple Plot Helper Class.  
 \item[] It takes a Filename to the Constructor.  
-\item[] Each actual plotting function is decorated using plot or meshPlot. See those for additional parameters to each plot function.  
+\item[] Each actual plotting function is decorated using plot or meshPlot. See those for additional  
+\item[] parameters to each plot function.  
 \end{DUlineblock}
 \index{\_\_init\_\_() (plots.SimplePlotter method)}
 
@@ -249,7 +260,8 @@ Initialise a Simple Plotter instance
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{plots:plots.SimplePlotter.plot}}\pysiglinewithargsret{\sphinxbfcode{plot}}{\emph{func}}{}
-Decorator to reuse plotting methods for different data. Calling one of the actual plot functions will result in calling this.  
+Decorator to reuse plotting methods for different data. Calling one of the actual plot  
+functions will result in calling this.  
 This means the following options are available:
 
 General Options (always use as keywords):
@@ -271,16 +283,18 @@ General Options (always use as keywords):
 \sphinxstyleliteralstrong{use\_offset} \textendash{} (optional) a bool if one wants an offset on yaxis or not
 
 \item {} 
-\sphinxstyleliteralstrong{force\_exponential\_x} \textendash{} (optional) a bool if one wants to force exponential notation on xaxis or not
+\sphinxstyleliteralstrong{force\_exponential\_x} \textendash{} (optional) a bool to force exponential notation on xaxis or not
 
 \item {} 
-\sphinxstyleliteralstrong{force\_exponential\_y} \textendash{} (optional) a bool if one wants to force exponential notation on yaxis or not
+\sphinxstyleliteralstrong{force\_exponential\_y} \textendash{} (optional) a bool to force exponential notation on yaxis or not
 
 \item {} 
-\sphinxstyleliteralstrong{fft} \textendash{} (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft
+\sphinxstyleliteralstrong{fft} \textendash{} (optional) a bool to plot fft(data) instead of data or string for method to  
+use in numpy.fft
 
 \item {} 
-\sphinxstyleliteralstrong{fft\_padding} \textendash{} (optional) an integer to specify how much 0 will be padded to the data before fft default fft
+\sphinxstyleliteralstrong{fft\_padding} \textendash{} (optional) an integer to specify how much 0 will be padded to the data  
+before fft default fft
 
 \item {} 
 \sphinxstyleliteralstrong{abs} \textendash{} (optional) a boolean to select if plot absolute values or direct data
@@ -293,6 +307,9 @@ General Options (always use as keywords):
 
 \item {} 
 \sphinxstyleliteralstrong{y\_log} \textendash{} (optional) a boolean to set the y axis to log scale
+
+\item {} 
+\sphinxstyleliteralstrong{idx\_range} \textendash{} (optional) a tuple with minimum and maximum index to plot
 
 \end{itemize}
 
@@ -321,31 +338,41 @@ General Options (always use as keywords):
 \sphinxstyleliteralstrong{label} \textendash{} (optional) the label for this plot (legend) (if line plot)
 
 \item {} 
-\sphinxstyleliteralstrong{norm} \textendash{} (optional) the norm to use if pcolormesh (default LogNorm)
+\sphinxstyleliteralstrong{norm} \textendash{} (optional) mpl Norm object or one of {[}“linear”, “log”{]} to use for pcolormesh  
+(default linear)
 
 \item {} 
 \sphinxstyleliteralstrong{colormap} \textendash{} (optional) the colormap for pcolormesh to use (default PuBu)
 
 \item {} 
-\sphinxstyleliteralstrong{force\_bad\_to\_min} \textendash{} (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar
+\sphinxstyleliteralstrong{force\_bad\_to\_min} \textendash{} (optional) force bad values (e.g. negative or zero in LogNorm) of  
+colorbar to minimum color of colorbar
 
 \item {} 
-\sphinxstyleliteralstrong{force\_exponential\_x} \textendash{} (optional) a bool if one wants to force exponential notation on xaxis or not
+\sphinxstyleliteralstrong{force\_exponential\_x} \textendash{} (optional) a bool if one wants to force exponential notation on  
+xaxis or not
 
 \item {} 
-\sphinxstyleliteralstrong{force\_exponential\_y} \textendash{} (optional) a bool if one wants to force exponential notation on yaxis or not
+\sphinxstyleliteralstrong{force\_exponential\_y} \textendash{} (optional) a bool if one wants to force exponential notation on  
+yaxis or not
 
 \item {} 
 \sphinxstyleliteralstrong{plt\_args} \textendash{} (optional) dictionary with arguments to the displaying function
 
 \item {} 
-\sphinxstyleliteralstrong{period} \textendash{} (optional) the period to use. If not given will plot all data as pcolormesh (use parameters from plot)
+\sphinxstyleliteralstrong{period} \textendash{} (optional) the period to use. If not given will plot all data as pcolormesh  
+(use parameters from plot)
 
 \item {} 
-\sphinxstyleliteralstrong{use\_index} \textendash{} (optional) Use period as index in data and not synchrotron period (default False)
+\sphinxstyleliteralstrong{use\_index} \textendash{} (optional) Use period as index in data and not synchrotron period  
+(default False)
 
 \item {} 
-\sphinxstyleliteralstrong{mean\_range} \textendash{} (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)
+\sphinxstyleliteralstrong{mean\_range} \textendash{} (optional) If given plot a normal plot but with data from mean of the  
+given range (use parameters from plot)
+
+\item {} 
+\sphinxstyleliteralstrong{transpose} \textendash{} (optional) Transpose the 2d Plot (x-axis is time instead of y-axis)
 
 \end{itemize}
 
@@ -390,8 +417,43 @@ yunit: possible values: “ts”, “seconds”, “raw”
 \item {} 
 zunit: possible values: “coulomb”, “ampere”, “raw”
 
+\item {} \begin{description}
+\item[{pad\_zero: True or False. Pad data to zero to avoid white lines in plot (only considered  }] \leavevmode
+if period is None or not given)
+
+\end{description}
+
+\end{itemize}
+
+\end{description}
+
+\end{fulllineitems}
+
+\index{wake\_potential() (plots.SimplePlotter method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{plots:plots.SimplePlotter.wake_potential}}\pysiglinewithargsret{\sphinxbfcode{wake\_potential}}{\emph{self}, \emph{*args}, \emph{**kwargs}}{}~
+\begin{DUlineblock}{0em}
+\item[] Plot the wake\_potential either as line plot or as pcolormesh  
+\item[] to plot as line pass either the period as first argument or a keyword argument period  
+\item[] Note: if yunit is passed period is in that unit, else in default value.  
+\end{DUlineblock}
+\begin{description}
+\item[{kwargs: (first value is default)  }] \leavevmode\begin{itemize}
 \item {} 
-pad\_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)
+xunit: possible values: “meters”, “seconds”, “raw”
+
+\item {} 
+yunit: possible values: “ts”, “seconds”, “raw”
+
+\item {} 
+zunit: possible values: “volt”, “raw”
+
+\item {} \begin{description}
+\item[{pad\_zero: True or False. Pad data to zero to avoid white lines in plot  }] \leavevmode
+(only considered if period is None or not given)
+
+\end{description}
 
 \end{itemize}
 
@@ -526,6 +588,12 @@ Plot Impedance (Fixed units). Real and Imaginary Part
 
 \end{fulllineitems}
 
+\index{video() (plots.SimplePlotter method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{plots:plots.SimplePlotter.video}}\pysiglinewithargsret{\sphinxbfcode{video}}{\emph{func}}{}
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -653,12 +721,13 @@ Plot the phasespace.
 \index{phase\_space\_movie() (plots.PhaseSpace method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{plots:plots.PhaseSpace.phase_space_movie}}\pysiglinewithargsret{\sphinxbfcode{phase\_space\_movie}}{\emph{self}, \emph{path}, \emph{fr\_idx=-1}, \emph{to\_idx=-1}, \emph{fps=20}, \emph{plot\_area\_width=None}}{}
+\phantomsection\label{\detokenize{plots:plots.PhaseSpace.phase_space_movie}}\pysiglinewithargsret{\sphinxbfcode{phase\_space\_movie}}{\emph{self}, \emph{path=None}, \emph{fr\_idx=None}, \emph{to\_idx=None}, \emph{fps=20}, \emph{plot\_area\_width=None dpi=200}, \emph{csr\_intensity=False}, \emph{bunch\_profile=False}, \emph{cmap="inferno"}, \emph{clim=None}, \emph{extract\_slice=None}, \emph{**kwargs}}{}
 Plot a movie of the evolving phasespace
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\sphinxstyleliteralstrong{path} \textendash{} Path to a movie file to save to
+\sphinxstyleliteralstrong{path} \textendash{} Path to a movie file to save to if None: do not save, just return the  
+animation object
 
 \item {} 
 \sphinxstyleliteralstrong{fr\_idx} \textendash{} Index in the phasespace data to start video
@@ -670,8 +739,35 @@ Plot a movie of the evolving phasespace
 \sphinxstyleliteralstrong{fps} \textendash{} Frames per second of the output video
 
 \item {} 
-\sphinxstyleliteralstrong{plot\_area\_width} \textendash{} The width in pixel to plot around com. If None will plot full phasespace.  
-(Will plot from com-plot\_area\_width/2 to com+plot\_area\_width/2 in space and energy)
+\sphinxstyleliteralstrong{plot\_area\_width} \textendash{} The width in pixel to plot around com. If None will plot full  
+phasespace. (Will plot from com-plot\_area\_width/2 to com+plot\_area\_width/2  
+in space and energy)
+
+\item {} 
+\sphinxstyleliteralstrong{dpi} \textendash{} Dots per inch of output video
+
+\item {} 
+\sphinxstyleliteralstrong{csr\_intensity} \textendash{} Also plot CSR intensity and marker of current position
+
+\item {} 
+\sphinxstyleliteralstrong{bunch\_profile} \textendash{} Also plot the bunch profile for current synchrotron period
+
+\item {} 
+\sphinxstyleliteralstrong{cmap} \textendash{} Colormap to use
+
+\item {} 
+\sphinxstyleliteralstrong{clim} \textendash{} Maximum in fraction of global min/max to use as colormap limits
+
+\item {} 
+\sphinxstyleliteralstrong{extract\_slice} \textendash{} Extract a slice and do no movie, just return the plot. This is a  
+string in format idx:int for an actual slice or ts:float for a specific synchrotron  
+period (or the nearest value). Or it is an integer for a slice index  
+(same as idx:int)
+
+\item {} 
+\sphinxstyleliteralstrong{**kwargs} \textendash{} 
+Keyword arguments passed to create\_animation
+
 
 \end{itemize}
 
@@ -685,12 +781,13 @@ animation object
 \index{microstructure\_movie() (plots.PhaseSpace method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{plots:plots.PhaseSpace.microstructure_movie}}\pysiglinewithargsret{\sphinxbfcode{microstructure\_movie}}{\emph{self}, \emph{path}, \emph{fr\_idx=-1}, \emph{to\_idx=-1}, \emph{mean\_range=(None}, \emph{None)}, \emph{fps=20}, \emph{plot\_area\_width=None}}{}
+\phantomsection\label{\detokenize{plots:plots.PhaseSpace.microstructure_movie}}\pysiglinewithargsret{\sphinxbfcode{microstructure\_movie}}{\emph{self}, \emph{path=None}, \emph{fr\_idx=None}, \emph{to\_idx=None}, \emph{mean\_range=(None}, \emph{None) fps=20}, \emph{plot\_area\_width=None}, \emph{dpi=200}, \emph{csr\_intensity=False}, \emph{bunch\_profile=False}, \emph{cmap="RdBu\_r"}, \emph{clim=None}, \emph{extract\_slice=None}, \emph{**kwargs}}{}
 Plot the difference between the mean phasespace and the current snapshot as video.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\sphinxstyleliteralstrong{path} \textendash{} Path to a movie file to save to
+\sphinxstyleliteralstrong{path} \textendash{} Path to a movie file to save to if None: do not save, just return the animation  
+object
 
 \item {} 
 \sphinxstyleliteralstrong{fr\_idx} \textendash{} Index in the phasespace data to start video
@@ -699,14 +796,42 @@ Plot the difference between the mean phasespace and the current snapshot as vide
 \sphinxstyleliteralstrong{to\_idx} \textendash{} Index in the phasespace data to stop video
 
 \item {} 
-\sphinxstyleliteralstrong{mean\_range} \textendash{} The min index and max index to use when calculating the mean of the phasespace
+\sphinxstyleliteralstrong{mean\_range} \textendash{} The min index and max index to use when calculating the mean of the  
+phasespace
 
 \item {} 
 \sphinxstyleliteralstrong{fps} \textendash{} Frames per second of the output video
 
 \item {} 
-\sphinxstyleliteralstrong{plot\_area\_width} \textendash{} The width in pixel to plot around com. If None will plot full phasespace.  
+\sphinxstyleliteralstrong{plot\_area\_width} \textendash{} The width in pixel to plot around com. If None will plot full  
+phasespace.  
 (Will plot from com-plot\_area\_width/2 to com+plot\_area\_width/2 in space and energy)
+
+\item {} 
+\sphinxstyleliteralstrong{dpi} \textendash{} Dots per inch of output video
+
+\item {} 
+\sphinxstyleliteralstrong{csr\_intensity} \textendash{} Also plot CSR intensity and marker of current position
+
+\item {} 
+\sphinxstyleliteralstrong{bunch\_profile} \textendash{} Also plot the bunch profile for current synchrotron period
+
+\item {} 
+\sphinxstyleliteralstrong{cmap} \textendash{} Colormap to use
+
+\item {} 
+\sphinxstyleliteralstrong{clim} \textendash{} Maximum in fraction of global min/max to use as colormap limits
+
+\item {} 
+\sphinxstyleliteralstrong{extract\_slice} \textendash{} Extract a slice and do no movie, just return the plot. This is a  
+string in format idx:int for an actual slice or ts:float for a specific synchrotron  
+period (or the nearest value). Or it is an integer for a slice index  
+(same as idx:int)
+
+\item {} 
+\sphinxstyleliteralstrong{**kwargs} \textendash{} 
+Keyword arguments passed to create\_animation
+
 
 \end{itemize}
 
@@ -755,7 +880,8 @@ Create a Movie of phasespaces
 \sphinxstyleliteralstrong{fps}\sphinxstyleliteralstrong{(}\sphinxstyleliteralstrong{=30}\sphinxstyleliteralstrong{)} \textendash{} the frames per second to use
 
 \item {} 
-\sphinxstyleliteralstrong{autorescale}\sphinxstyleliteralstrong{(}\sphinxstyleliteralstrong{=False}\sphinxstyleliteralstrong{)} \textendash{} if True will autorescale each frame (will not make sense if you want to compare)
+\sphinxstyleliteralstrong{autorescale}\sphinxstyleliteralstrong{(}\sphinxstyleliteralstrong{=False}\sphinxstyleliteralstrong{)} \textendash{} if True will autorescale each frame (will not make sense if  
+you want to compare)
 
 \end{itemize}
 
@@ -772,7 +898,7 @@ True if file produced, moviepy video instance if None as filename was given
 \phantomsection\label{\detokenize{file:module-file}}\index{file (module)}
 
 \chapter{Inovesa Result Files}
-\label{\detokenize{file::doc}}\label{\detokenize{file:inovesa-result-files}}\label{\detokenize{file:file}}\begin{quote}\begin{description}
+\label{\detokenize{file:file}}\label{\detokenize{file:inovesa-result-files}}\label{\detokenize{file::doc}}\begin{quote}\begin{description}
 \item[{Author}] \leavevmode
 Patrick Schreiber
 
@@ -841,12 +967,14 @@ Registeres properties of one class into another class.registered\_properties
 \phantomsection\label{\detokenize{file:file.File}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{file.}\sphinxbfcode{File}}{\emph{object}}{}
 Wrapper around a h5 File created by Inovesa
 
-Each Datagroup is a method of this object. To get a special axis of each group use additional parameters.
+Each Datagroup is a method of this object. To get a special axis of each group  
+use additional parameters.
 
-If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded, as AttributedNPArray.
+If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded,  
+as AttributedNPArray.
 
-If no or more than one parameter is supplied the data will be returned as DataContainer object containing  
-the HDF5.Dataset or AttributedNPArray objects.
+If no or more than one parameter is supplied the data will be returned as DataContainer  
+object containing the HDF5.Dataset or AttributedNPArray objects.
 
 This is not completely true for File.parameters.
 
@@ -859,7 +987,8 @@ This is not completely true for File.parameters.
 \PYG{n}{axes} \PYG{o}{=} \PYG{n}{f}\PYG{o}{.}\PYG{n}{bunch\PYGZus{}profile}\PYG{p}{(}\PYG{n}{Axis}\PYG{o}{.}\PYG{n}{TIME}\PYG{p}{,} \PYG{n}{Axis}\PYG{o}{.}\PYG{n}{XAXIS}\PYG{p}{)}  
 \end{sphinxVerbatim}
 
-Method names are mostly the datagroup-names with underscores instead of camelcase (e.g. bunch\_profile for BunchProfile)
+Method names are mostly the datagroup-names with underscores instead of camelcase  
+(e.g. bunch\_profile for BunchProfile)
 
 Available Groups:
 \begin{itemize}
@@ -911,12 +1040,13 @@ parameters
 \end{itemize}
 \begin{itemize}
 \item {} 
-parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.
+parameters does not expose the exact same interface. Use File.parameters() to get the
 
 \end{itemize}
 
-Use File.parameters(param1, param2 …) to get either a single parameter (with the datatype that this parameter is saved  
-in the hdf5 file) or a DataContainer object depending on how much params were passed.
+HDF5 Attribute Object. Use File.parameters(param1, param2 …) to get either a single parameter  
+(with the datatype that this parameter is saved in the hdf5 file) or a DataContainer object  
+depending on how much params were passed.
 \index{\_\_init\_\_() (file.File method)}
 
 \begin{fulllineitems}
@@ -941,150 +1071,6 @@ Preload Data into memory. This will speed up recurring reads by a lot
 
 \end{fulllineitems}
 
-\index{File\_dep (class in file)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{file.}\sphinxbfcode{File\_dep}}{\emph{object}}{}
-Wrapper around an h5 File created by Inovesa
-\index{\_\_init\_\_() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.__init__}}\pysiglinewithargsret{\sphinxbfcode{\_\_init\_\_}}{\emph{self}, \emph{filename}}{}
-Create File object
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\sphinxstyleliteralstrong{filename} \textendash{} The filename of the Inovesa result file
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{preload\_full() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.preload_full}}\pysiglinewithargsret{\sphinxbfcode{preload\_full}}{\emph{self}, \emph{what}, \emph{axis=None}}{}
-DEPRECATED  
-Preload Data into memory. This will speed up recurring reads by a lot
-
-\end{fulllineitems}
-
-\index{energy\_spread() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.energy_spread}}\pysiglinewithargsret{\sphinxbfcode{energy\_spread}}{\emph{self}, \emph{*selectors}}{}
-Return the EnergySpread
-
-\end{fulllineitems}
-
-\index{bunch\_length() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.bunch_length}}\pysiglinewithargsret{\sphinxbfcode{bunch\_length}}{\emph{self}, \emph{*selectors}}{}
-Return the BunchLength
-
-\end{fulllineitems}
-
-\index{bunch\_position() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.bunch_position}}\pysiglinewithargsret{\sphinxbfcode{bunch\_position}}{\emph{self}, \emph{*selectors}}{}
-Return the BunchPosition
-
-\end{fulllineitems}
-
-\index{bunch\_population() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.bunch_population}}\pysiglinewithargsret{\sphinxbfcode{bunch\_population}}{\emph{self}, \emph{*selectors}}{}
-Return the BunchPopulation
-
-\end{fulllineitems}
-
-\index{bunch\_profile() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.bunch_profile}}\pysiglinewithargsret{\sphinxbfcode{bunch\_profile}}{\emph{self}, \emph{*selectors}}{}
-Return the BunchProfile
-\begin{quote}\begin{description}
-\item[{Returns}] \leavevmode
-{[}BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data{]}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{csr\_intensity() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.csr_intensity}}\pysiglinewithargsret{\sphinxbfcode{csr\_intensity}}{\emph{self}, \emph{*selectors}}{}
-Return the CSRIntensity
-
-\end{fulllineitems}
-
-\index{csr\_spectrum() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.csr_spectrum}}\pysiglinewithargsret{\sphinxbfcode{csr\_spectrum}}{\emph{self}, \emph{*selectors}}{}
-Return the CSRSpectrum
-
-\end{fulllineitems}
-
-\index{energy\_profile() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.energy_profile}}\pysiglinewithargsret{\sphinxbfcode{energy\_profile}}{\emph{self}, \emph{*selectors}}{}
-Return the EnergyProfile
-
-\end{fulllineitems}
-
-\index{impedance() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.impedance}}\pysiglinewithargsret{\sphinxbfcode{impedance}}{\emph{self}, \emph{*selectors}}{}
-Return the Impedance
-
-\end{fulllineitems}
-
-\index{particles() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.particles}}\pysiglinewithargsret{\sphinxbfcode{particles}}{\emph{self}, \emph{*selectors}}{}
-Return the Particles
-
-\end{fulllineitems}
-
-\index{phase\_space() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.phase_space}}\pysiglinewithargsret{\sphinxbfcode{phase\_space}}{\emph{self}, \emph{*selectors}}{}
-Return the PhaseSpace
-
-\end{fulllineitems}
-
-\index{wake\_potential() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.wake_potential}}\pysiglinewithargsret{\sphinxbfcode{wake\_potential}}{\emph{self}, \emph{*selectors}}{}
-Return the WakePotential
-
-\end{fulllineitems}
-
-\index{parameters() (file.File\_dep method)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{file:file.File_dep.parameters}}\pysiglinewithargsret{\sphinxbfcode{parameters}}{\emph{self}}{}
-Return the Inovesa Parameters
-\begin{quote}\begin{description}
-\item[{Returns}] \leavevmode
-h5py.Attribute Instance
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
 \index{MultiFile (class in file)}
 
 \begin{fulllineitems}
@@ -1099,7 +1085,7 @@ Multiple File container for whole directories
 \sphinxstyleliteralstrong{path} \textendash{} The path to search in
 
 \item {} 
-\sphinxstyleliteralstrong{pattern} \textendash{} The pattern to search for (pattern has to be accepted by glob) (None for no pattern)
+\sphinxstyleliteralstrong{pattern} \textendash{} The pattern to search for (has to be accepted by glob) (None for no pattern)
 
 \item {} 
 \sphinxstyleliteralstrong{sorter} \textendash{} The sorting method to use. (None for default)
@@ -1117,7 +1103,7 @@ Multiple File container for whole directories
 Set the sorting method
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\sphinxstyleliteralstrong{sorter} \textendash{} A callable that accepts a list of files as strings and returns a sorted list of strings
+\sphinxstyleliteralstrong{sorter} \textendash{} A callable that accepts a list of files as strings and returns a sorted list
 
 \end{description}\end{quote}
 
@@ -1155,7 +1141,7 @@ Get File list as Lisa.File object list
 \phantomsection\label{\detokenize{data:module-data}}\index{data (module)}
 
 \chapter{Data with Units}
-\label{\detokenize{data::doc}}\label{\detokenize{data:data-with-units}}\label{\detokenize{data:data}}\begin{quote}\begin{description}
+\label{\detokenize{data:data-with-units}}\label{\detokenize{data::doc}}\label{\detokenize{data:data}}\begin{quote}\begin{description}
 \item[{Author}] \leavevmode
 Patrick Schreiber
 
@@ -1208,9 +1194,37 @@ Convert to correct unit.
 \sphinxstyleliteralstrong{unit} (\sphinxstyleliteralemphasis{string}) \textendash{} Use this as second argument or kwarg
 
 \item {} 
-\sphinxstyleliteralstrong{sub\_idx} \textendash{} (kwarg) the index in the h5object (if File returns {[}Dataset1, Dataset2{]} then idx=0 and sub\_idx is given will result in Dataset1{[}sub\_idx{]}) This will speed up if only part of the data is used.
+\sphinxstyleliteralstrong{sub\_idx} \textendash{} (kwarg) the index in the h5object (if File returns {[}Dataset1, Dataset2{]}
 
 \end{itemize}
+
+\end{description}\end{quote}
+
+then idx=0 and sub\_idx is given will result in Dataset1{[}sub\_idx{]})  
+This will speed up if only part of the data is used.
+
+\end{fulllineitems}
+
+\index{unit\_factor() (data.Data method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{data:data.Data.unit_factor}}\pysiglinewithargsret{\sphinxbfcode{unit\_factor}}{\emph{self}, \emph{data}, \emph{axis}, \emph{unit}}{}
+Get the factor to calculate values in the correct physical unit
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} The data to get the factor for (e.g. bunch\_profile)
+
+\item {} 
+\sphinxstyleliteralstrong{axis} \textendash{} The Axis object to select what axis to get the factor for
+
+\item {} 
+\sphinxstyleliteralstrong{unit} \textendash{} The actual unit
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Factor to get the data in physical units (physical=data*factor)
 
 \end{description}\end{quote}
 
@@ -1222,7 +1236,7 @@ Convert to correct unit.
 \phantomsection\label{\detokenize{config:module-config}}\index{config (module)}
 
 \chapter{Plot Configuration}
-\label{\detokenize{config::doc}}\label{\detokenize{config:config}}\label{\detokenize{config:plot-configuration}}\begin{quote}\begin{description}
+\label{\detokenize{config:config}}\label{\detokenize{config:plot-configuration}}\label{\detokenize{config::doc}}\begin{quote}\begin{description}
 \item[{Author}] \leavevmode
 Patrick Schreiber
 
@@ -1235,10 +1249,34 @@ Alias to another method
 
 \end{fulllineitems}
 
+\index{update\_line\_color() (in module config)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{config:config.update_line_color}}\pysiglinewithargsret{\sphinxcode{config.}\sphinxbfcode{update\_line\_color}}{\emph{ax}, \emph{w}, \emph{v}}{}
+\end{fulllineitems}
+
 \index{StyleError (class in config)}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{config:config.StyleError}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{config.}\sphinxbfcode{StyleError}}{\emph{Exception}}{}
+\end{fulllineitems}
+
+\index{Palette (class in config)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{config:config.Palette}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{config.}\sphinxbfcode{Palette}}{\emph{object}}{}~\index{next() (config.Palette method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{config:config.Palette.next}}\pysiglinewithargsret{\sphinxbfcode{next}}{\emph{self}}{}
+\end{fulllineitems}
+
+\index{reset() (config.Palette method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{config:config.Palette.reset}}\pysiglinewithargsret{\sphinxbfcode{reset}}{\emph{self}}{}
+\end{fulllineitems}
+
+
 \end{fulllineitems}
 
 \index{Style (class in config)}
@@ -1255,18 +1293,20 @@ Usage (assume ax is an matplotlib axes object):
 \PYG{n}{style}\PYG{o}{.}\PYG{n}{apply\PYGZus{}to\PYGZus{}ax}\PYG{p}{(}\PYG{n}{ax}\PYG{p}{)}  
 \PYG{n}{style}\PYG{o}{.}\PYG{n}{update}\PYG{p}{(}\PYG{p}{\PYGZob{}}\PYG{n}{selector}\PYG{p}{:} \PYG{n}{value}\PYG{p}{\PYGZcb{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} or use style.update\PYGZus{}style  }
 \PYG{n}{style}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{selector}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{=}\PYG{n}{value}  \PYG{c+c1}{\PYGZsh{} this also updates the axes object  }
-\PYG{c+c1}{\PYGZsh{} if you have done some modifications to the plot yourself and want to update the style again use  }
-\PYG{n}{style}\PYG{o}{.}\PYG{n}{reapply}\PYG{p}{(}\PYG{p}{)}  
+\PYG{c+c1}{\PYGZsh{} if you have done some modifications to the plot yourself and want to update the style  }
+\PYG{n}{again} \PYG{n}{use} \PYG{n}{style}\PYG{o}{.}\PYG{n}{reapply}\PYG{p}{(}\PYG{p}{)}  
 \end{sphinxVerbatim}
 
 \begin{sphinxadmonition}{note}{Note:}
-instead of working with the Style object directly you can use ax.current\_style after you applied a style
+instead of working with the Style object directly you can use ax.current\_style after  
+you applied a style
 \end{sphinxadmonition}
 
 \begin{sphinxadmonition}{note}{Note:}
-You can apply one Style object to more than one axes object. Just call apply\_to\_ax multiple times or with a list of axes  
-If you applied one Style to multiple axes objects and you use axes.current\_style instead of the style object  
-directly the updates/changes will nonetheless be applied to all applied axes objects
+You can apply one Style object to more than one axes object. Just call apply\_to\_ax  
+multiple times or with a list of axes. If you applied one Style to multiple axes objects  
+and you use axes.current\_style instead of the style object directly the updates/changes  
+will nonetheless be applied to all applied axes objects.
 \end{sphinxadmonition}
 \index{apply\_to\_ax() (config.Style method)}
 
@@ -1274,8 +1314,10 @@ directly the updates/changes will nonetheless be applied to all applied axes obj
 \phantomsection\label{\detokenize{config:config.Style.apply_to_ax}}\pysiglinewithargsret{\sphinxbfcode{apply\_to\_ax}}{\emph{self}, \emph{ax}}{}~
 \begin{DUlineblock}{0em}
 \item[] Apply this style to the given axes object  
-\item[] You can apply to multiple axes objects by calling this multiple times or with a list of objects  
+\item[] You can apply to multiple axes objects by calling this multiple times or with a list of  
 \end{DUlineblock}
+
+objects
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \sphinxstyleliteralstrong{ax} \textendash{} matplotlib axes object or list of those
@@ -1340,29 +1382,13 @@ Print or Get a list of possible selectors
 
 \end{fulllineitems}
 
-\phantomsection\label{\detokenize{helpers:module-helpers}}\index{helpers (module)}
-
-\chapter{Helpers}
-\label{\detokenize{helpers:id1}}\label{\detokenize{helpers::doc}}\label{\detokenize{helpers:helpers}}\begin{quote}\begin{description}
-\item[{Author}] \leavevmode
-Patrick Schreiber
-
-\end{description}\end{quote}
-\index{display\_video() (in module helpers)}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{helpers:helpers.display_video}}\pysiglinewithargsret{\sphinxcode{helpers.}\sphinxbfcode{display\_video}}{\emph{mov}}{}
-Display Video certain video objects in Jupyter Notebooks
-
-\end{fulllineitems}
-
 \phantomsection\label{\detokenize{animation:module-animation}}\index{animation (module)}
 
 \chapter{Create animated plots}
-\label{\detokenize{animation::doc}}\label{\detokenize{animation:create-animated-plots}}\label{\detokenize{animation:animation}}\index{create\_animation() (in module animation)}
+\label{\detokenize{animation:animation}}\label{\detokenize{animation::doc}}\label{\detokenize{animation:create-animated-plots}}\index{create\_animation() (in module animation)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{animation:animation.create_animation}}\pysiglinewithargsret{\sphinxcode{animation.}\sphinxbfcode{create\_animation}}{\emph{figure}, \emph{frame\_generator}, \emph{frames}, \emph{fps=None}, \emph{bitrate=18000}, \emph{dpi=100}, \emph{path=None}, \emph{blit=False}, \emph{clear\_between=False}, \emph{save\_args=None}}{}
+\phantomsection\label{\detokenize{animation:animation.create_animation}}\pysiglinewithargsret{\sphinxcode{animation.}\sphinxbfcode{create\_animation}}{\emph{figure}, \emph{frame\_generator}, \emph{frames}, \emph{fps=None}, \emph{bitrate=18000}, \emph{dpi=100}, \emph{path=Noneblit=False}, \emph{clear\_between=False}, \emph{save\_args=None}, \emph{progress=True}, \emph{anim\_writer="ffmpeg"}}{}
 Create an animation.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1387,6 +1413,13 @@ Create an animation.
 \item {} 
 \sphinxstyleliteralstrong{path} \textendash{} Path to save the video to. If None does not save.
 
+\item {} 
+\sphinxstyleliteralstrong{save\_args} \textendash{} Keyword arguments for savefig
+
+\item {} 
+\sphinxstyleliteralstrong{progress} \textendash{} Show progress bar. If False do not show, if True show one, if integer use as  
+offset for this bar
+
 \end{itemize}
 
 \end{description}\end{quote}
@@ -1410,7 +1443,8 @@ Generate a frame generator for simple data.
 \sphinxstyleliteralstrong{ydata} \textendash{} The ydata as iterable
 
 \item {} 
-\sphinxstyleliteralstrong{label\_only\_once} \textendash{} True to only show x and y tick labels only once (otherwise will be drawn over each other if axis present (not so nice))
+\sphinxstyleliteralstrong{label\_only\_once} \textendash{} True to only show x and y tick labels only once  
+(otherwise will be drawn over each other if axis present (not so nice))
 
 \end{itemize}
 
@@ -1421,7 +1455,7 @@ Generate a frame generator for simple data.
 \phantomsection\label{\detokenize{utils:module-utils}}\index{utils (module)}
 
 \chapter{Internal Utilities}
-\label{\detokenize{utils:internal-utilities}}\label{\detokenize{utils::doc}}\label{\detokenize{utils:utils}}\begin{quote}\begin{description}
+\label{\detokenize{utils:utils}}\label{\detokenize{utils:internal-utilities}}\label{\detokenize{utils::doc}}\begin{quote}\begin{description}
 \item[{Author}] \leavevmode
 Patrick Schreiber
 
@@ -1432,19 +1466,20 @@ Patrick Schreiber
 \label{\detokenize{utils:how-the-version-handling-for-attributes-works}}
 \sphinxtitleref{InovesaVersion} is a object that implements comparators for inovesa versions
 
-\sphinxtitleref{unit\_to\_attr\_map} is a dictionary that maps physical units to inovesa attributes. Since these attributes change  
-over different inovesa versions first a dictionary for “older” versions (13 and up, maybe some versions below match too)  
-then it is modified into \sphinxtitleref{unit\_to\_attr\_map\_v15} for versions 15 and up (until the next change in inovesa is made).
+\sphinxtitleref{unit\_to\_attr\_map} is a dictionary that maps physical units to inovesa attributes.  
+Since these attributes change over different inovesa versions first a dictionary for “older”  
+versions (13 and up, maybe some versions below match too) then it is modified into  
+\sphinxtitleref{unit\_to\_attr\_map\_v15} for versions 15 and up (until the next change in inovesa is made).
 
-\sphinxtitleref{attr\_to\_unit\_map} and \sphinxtitleref{attr\_to\_unit\_map\_v15} are just reversed dictionaries to make it possible to find the corresponding  
-readable/printable unit for an attribute
+\sphinxtitleref{attr\_to\_unit\_map} and \sphinxtitleref{attr\_to\_unit\_map\_v15} are just reversed dictionaries to make it possible  
+to find the corresponding readable/printable unit for an attribute
 
-Then \sphinxtitleref{alias\_map} is generated that makes it possible to not only use the exact specification used in unit\_to\_attr\_map  
-but also the ones specified in \sphinxtitleref{alias\_map}. The reason for this is that the user does not have to remember the exact  
-unit string.
+Then \sphinxtitleref{alias\_map} is generated that makes it possible to not only use the exact specification  
+used in unit\_to\_attr\_map but also the ones specified in \sphinxtitleref{alias\_map}. The reason for this is  
+that the user does not have to remember the exact unit string.
 
-Then a \sphinxtitleref{complete\_unit\_map} (and \sphinxtitleref{complete\_unit\_map\_v15}) is generated where all the entries in alias\_map are  
-mapped to attributes
+Then a \sphinxtitleref{complete\_unit\_map} (and \sphinxtitleref{complete\_unit\_map\_v15}) is generated where all the entries in  
+alias\_map are mapped to attributes
 
 There are 3 ‘public’ methods that should be used.
 \begin{itemize}
@@ -1462,6 +1497,12 @@ There are 3 ‘public’ methods that should be used.
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{utils:utils.UnitError}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{utils.}\sphinxbfcode{UnitError}}{\emph{Exception}}{}
+\end{fulllineitems}
+
+\index{DataNotInFile (class in utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{utils:utils.DataNotInFile}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{utils.}\sphinxbfcode{DataNotInFile}}{\emph{Exception}}{}
 \end{fulllineitems}
 
 \index{InovesaVersion (class in utils)}
@@ -1541,6 +1582,18 @@ a string with the requested unit
 
 \end{fulllineitems}
 
+\index{calc\_stat\_mom() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{utils:utils.calc_stat_mom}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{calc\_stat\_mom}}{\emph{axis}, \emph{profiles}}{}
+\end{fulllineitems}
+
+\index{calc\_bl() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{utils:utils.calc_bl}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{calc\_bl}}{\emph{axis}, \emph{profiles}}{}
+\end{fulllineitems}
+
 \index{color\_map\_inferno() (in module utils)}
 
 \begin{fulllineitems}
@@ -1563,9 +1616,6 @@ a string with the requested unit
 \indexspace
 \bigletter{f}
 \item {\sphinxstyleindexentry{file}}\sphinxstyleindexpageref{file:\detokenize{module-file}}
-\indexspace
-\bigletter{h}
-\item {\sphinxstyleindexentry{helpers}}\sphinxstyleindexpageref{helpers:\detokenize{module-helpers}}
 \indexspace
 \bigletter{p}
 \item {\sphinxstyleindexentry{plots}}\sphinxstyleindexpageref{plots:\detokenize{module-plots}}

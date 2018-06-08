@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lisa 0.01 documentation</title>
+  <title>Lisa 0.4.0.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.01
+                0.4.0.2
               </div>
             
           
@@ -95,7 +95,6 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-file">Inovesa Result Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-data">Data with Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-config">Plot Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-helpers">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-animation">Create animated plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-utils">Internal Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="index.html#how-the-version-handling-for-attributes-works">How the version handling for attributes works:</a></li>
@@ -145,7 +144,7 @@
     
       <li><a href="index.html#document-index">Docs</a> &raquo;</li>
         
-      <li>Lisa 0.01 documentation</li>
+      <li>Lisa 0.4.0.2 documentation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -171,12 +170,12 @@
 <dl class="docutils">
 <dt>The following Classes are available at top Level (using Lisa.&lt;CLS&gt;):</dt>
 <dd><ul class="first last simple">
-<li>core.file.File</li>
-<li>core.file.MultiFile</li>
-<li>core.data.Data</li>
-<li>core.plots.plots.SimplePlotter</li>
-<li>core.plots.plots.MultiPlot</li>
-<li>core.plots.plots.PhaseSpace</li>
+<li>data.file.File</li>
+<li>data.file.MultiFile</li>
+<li>data.data.Data</li>
+<li>plots.plots.SimplePlotter</li>
+<li>plots.plots.MultiPlot</li>
+<li>plots.plots.PhaseSpace</li>
 <li>core.plots.plots.MultiPhaseSpaceMovie</li>
 </ul>
 </dd>
@@ -237,7 +236,7 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <p>Data is an object encapsulating a File object. The benefit of this is it converts data to the given unit.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>  <span class="c1"># c for coulomb.</span>
+<span class="n">data</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;c/s&quot;</span><span class="p">)</span>  <span class="c1"># c/s for coulomb per second.</span>
 <span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>  <span class="c1"># m for meter</span>
 <span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>  <span class="c1"># s for meter</span>
 </pre></div>
@@ -248,7 +247,9 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <div class="section" id="phasespace">
 <h3>PhaseSpace<a class="headerlink" href="#phasespace" title="Permalink to this headline">¶</a></h3>
 <p>PhaseSpace is used to generate PhaseSpace plots or movies.</p>
-<p>Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.ps_movie to generate a PhaseSpace Movie</p>
+<p>Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.phase_space_movie to generate a PhaseSpace Movie.</p>
+<p>It is also possible to generate a movie with subtracted mean phase space using PhaseSpace.microstructure_movie.</p>
+<p>Furthermore is it possible to extract “screenshots” from those movies by passing “extract_slice” (see</p>
 </div>
 <div class="section" id="multiphasespacemovie">
 <h3>MultiPhaseSpaceMovie<a class="headerlink" href="#multiphasespacemovie" title="Permalink to this headline">¶</a></h3>
@@ -266,6 +267,11 @@ will be returned. This object is iterable, subscriptable and has a get method th
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="plots.warn">
+<code class="descclassname">plots.</code><code class="descname">warn</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.warn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="plots.Deprecated">
 <em class="property">class </em><code class="descclassname">plots.</code><code class="descname">Deprecated</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.Deprecated" title="Permalink to this definition">¶</a></dt>
@@ -283,7 +289,8 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <dd><div class="line-block">
 <div class="line">A Simple Plot Helper Class.  </div>
 <div class="line">It takes a Filename to the Constructor.  </div>
-<div class="line">Each actual plotting function is decorated using plot or meshPlot. See those for additional parameters to each plot function.  </div>
+<div class="line">Each actual plotting function is decorated using plot or meshPlot. See those for additional  </div>
+<div class="line">parameters to each plot function.  </div>
 </div>
 <dl class="method">
 <dt id="plots.SimplePlotter.__init__">
@@ -306,7 +313,8 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <dl class="method">
 <dt id="plots.SimplePlotter.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator to reuse plotting methods for different data. Calling one of the actual plot functions will result in calling this.  
+<dd><p>Decorator to reuse plotting methods for different data. Calling one of the actual plot  
+functions will result in calling this.  
 This means the following options are available:</p>
 <p>General Options (always use as keywords):</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -319,14 +327,17 @@ This means the following options are available:</p>
 <li><strong>label</strong> – (optional) the label for this plot (legend)</li>
 <li><strong>scale_factor</strong> – (optional) a scale factor Note: This does not modify the labels</li>
 <li><strong>use_offset</strong> – (optional) a bool if one wants an offset on yaxis or not</li>
-<li><strong>force_exponential_x</strong> – (optional) a bool if one wants to force exponential notation on xaxis or not</li>
-<li><strong>force_exponential_y</strong> – (optional) a bool if one wants to force exponential notation on yaxis or not</li>
-<li><strong>fft</strong> – (optional) a bool if one wants to plot fft(data) instead of data or string for method to use in numpy.fft</li>
-<li><strong>fft_padding</strong> – (optional) an integer to specify how much 0 will be padded to the data before fft default fft</li>
+<li><strong>force_exponential_x</strong> – (optional) a bool to force exponential notation on xaxis or not</li>
+<li><strong>force_exponential_y</strong> – (optional) a bool to force exponential notation on yaxis or not</li>
+<li><strong>fft</strong> – (optional) a bool to plot fft(data) instead of data or string for method to  
+use in numpy.fft</li>
+<li><strong>fft_padding</strong> – (optional) an integer to specify how much 0 will be padded to the data  
+before fft default fft</li>
 <li><strong>abs</strong> – (optional) a boolean to select if plot absolute values or direct data</li>
 <li><strong>plt_args</strong> – (optional) dictionary with arguments to the displaying function</li>
 <li><strong>x_log</strong> – (optional) a boolean to set the x axis to log scale</li>
 <li><strong>y_log</strong> – (optional) a boolean to set the y axis to log scale</li>
+<li><strong>idx_range</strong> – (optional) a tuple with minimum and maximum index to plot</li>
 </ul>
 </td>
 </tr>
@@ -349,15 +360,23 @@ This means the following options are available:</p>
 <li><strong>fig</strong> – (optional) the figure to plot in</li>
 <li><strong>ax</strong> – (optional) the axis to use to plot</li>
 <li><strong>label</strong> – (optional) the label for this plot (legend) (if line plot)</li>
-<li><strong>norm</strong> – (optional) the norm to use if pcolormesh (default LogNorm)</li>
+<li><strong>norm</strong> – (optional) mpl Norm object or one of [“linear”, “log”] to use for pcolormesh  
+(default linear)</li>
 <li><strong>colormap</strong> – (optional) the colormap for pcolormesh to use (default PuBu)</li>
-<li><strong>force_bad_to_min</strong> – (optional) force bad values (e.g. negative or zero in LogNorm) of colorbar to minimum color of colorbar</li>
-<li><strong>force_exponential_x</strong> – (optional) a bool if one wants to force exponential notation on xaxis or not</li>
-<li><strong>force_exponential_y</strong> – (optional) a bool if one wants to force exponential notation on yaxis or not</li>
+<li><strong>force_bad_to_min</strong> – (optional) force bad values (e.g. negative or zero in LogNorm) of  
+colorbar to minimum color of colorbar</li>
+<li><strong>force_exponential_x</strong> – (optional) a bool if one wants to force exponential notation on  
+xaxis or not</li>
+<li><strong>force_exponential_y</strong> – (optional) a bool if one wants to force exponential notation on  
+yaxis or not</li>
 <li><strong>plt_args</strong> – (optional) dictionary with arguments to the displaying function</li>
-<li><strong>period</strong> – (optional) the period to use. If not given will plot all data as pcolormesh (use parameters from plot)</li>
-<li><strong>use_index</strong> – (optional) Use period as index in data and not synchrotron period (default False)</li>
-<li><strong>mean_range</strong> – (optional) If given plot a normal plot but with data from mean of the given range (use parameters from plot)</li>
+<li><strong>period</strong> – (optional) the period to use. If not given will plot all data as pcolormesh  
+(use parameters from plot)</li>
+<li><strong>use_index</strong> – (optional) Use period as index in data and not synchrotron period  
+(default False)</li>
+<li><strong>mean_range</strong> – (optional) If given plot a normal plot but with data from mean of the  
+given range (use parameters from plot)</li>
+<li><strong>transpose</strong> – (optional) Transpose the 2d Plot (x-axis is time instead of y-axis)</li>
 </ul>
 </td>
 </tr>
@@ -392,7 +411,35 @@ This means the following options are available:</p>
 <li>xunit: possible values: “meters”, “seconds”, “raw”</li>
 <li>yunit: possible values: “ts”, “seconds”, “raw”</li>
 <li>zunit: possible values: “coulomb”, “ampere”, “raw”</li>
-<li>pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered if period is None or not given)</li>
+<li><dl class="first docutils">
+<dt>pad_zero: True or False. Pad data to zero to avoid white lines in plot (only considered  </dt>
+<dd>if period is None or not given)</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.wake_potential">
+<code class="descname">wake_potential</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.wake_potential" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the wake_potential either as line plot or as pcolormesh  </div>
+<div class="line">to plot as line pass either the period as first argument or a keyword argument period  </div>
+<div class="line">Note: if yunit is passed period is in that unit, else in default value.  </div>
+</div>
+<dl class="docutils">
+<dt>kwargs: (first value is default)  </dt>
+<dd><ul class="first last simple">
+<li>xunit: possible values: “meters”, “seconds”, “raw”</li>
+<li>yunit: possible values: “ts”, “seconds”, “raw”</li>
+<li>zunit: possible values: “volt”, “raw”</li>
+<li><dl class="first docutils">
+<dt>pad_zero: True or False. Pad data to zero to avoid white lines in plot  </dt>
+<dd>(only considered if period is None or not given)</dd>
+</dl>
+</li>
 </ul>
 </dd>
 </dl>
@@ -492,6 +539,11 @@ This means the following options are available:</p>
 <code class="descname">impedance</code><span class="sig-paren">(</span><em>self</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.impedance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot Impedance (Fixed units). Real and Imaginary Part</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="plots.SimplePlotter.video">
+<code class="descname">video</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.SimplePlotter.video" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -600,19 +652,32 @@ This means the following options are available:</p>
 
 <dl class="method">
 <dt id="plots.PhaseSpace.phase_space_movie">
-<code class="descname">phase_space_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>fr_idx=-1</em>, <em>to_idx=-1</em>, <em>fps=20</em>, <em>plot_area_width=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.phase_space_movie" title="Permalink to this definition">¶</a></dt>
+<code class="descname">phase_space_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path=None</em>, <em>fr_idx=None</em>, <em>to_idx=None</em>, <em>fps=20</em>, <em>plot_area_width=None dpi=200</em>, <em>csr_intensity=False</em>, <em>bunch_profile=False</em>, <em>cmap=&quot;inferno&quot;</em>, <em>clim=None</em>, <em>extract_slice=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.phase_space_movie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a movie of the evolving phasespace</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path</strong> – Path to a movie file to save to</li>
+<li><strong>path</strong> – Path to a movie file to save to if None: do not save, just return the  
+animation object</li>
 <li><strong>fr_idx</strong> – Index in the phasespace data to start video</li>
 <li><strong>to_idx</strong> – Index in the phasespace data to stop video</li>
 <li><strong>fps</strong> – Frames per second of the output video</li>
-<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full phasespace.  
-(Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)</li>
+<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full  
+phasespace. (Will plot from com-plot_area_width/2 to com+plot_area_width/2  
+in space and energy)</li>
+<li><strong>dpi</strong> – Dots per inch of output video</li>
+<li><strong>csr_intensity</strong> – Also plot CSR intensity and marker of current position</li>
+<li><strong>bunch_profile</strong> – Also plot the bunch profile for current synchrotron period</li>
+<li><strong>cmap</strong> – Colormap to use</li>
+<li><strong>clim</strong> – Maximum in fraction of global min/max to use as colormap limits</li>
+<li><strong>extract_slice</strong> – Extract a slice and do no movie, just return the plot. This is a  
+string in format idx:int for an actual slice or ts:float for a specific synchrotron  
+period (or the nearest value). Or it is an integer for a slice index  
+(same as idx:int)</li>
+<li><strong>**kwargs</strong> – <p>Keyword arguments passed to create_animation</p>
+</li>
 </ul>
 </td>
 </tr>
@@ -625,20 +690,34 @@ This means the following options are available:</p>
 
 <dl class="method">
 <dt id="plots.PhaseSpace.microstructure_movie">
-<code class="descname">microstructure_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path</em>, <em>fr_idx=-1</em>, <em>to_idx=-1</em>, <em>mean_range=(None</em>, <em>None)</em>, <em>fps=20</em>, <em>plot_area_width=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.microstructure_movie" title="Permalink to this definition">¶</a></dt>
+<code class="descname">microstructure_movie</code><span class="sig-paren">(</span><em>self</em>, <em>path=None</em>, <em>fr_idx=None</em>, <em>to_idx=None</em>, <em>mean_range=(None</em>, <em>None) fps=20</em>, <em>plot_area_width=None</em>, <em>dpi=200</em>, <em>csr_intensity=False</em>, <em>bunch_profile=False</em>, <em>cmap=&quot;RdBu_r&quot;</em>, <em>clim=None</em>, <em>extract_slice=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plots.PhaseSpace.microstructure_movie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the difference between the mean phasespace and the current snapshot as video.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path</strong> – Path to a movie file to save to</li>
+<li><strong>path</strong> – Path to a movie file to save to if None: do not save, just return the animation  
+object</li>
 <li><strong>fr_idx</strong> – Index in the phasespace data to start video</li>
 <li><strong>to_idx</strong> – Index in the phasespace data to stop video</li>
-<li><strong>mean_range</strong> – The min index and max index to use when calculating the mean of the phasespace</li>
+<li><strong>mean_range</strong> – The min index and max index to use when calculating the mean of the  
+phasespace</li>
 <li><strong>fps</strong> – Frames per second of the output video</li>
-<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full phasespace.  
+<li><strong>plot_area_width</strong> – The width in pixel to plot around com. If None will plot full  
+phasespace.  
 (Will plot from com-plot_area_width/2 to com+plot_area_width/2 in space and energy)</li>
+<li><strong>dpi</strong> – Dots per inch of output video</li>
+<li><strong>csr_intensity</strong> – Also plot CSR intensity and marker of current position</li>
+<li><strong>bunch_profile</strong> – Also plot the bunch profile for current synchrotron period</li>
+<li><strong>cmap</strong> – Colormap to use</li>
+<li><strong>clim</strong> – Maximum in fraction of global min/max to use as colormap limits</li>
+<li><strong>extract_slice</strong> – Extract a slice and do no movie, just return the plot. This is a  
+string in format idx:int for an actual slice or ts:float for a specific synchrotron  
+period (or the nearest value). Or it is an integer for a slice index  
+(same as idx:int)</li>
+<li><strong>**kwargs</strong> – <p>Keyword arguments passed to create_animation</p>
+</li>
 </ul>
 </td>
 </tr>
@@ -677,7 +756,8 @@ This means the following options are available:</p>
 <li><strong>dpi</strong><strong>(</strong><strong>=200</strong><strong>)</strong> – the dpi of the produces video</li>
 <li><strong>5.5</strong><strong>)</strong> (<em>size_inches</em><em>(</em><em>=5.5</em><em>,</em>) – tuple used for size in inces of the video</li>
 <li><strong>fps</strong><strong>(</strong><strong>=30</strong><strong>)</strong> – the frames per second to use</li>
-<li><strong>autorescale</strong><strong>(</strong><strong>=False</strong><strong>)</strong> – if True will autorescale each frame (will not make sense if you want to compare)</li>
+<li><strong>autorescale</strong><strong>(</strong><strong>=False</strong><strong>)</strong> – if True will autorescale each frame (will not make sense if  
+you want to compare)</li>
 </ul>
 </td>
 </tr>
@@ -752,10 +832,12 @@ This means the following options are available:</p>
 <dt id="file.File">
 <em class="property">class </em><code class="descclassname">file.</code><code class="descname">File</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper around a h5 File created by Inovesa</p>
-<p>Each Datagroup is a method of this object. To get a special axis of each group use additional parameters.</p>
-<p>If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded, as AttributedNPArray.</p>
-<p>If no or more than one parameter is supplied the data will be returned as DataContainer object containing  
-the HDF5.Dataset or AttributedNPArray objects.</p>
+<p>Each Datagroup is a method of this object. To get a special axis of each group  
+use additional parameters.</p>
+<p>If one parameter is supplied the data will be returned as HDF5.Dataset object or, if preloaded,  
+as AttributedNPArray.</p>
+<p>If no or more than one parameter is supplied the data will be returned as DataContainer  
+object containing the HDF5.Dataset or AttributedNPArray objects.</p>
 <p>This is not completely true for File.parameters.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;path/to/file&quot;</span><span class="p">)</span>  
 <span class="n">tax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>  
@@ -765,7 +847,8 @@ the HDF5.Dataset or AttributedNPArray objects.</p>
 <span class="n">axes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Axis</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">)</span>  
 </pre></div>
 </div>
-<p>Method names are mostly the datagroup-names with underscores instead of camelcase (e.g. bunch_profile for BunchProfile)</p>
+<p>Method names are mostly the datagroup-names with underscores instead of camelcase  
+(e.g. bunch_profile for BunchProfile)</p>
 <p>Available Groups:</p>
 <blockquote>
 <div><ul class="simple">
@@ -789,10 +872,11 @@ the HDF5.Dataset or AttributedNPArray objects.</p>
 </ul>
 </div></blockquote>
 <ul class="simple">
-<li>parameters does not expose the exact same interface. Use File.parameters() to get the HDF5 Attribute Object.</li>
+<li>parameters does not expose the exact same interface. Use File.parameters() to get the</li>
 </ul>
-<p>Use File.parameters(param1, param2 …) to get either a single parameter (with the datatype that this parameter is saved  
-in the hdf5 file) or a DataContainer object depending on how much params were passed.</p>
+<p>HDF5 Attribute Object. Use File.parameters(param1, param2 …) to get either a single parameter  
+(with the datatype that this parameter is saved in the hdf5 file) or a DataContainer object  
+depending on how much params were passed.</p>
 <dl class="method">
 <dt id="file.File.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File.__init__" title="Permalink to this definition">¶</a></dt>
@@ -816,127 +900,6 @@ in the hdf5 file) or a DataContainer object depending on how much params were pa
 </dd></dl>
 
 <dl class="class">
-<dt id="file.File_dep">
-<em class="property">class </em><code class="descclassname">file.</code><code class="descname">File_dep</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper around an h5 File created by Inovesa</p>
-<dl class="method">
-<dt id="file.File_dep.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create File object</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – The filename of the Inovesa result file</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.preload_full">
-<code class="descname">preload_full</code><span class="sig-paren">(</span><em>self</em>, <em>what</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.preload_full" title="Permalink to this definition">¶</a></dt>
-<dd><p>DEPRECATED  
-Preload Data into memory. This will speed up recurring reads by a lot</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.energy_spread">
-<code class="descname">energy_spread</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.energy_spread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the EnergySpread</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.bunch_length">
-<code class="descname">bunch_length</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_length" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the BunchLength</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.bunch_position">
-<code class="descname">bunch_position</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the BunchPosition</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.bunch_population">
-<code class="descname">bunch_population</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_population" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the BunchPopulation</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.bunch_profile">
-<code class="descname">bunch_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.bunch_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the BunchProfile</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[BunchProfile.axis0, BunchProfile.axis1, BunchProfile.data]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.csr_intensity">
-<code class="descname">csr_intensity</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.csr_intensity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the CSRIntensity</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.csr_spectrum">
-<code class="descname">csr_spectrum</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.csr_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the CSRSpectrum</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.energy_profile">
-<code class="descname">energy_profile</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.energy_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the EnergyProfile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.impedance">
-<code class="descname">impedance</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.impedance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Impedance</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.particles">
-<code class="descname">particles</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.particles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Particles</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.phase_space">
-<code class="descname">phase_space</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.phase_space" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the PhaseSpace</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.wake_potential">
-<code class="descname">wake_potential</code><span class="sig-paren">(</span><em>self</em>, <em>*selectors</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.wake_potential" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the WakePotential</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="file.File_dep.parameters">
-<code class="descname">parameters</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#file.File_dep.parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Inovesa Parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">h5py.Attribute Instance</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="file.MultiFile">
 <em class="property">class </em><code class="descclassname">file.</code><code class="descname">MultiFile</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#file.MultiFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiple File container for whole directories</p>
@@ -949,7 +912,7 @@ Preload Data into memory. This will speed up recurring reads by a lot</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>path</strong> – The path to search in</li>
-<li><strong>pattern</strong> – The pattern to search for (pattern has to be accepted by glob) (None for no pattern)</li>
+<li><strong>pattern</strong> – The pattern to search for (has to be accepted by glob) (None for no pattern)</li>
 <li><strong>sorter</strong> – The sorting method to use. (None for default)</li>
 </ul>
 </td>
@@ -966,7 +929,7 @@ Preload Data into memory. This will speed up recurring reads by a lot</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorter</strong> – A callable that accepts a list of files as strings and returns a sorted list of strings</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorter</strong> – A callable that accepts a list of files as strings and returns a sorted list</td>
 </tr>
 </tbody>
 </table>
@@ -1052,8 +1015,32 @@ Preload Data into memory. This will speed up recurring reads by a lot</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>idx</strong> – An axis specification from Lisa.Axis</li>
 <li><strong>unit</strong> (<em>string</em>) – Use this as second argument or kwarg</li>
-<li><strong>sub_idx</strong> – (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2] then idx=0 and sub_idx is given will result in Dataset1[sub_idx]) This will speed up if only part of the data is used.</li>
+<li><strong>sub_idx</strong> – (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2]</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>then idx=0 and sub_idx is given will result in Dataset1[sub_idx])  
+This will speed up if only part of the data is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.unit_factor">
+<code class="descname">unit_factor</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>axis</em>, <em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.unit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the factor to calculate values in the correct physical unit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – The data to get the factor for (e.g. bunch_profile)</li>
+<li><strong>axis</strong> – The Axis object to select what axis to get the factor for</li>
+<li><strong>unit</strong> – The actual unit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Factor to get the data in physical units (physical=data*factor)</p>
 </td>
 </tr>
 </tbody>
@@ -1079,10 +1066,30 @@ Preload Data into memory. This will speed up recurring reads by a lot</p>
 <dd><p>Alias to another method</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="config.update_line_color">
+<code class="descclassname">config.</code><code class="descname">update_line_color</code><span class="sig-paren">(</span><em>ax</em>, <em>w</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#config.update_line_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="config.StyleError">
 <em class="property">class </em><code class="descclassname">config.</code><code class="descname">StyleError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#config.StyleError" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="class">
+<dt id="config.Palette">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">Palette</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Palette" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="config.Palette.next">
+<code class="descname">next</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Palette.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="config.Palette.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Palette.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="class">
 <dt id="config.Style">
@@ -1094,27 +1101,30 @@ It is essentially a dictionary with overriden methods.</p>
 <span class="n">style</span><span class="o">.</span><span class="n">apply_to_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>  
 <span class="n">style</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">selector</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>  <span class="c1"># or use style.update_style  </span>
 <span class="n">style</span><span class="p">[</span><span class="s1">&#39;selector&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>  <span class="c1"># this also updates the axes object  </span>
-<span class="c1"># if you have done some modifications to the plot yourself and want to update the style again use  </span>
-<span class="n">style</span><span class="o">.</span><span class="n">reapply</span><span class="p">()</span>  
+<span class="c1"># if you have done some modifications to the plot yourself and want to update the style  </span>
+<span class="n">again</span> <span class="n">use</span> <span class="n">style</span><span class="o">.</span><span class="n">reapply</span><span class="p">()</span>  
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">instead of working with the Style object directly you can use ax.current_style after you applied a style</p>
+<p class="last">instead of working with the Style object directly you can use ax.current_style after  
+you applied a style</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">You can apply one Style object to more than one axes object. Just call apply_to_ax multiple times or with a list of axes  
-If you applied one Style to multiple axes objects and you use axes.current_style instead of the style object  
-directly the updates/changes will nonetheless be applied to all applied axes objects</p>
+<p class="last">You can apply one Style object to more than one axes object. Just call apply_to_ax  
+multiple times or with a list of axes. If you applied one Style to multiple axes objects  
+and you use axes.current_style instead of the style object directly the updates/changes  
+will nonetheless be applied to all applied axes objects.</p>
 </div>
 <dl class="method">
 <dt id="config.Style.apply_to_ax">
 <code class="descname">apply_to_ax</code><span class="sig-paren">(</span><em>self</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#config.Style.apply_to_ax" title="Permalink to this definition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">Apply this style to the given axes object  </div>
-<div class="line">You can apply to multiple axes objects by calling this multiple times or with a list of objects  </div>
+<div class="line">You can apply to multiple axes objects by calling this multiple times or with a list of  </div>
 </div>
+<p>objects</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1177,28 +1187,11 @@ directly the updates/changes will nonetheless be applied to all applied axes obj
 </dd></dl>
 
 </div>
-<span id="document-helpers"></span><span class="target" id="module-helpers"></span><div class="section" id="id1">
-<h2>Helpers<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Patrick Schreiber</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="helpers.display_video">
-<code class="descclassname">helpers.</code><code class="descname">display_video</code><span class="sig-paren">(</span><em>mov</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.display_video" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display Video certain video objects in Jupyter Notebooks</p>
-</dd></dl>
-
-</div>
 <span id="document-animation"></span><span class="target" id="module-animation"></span><div class="section" id="create-animated-plots">
 <h2>Create animated plots<a class="headerlink" href="#create-animated-plots" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
 <dt id="animation.create_animation">
-<code class="descclassname">animation.</code><code class="descname">create_animation</code><span class="sig-paren">(</span><em>figure</em>, <em>frame_generator</em>, <em>frames</em>, <em>fps=None</em>, <em>bitrate=18000</em>, <em>dpi=100</em>, <em>path=None</em>, <em>blit=False</em>, <em>clear_between=False</em>, <em>save_args=None</em><span class="sig-paren">)</span><a class="headerlink" href="#animation.create_animation" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">animation.</code><code class="descname">create_animation</code><span class="sig-paren">(</span><em>figure</em>, <em>frame_generator</em>, <em>frames</em>, <em>fps=None</em>, <em>bitrate=18000</em>, <em>dpi=100</em>, <em>path=Noneblit=False</em>, <em>clear_between=False</em>, <em>save_args=None</em>, <em>progress=True</em>, <em>anim_writer=&quot;ffmpeg&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#animation.create_animation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an animation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1212,6 +1205,9 @@ directly the updates/changes will nonetheless be applied to all applied axes obj
 <li><strong>bitrate</strong> – Bitrate of video</li>
 <li><strong>dpi</strong> – Dpi of video</li>
 <li><strong>path</strong> – Path to save the video to. If None does not save.</li>
+<li><strong>save_args</strong> – Keyword arguments for savefig</li>
+<li><strong>progress</strong> – Show progress bar. If False do not show, if True show one, if integer use as  
+offset for this bar</li>
 </ul>
 </td>
 </tr>
@@ -1231,7 +1227,8 @@ directly the updates/changes will nonetheless be applied to all applied axes obj
 <li><strong>fig</strong> – The figure to draw in</li>
 <li><strong>xdata</strong> – The xdata as iterable</li>
 <li><strong>ydata</strong> – The ydata as iterable</li>
-<li><strong>label_only_once</strong> – True to only show x and y tick labels only once (otherwise will be drawn over each other if axis present (not so nice))</li>
+<li><strong>label_only_once</strong> – True to only show x and y tick labels only once  
+(otherwise will be drawn over each other if axis present (not so nice))</li>
 </ul>
 </td>
 </tr>
@@ -1253,16 +1250,17 @@ directly the updates/changes will nonetheless be applied to all applied axes obj
 <div class="section" id="how-the-version-handling-for-attributes-works">
 <h3>How the version handling for attributes works:<a class="headerlink" href="#how-the-version-handling-for-attributes-works" title="Permalink to this headline">¶</a></h3>
 <p><cite>InovesaVersion</cite> is a object that implements comparators for inovesa versions</p>
-<p><cite>unit_to_attr_map</cite> is a dictionary that maps physical units to inovesa attributes. Since these attributes change  
-over different inovesa versions first a dictionary for “older” versions (13 and up, maybe some versions below match too)  
-then it is modified into <cite>unit_to_attr_map_v15</cite> for versions 15 and up (until the next change in inovesa is made).</p>
-<p><cite>attr_to_unit_map</cite> and <cite>attr_to_unit_map_v15</cite> are just reversed dictionaries to make it possible to find the corresponding  
-readable/printable unit for an attribute</p>
-<p>Then <cite>alias_map</cite> is generated that makes it possible to not only use the exact specification used in unit_to_attr_map  
-but also the ones specified in <cite>alias_map</cite>. The reason for this is that the user does not have to remember the exact  
-unit string.</p>
-<p>Then a <cite>complete_unit_map</cite> (and <cite>complete_unit_map_v15</cite>) is generated where all the entries in alias_map are  
-mapped to attributes</p>
+<p><cite>unit_to_attr_map</cite> is a dictionary that maps physical units to inovesa attributes.  
+Since these attributes change over different inovesa versions first a dictionary for “older”  
+versions (13 and up, maybe some versions below match too) then it is modified into  
+<cite>unit_to_attr_map_v15</cite> for versions 15 and up (until the next change in inovesa is made).</p>
+<p><cite>attr_to_unit_map</cite> and <cite>attr_to_unit_map_v15</cite> are just reversed dictionaries to make it possible  
+to find the corresponding readable/printable unit for an attribute</p>
+<p>Then <cite>alias_map</cite> is generated that makes it possible to not only use the exact specification  
+used in unit_to_attr_map but also the ones specified in <cite>alias_map</cite>. The reason for this is  
+that the user does not have to remember the exact unit string.</p>
+<p>Then a <cite>complete_unit_map</cite> (and <cite>complete_unit_map_v15</cite>) is generated where all the entries in  
+alias_map are mapped to attributes</p>
 <p>There are 3 ‘public’ methods that should be used.</p>
 <blockquote>
 <div><ul class="simple">
@@ -1274,6 +1272,11 @@ mapped to attributes</p>
 <dl class="class">
 <dt id="utils.UnitError">
 <em class="property">class </em><code class="descclassname">utils.</code><code class="descname">UnitError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UnitError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="utils.DataNotInFile">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">DataNotInFile</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.DataNotInFile" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -1349,6 +1352,16 @@ mapped to attributes</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="utils.calc_stat_mom">
+<code class="descclassname">utils.</code><code class="descname">calc_stat_mom</code><span class="sig-paren">(</span><em>axis</em>, <em>profiles</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.calc_stat_mom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.calc_bl">
+<code class="descclassname">utils.</code><code class="descname">calc_bl</code><span class="sig-paren">(</span><em>axis</em>, <em>profiles</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.calc_bl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="utils.color_map_inferno">
 <code class="descclassname">utils.</code><code class="descname">color_map_inferno</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.color_map_inferno" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1401,7 +1414,7 @@ mapped to attributes</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.01',
+            VERSION:'0.4.0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

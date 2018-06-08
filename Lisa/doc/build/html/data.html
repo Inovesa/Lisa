@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data with Units &mdash; Lisa 0.01 documentation</title>
+  <title>Data with Units &mdash; Lisa 0.4.0.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+    <link rel="top" title="Lisa 0.4.0.2 documentation" href="index.html"/>
         <link rel="next" title="Plot Configuration" href="config.html"/>
         <link rel="prev" title="Inovesa Result Files" href="file.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.01
+                0.4.0.2
               </div>
             
           
@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data with Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
 </ul>
@@ -212,8 +211,32 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>idx</strong> – An axis specification from Lisa.Axis</li>
 <li><strong>unit</strong> (<em>string</em>) – Use this as second argument or kwarg</li>
-<li><strong>sub_idx</strong> – (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2] then idx=0 and sub_idx is given will result in Dataset1[sub_idx]) This will speed up if only part of the data is used.</li>
+<li><strong>sub_idx</strong> – (kwarg) the index in the h5object (if File returns [Dataset1, Dataset2]</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>then idx=0 and sub_idx is given will result in Dataset1[sub_idx])  
+This will speed up if only part of the data is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.unit_factor">
+<code class="descname">unit_factor</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>axis</em>, <em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.unit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the factor to calculate values in the correct physical unit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – The data to get the factor for (e.g. bunch_profile)</li>
+<li><strong>axis</strong> – The Axis object to select what axis to get the factor for</li>
+<li><strong>unit</strong> – The actual unit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Factor to get the data in physical units (physical=data*factor)</p>
 </td>
 </tr>
 </tbody>
@@ -268,7 +291,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.01',
+            VERSION:'0.4.0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

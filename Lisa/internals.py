@@ -5,7 +5,7 @@ import os
 class _ConfOptions(object):
     def __init__(self):
         self.config = {}
-        self.valid_options = {"print_debug": False, "use_cython": True}
+        self.valid_options = {"print_debug": False, "use_cython": True, "use_latex": False}
         for k, v in self.valid_options.items():
             if k in os.environ:
                 if type(v) == bool:
@@ -45,10 +45,12 @@ def _check_compiled_version(module):
         ncch = subprocess.check_output(
             ["md5sum",
              os.path.join(os.path.dirname(module.__file__),
-                          os.path.basename(module.__file__).split(".")[0]+".py").replace('_cython', '')]
+                          os.path.basename(module.__file__).split(".")[0] +
+                          ".py").replace('_cython', '')]
         ).split()[0].strip().decode('utf-8')
         if not cch == ncch:
             import warnings
+
             def showwarning(*args, **kwargs):
                 print("Warning:", args[0])
             warnings.showwarning = showwarning

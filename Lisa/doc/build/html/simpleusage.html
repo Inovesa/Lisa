@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simple Usage &mdash; Lisa 0.01 documentation</title>
+  <title>Simple Usage &mdash; Lisa 0.4.0.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+    <link rel="top" title="Lisa 0.4.0.2 documentation" href="index.html"/>
         <link rel="next" title="Inovesa Data Plots" href="plots.html"/>
         <link rel="prev" title="Availability of Classes" href="availability.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.01
+                0.4.0.2
               </div>
             
           
@@ -105,7 +105,6 @@
 <li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
 </ul>
@@ -225,7 +224,7 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <p>Data is an object encapsulating a File object. The benefit of this is it converts data to the given unit.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Lisa</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">Lisa</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="s2">&quot;/path/to/h5&quot;</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>  <span class="c1"># c for coulomb.</span>
+<span class="n">data</span><span class="o">.</span><span class="n">bunch_profile</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">DATA</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;c/s&quot;</span><span class="p">)</span>  <span class="c1"># c/s for coulomb per second.</span>
 <span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>  <span class="c1"># m for meter</span>
 <span class="n">data</span><span class="o">.</span><span class="n">bunch_position</span><span class="p">(</span><span class="n">Lisa</span><span class="o">.</span><span class="n">Axis</span><span class="o">.</span><span class="n">XAXIS</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>  <span class="c1"># s for meter</span>
 </pre></div>
@@ -236,7 +235,9 @@ will be returned. This object is iterable, subscriptable and has a get method th
 <div class="section" id="phasespace">
 <h2>PhaseSpace<a class="headerlink" href="#phasespace" title="Permalink to this headline">¶</a></h2>
 <p>PhaseSpace is used to generate PhaseSpace plots or movies.</p>
-<p>Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.ps_movie to generate a PhaseSpace Movie</p>
+<p>Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.phase_space_movie to generate a PhaseSpace Movie.</p>
+<p>It is also possible to generate a movie with subtracted mean phase space using PhaseSpace.microstructure_movie.</p>
+<p>Furthermore is it possible to extract “screenshots” from those movies by passing “extract_slice” (see</p>
 </div>
 <div class="section" id="multiphasespacemovie">
 <h2>MultiPhaseSpaceMovie<a class="headerlink" href="#multiphasespacemovie" title="Permalink to this headline">¶</a></h2>
@@ -289,7 +290,7 @@ will be returned. This object is iterable, subscriptable and has a get method th
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.01',
+            VERSION:'0.4.0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

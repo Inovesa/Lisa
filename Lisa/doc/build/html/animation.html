@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Create animated plots &mdash; Lisa 0.01 documentation</title>
+  <title>Create animated plots &mdash; Lisa 0.4.0.2 documentation</title>
   
 
   
@@ -35,9 +35,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+    <link rel="top" title="Lisa 0.4.0.2 documentation" href="index.html"/>
         <link rel="next" title="Internal Utilities" href="utils.html"/>
-        <link rel="prev" title="Helpers" href="helpers.html"/> 
+        <link rel="prev" title="Plot Configuration" href="config.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.01
+                0.4.0.2
               </div>
             
           
@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Create animated plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Internal Utilities</a></li>
 </ul>
@@ -167,7 +166,7 @@
 <h1>Create animated plots<a class="headerlink" href="#create-animated-plots" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="animation.create_animation">
-<code class="descclassname">animation.</code><code class="descname">create_animation</code><span class="sig-paren">(</span><em>figure</em>, <em>frame_generator</em>, <em>frames</em>, <em>fps=None</em>, <em>bitrate=18000</em>, <em>dpi=100</em>, <em>path=None</em>, <em>blit=False</em>, <em>clear_between=False</em>, <em>save_args=None</em><span class="sig-paren">)</span><a class="headerlink" href="#animation.create_animation" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">animation.</code><code class="descname">create_animation</code><span class="sig-paren">(</span><em>figure</em>, <em>frame_generator</em>, <em>frames</em>, <em>fps=None</em>, <em>bitrate=18000</em>, <em>dpi=100</em>, <em>path=Noneblit=False</em>, <em>clear_between=False</em>, <em>save_args=None</em>, <em>progress=True</em>, <em>anim_writer=&quot;ffmpeg&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#animation.create_animation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an animation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -181,6 +180,9 @@
 <li><strong>bitrate</strong> – Bitrate of video</li>
 <li><strong>dpi</strong> – Dpi of video</li>
 <li><strong>path</strong> – Path to save the video to. If None does not save.</li>
+<li><strong>save_args</strong> – Keyword arguments for savefig</li>
+<li><strong>progress</strong> – Show progress bar. If False do not show, if True show one, if integer use as  
+offset for this bar</li>
 </ul>
 </td>
 </tr>
@@ -200,7 +202,8 @@
 <li><strong>fig</strong> – The figure to draw in</li>
 <li><strong>xdata</strong> – The xdata as iterable</li>
 <li><strong>ydata</strong> – The ydata as iterable</li>
-<li><strong>label_only_once</strong> – True to only show x and y tick labels only once (otherwise will be drawn over each other if axis present (not so nice))</li>
+<li><strong>label_only_once</strong> – True to only show x and y tick labels only once  
+(otherwise will be drawn over each other if axis present (not so nice))</li>
 </ul>
 </td>
 </tr>
@@ -223,7 +226,7 @@
         <a href="utils.html" class="btn btn-neutral float-right" title="Internal Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="helpers.html" class="btn btn-neutral" title="Helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="config.html" class="btn btn-neutral" title="Plot Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -254,7 +257,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.01',
+            VERSION:'0.4.0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

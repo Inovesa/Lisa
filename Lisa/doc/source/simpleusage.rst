@@ -69,7 +69,7 @@ Data is an object encapsulating a File object. The benefit of this is it convert
 
     import Lisa
     data = Lisa.Data("/path/to/h5")
-    data.bunch_profile(Lisa.Axis.DATA, unit="c")  # c for coulomb. 
+    data.bunch_profile(Lisa.Axis.DATA, unit="c/s")  # c/s for coulomb per second.
     data.bunch_position(Lisa.Axis.XAXIS, unit="m")  # m for meter
     data.bunch_position(Lisa.Axis.XAXIS, unit="s")  # s for meter
 
@@ -82,7 +82,11 @@ PhaseSpace
 
 PhaseSpace is used to generate PhaseSpace plots or movies.
 
-Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.ps_movie to generate a PhaseSpace Movie
+Use PhaseSpace.plot_ps to plot a phasespace or use PhaseSpace.phase_space_movie to generate a PhaseSpace Movie.
+
+It is also possible to generate a movie with subtracted mean phase space using PhaseSpace.microstructure_movie.
+
+Furthermore is it possible to extract "screenshots" from those movies by passing "extract_slice" (see
 
 MultiPhaseSpaceMovie
 --------------------

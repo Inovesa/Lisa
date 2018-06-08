@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Internal Utilities &mdash; Lisa 0.01 documentation</title>
+  <title>Internal Utilities &mdash; Lisa 0.4.0.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Lisa 0.01 documentation" href="index.html"/>
+    <link rel="top" title="Lisa 0.4.0.2 documentation" href="index.html"/>
         <link rel="prev" title="Create animated plots" href="animation.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.01
+                0.4.0.2
               </div>
             
           
@@ -96,7 +96,6 @@
 <li class="toctree-l1"><a class="reference internal" href="file.html">Inovesa Result Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data with Units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Plot Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="animation.html">Create animated plots</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Internal Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#how-the-version-handling-for-attributes-works">How the version handling for attributes works:</a></li>
@@ -178,16 +177,17 @@
 <div class="section" id="how-the-version-handling-for-attributes-works">
 <h2>How the version handling for attributes works:<a class="headerlink" href="#how-the-version-handling-for-attributes-works" title="Permalink to this headline">¶</a></h2>
 <p><cite>InovesaVersion</cite> is a object that implements comparators for inovesa versions</p>
-<p><cite>unit_to_attr_map</cite> is a dictionary that maps physical units to inovesa attributes. Since these attributes change  
-over different inovesa versions first a dictionary for “older” versions (13 and up, maybe some versions below match too)  
-then it is modified into <cite>unit_to_attr_map_v15</cite> for versions 15 and up (until the next change in inovesa is made).</p>
-<p><cite>attr_to_unit_map</cite> and <cite>attr_to_unit_map_v15</cite> are just reversed dictionaries to make it possible to find the corresponding  
-readable/printable unit for an attribute</p>
-<p>Then <cite>alias_map</cite> is generated that makes it possible to not only use the exact specification used in unit_to_attr_map  
-but also the ones specified in <cite>alias_map</cite>. The reason for this is that the user does not have to remember the exact  
-unit string.</p>
-<p>Then a <cite>complete_unit_map</cite> (and <cite>complete_unit_map_v15</cite>) is generated where all the entries in alias_map are  
-mapped to attributes</p>
+<p><cite>unit_to_attr_map</cite> is a dictionary that maps physical units to inovesa attributes.  
+Since these attributes change over different inovesa versions first a dictionary for “older”  
+versions (13 and up, maybe some versions below match too) then it is modified into  
+<cite>unit_to_attr_map_v15</cite> for versions 15 and up (until the next change in inovesa is made).</p>
+<p><cite>attr_to_unit_map</cite> and <cite>attr_to_unit_map_v15</cite> are just reversed dictionaries to make it possible  
+to find the corresponding readable/printable unit for an attribute</p>
+<p>Then <cite>alias_map</cite> is generated that makes it possible to not only use the exact specification  
+used in unit_to_attr_map but also the ones specified in <cite>alias_map</cite>. The reason for this is  
+that the user does not have to remember the exact unit string.</p>
+<p>Then a <cite>complete_unit_map</cite> (and <cite>complete_unit_map_v15</cite>) is generated where all the entries in  
+alias_map are mapped to attributes</p>
 <p>There are 3 ‘public’ methods that should be used.</p>
 <blockquote>
 <div><ul class="simple">
@@ -199,6 +199,11 @@ mapped to attributes</p>
 <dl class="class">
 <dt id="utils.UnitError">
 <em class="property">class </em><code class="descclassname">utils.</code><code class="descname">UnitError</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UnitError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="utils.DataNotInFile">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">DataNotInFile</code><span class="sig-paren">(</span><em>Exception</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.DataNotInFile" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -274,6 +279,16 @@ mapped to attributes</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="utils.calc_stat_mom">
+<code class="descclassname">utils.</code><code class="descname">calc_stat_mom</code><span class="sig-paren">(</span><em>axis</em>, <em>profiles</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.calc_stat_mom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.calc_bl">
+<code class="descclassname">utils.</code><code class="descname">calc_bl</code><span class="sig-paren">(</span><em>axis</em>, <em>profiles</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.calc_bl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="utils.color_map_inferno">
 <code class="descclassname">utils.</code><code class="descname">color_map_inferno</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.color_map_inferno" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -323,7 +338,7 @@ mapped to attributes</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.01',
+            VERSION:'0.4.0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

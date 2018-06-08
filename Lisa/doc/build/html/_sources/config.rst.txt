@@ -1,4 +1,4 @@
-.. parsedoc:: ../core/plots/config.py
+.. parsedoc:: ../plots/config.py
     :module: True
     :wo_docstr: True
     :heading: Plot Configuration

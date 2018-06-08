@@ -1,4 +1,4 @@
-.. parsedoc:: ../core/data.py
+.. parsedoc:: ../data/data.py
     :module: True
     :wo_docstr: True
     :heading: Data with Units

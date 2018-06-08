@@ -1,3 +1,3 @@
-.. parsedoc:: ../core/__init__.py
+.. parsedoc:: ../__init__.py
     :module: False
     :wo_docstr: False
