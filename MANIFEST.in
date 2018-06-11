@@ -1,2 +1,2 @@
 include tox.ini
-include Lisa/VERSION
+include lisa/VERSION

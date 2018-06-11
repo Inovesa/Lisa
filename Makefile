@@ -9,9 +9,9 @@ default: all
 
 all: plots data file config
 
-plots: Lisa/plots/plots.py
+plots: lisa/plots/plots.py
 	@echo "Compiling plots.py"
-	@cd Lisa/plots
+	@cd lisa/plots
 	@cp plots.py plots_cython.py  # do this to avoid some problem with init of module or so?
 	@../../add_hash.sh plots
 	@$(CYTHON) $(CYTHON_FLAGS) plots_cython.py
@@ -20,9 +20,9 @@ plots: Lisa/plots/plots.py
 	@rm -rf __pycache__
 	@rm -rf plots_cython.c
 
-data: Lisa/data/data.py
+data: lisa/data/data.py
 	@echo "Compiling data.py"
-	@cd Lisa/data
+	@cd lisa/data
 	@cp data.py data_cython.py  # do this to avoid some problem with init of module or so?
 	@../../add_hash.sh data
 	@$(CYTHON) $(CYTHON_FLAGS) data_cython.py
@@ -31,9 +31,9 @@ data: Lisa/data/data.py
 	@rm -rf __pycache__
 	@rm -rf data_cython.c
 
-file: Lisa/data/file.py
+file: lisa/data/file.py
 	@echo "Compiling file.py"
-	@cd Lisa/data
+	@cd lisa/data
 	@cp file.py file_cython.py  # do this to avoid some problem with init of module or so?
 	@../../add_hash.sh file
 	@$(CYTHON) $(CYTHON_FLAGS) file_cython.py
@@ -42,9 +42,9 @@ file: Lisa/data/file.py
 	@rm -rf __pycache__
 	@rm -rf file_cython.c
 
-config: Lisa/plots/config.py
+config: lisa/plots/config.py
 	@echo "Compiling config.py"
-	@cd Lisa/plots
+	@cd lisa/plots
 	@cp config.py config_cython.py  # do this to avoid some problem with init of module or so?
 	@../../add_hash.sh config
 	@$(CYTHON) $(CYTHON_FLAGS) config_cython.py
