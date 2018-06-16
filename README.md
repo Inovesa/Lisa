@@ -16,8 +16,8 @@ The period is used to generate a slice in the time axis.
 
 
 ```python
-import Lisa
-sp = Lisa.SimplePlotter("/path/to/h5")
+import lisa
+sp = lisa.SimplePlotter("/path/to/h5")
 sp.bunch_profile(100)
 sp.energy_spread()
 ```
@@ -26,8 +26,8 @@ sp.energy_spread()
 MultiPlot is the same as SimplePlotter except it works on multiple files.
 
 ```python
-import Lisa
-mp = Lisa.MultiPlot()
+import lisa
+mp = lisa.MultiPlot()
 mp.add_file("/path/to/h5")
 mp.add_file("/path/to/second/h5")
 ...
@@ -41,7 +41,7 @@ File is an object encapsulating the h5 file.
 It has a method for each of the DataGroups in the h5 file.
 
 Each method takes a parameter specifying the dataset to use. This parameter has to be an attribute from
-Lisa.Axis (e.g. Lisa.Axis.XAXIS for spaceaxis, Lisa.Axis.DATA for data etc.)
+lisa.Axis (e.g. lisa.Axis.XAXIS for spaceaxis, lisa.Axis.DATA for data etc.)
 
 Inovesa Parameters are available via File.parameters. It will return an h5.Attribute instance if no 
 parameter is specified.
@@ -50,15 +50,15 @@ For recurring access to data it is a speed improvement to call File.preload_full
 This will read all the data to memory for faster access.
 
 If one does not specify an axis a DataContainer containing all the data there is in the requested DataGroup 
-will be returned. This object is iterable, subscriptable and has a get method that accepts Lisa.Axis properties.
+will be returned. This object is iterable, subscriptable and has a get method that accepts lisa.Axis properties.
 
 Usage:
 
 ```python    
-import Lisa
-file = Lisa.File("/path/to/h5")
-bunch_profile_axis = file.bunch_profile(Lisa.Axis.XAXIS)
-bunch_profile = file.bunch_profile(Lisa.Axis.DATA)
+import lisa
+file = lisa.File("/path/to/h5")
+bunch_profile_axis = file.bunch_profile(lisa.Axis.XAXIS)
+bunch_profile = file.bunch_profile(lisa.Axis.DATA)
 ```
 
 #### Data
@@ -66,11 +66,11 @@ bunch_profile = file.bunch_profile(Lisa.Axis.DATA)
 Data is an object encapsulating a File object. The benefit of this is it converts data to the given unit.
 
 ```python
-import Lisa
-data = Lisa.Data("/path/to/h5")
-data.bunch_profile(Lisa.Axis.DATA, unit="c")  # c for coulomb. 
-data.bunch_position(Lisa.Axis.XAXIS, unit="m")  # m for meter
-data.bunch_position(Lisa.Axis.XAXIS, unit="s")  # s for meter
+import lisa
+data = lisa.Data("/path/to/h5")
+data.bunch_profile(lisa.Axis.DATA, unit="c")  # c for coulomb. 
+data.bunch_position(lisa.Axis.XAXIS, unit="m")  # m for meter
+data.bunch_position(lisa.Axis.XAXIS, unit="s")  # s for meter
 ```
 
 To get data as it is saved in the h5 file use unit=None.
